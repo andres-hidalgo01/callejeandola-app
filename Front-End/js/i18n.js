@@ -1,0 +1,281 @@
+// ============================
+// i18n (ES/EN) simple
+// ============================
+const I18N = {
+  es: {
+    // ========= TOPBAR =========
+    "nav.about": "Acerca de",
+    "nav.spots": "Lugares",
+    "nav.events": "Eventos",
+    "nav.faq": "FAQs",
+    "nav.contact": "Contáctenos",
+    "search.placeholder": "Lugar o Eventos",
+    // ========= HERO =========
+    "hero.line1": "HACIENDO EL SKATEBOARDING",
+    "hero.line2": "HISTÓRICO.",
+    // ========= ABOUT =========
+    "h2.about": "¿Qué es Callejeando?",
+    "header.about": "🛹 Callejeando / Acerca de",
+    "h2.vision": "1. Visión",
+    "p.vision": "Callejeando nace para que patinadores de CentroAmérica tengan un lugar donde encontrar spots y skateparks, enterarse de eventos y competir con organización real.",
+    "h2.whatcanyoudo": "2. Qué puedes hacer?",
+    "p.description": "Una plataforma para conectar la escena del skateboarding en CentroAmérica: spots, parks y eventos.",
+    "h2.focus": "3. Enfoque CentroAmérica",
+    "li.explore": "Explorar skatepark  y street spots.",
+    "li.explored": "Ver eventos y competencias próximos por país.",
+    "p.about": "La app empieza por CentroAmérica para respetar la realidad local:spots reales, nombres reales, admins locales y eventos cercanos. ",
+    "h2.roles": "3. Roles",
+    "li.roles.competitor": "Competidor: se inscribe a eventos y participa.",
+    "li.roles.judge": "Juez: califica en eventos asignados.",
+    "li.roles.admin": "Admin local gestiona y valida contenido por país.",
+    // ========= SPOTS =========
+    "div.spots": "Callejeando / Lugares.",
+    "h2.spots": "Puntos Callejeros & Parques de Patineta.",
+    "p.spots": "Encuentra lugares para patinar en CentroAmérica. Próximamente: filtros por país,distancia y estado “LIVE”.",
+    "h2.firstitle": "1. ¿Qué verás aquí?",
+    "li.skateparks": " Parques de Patineta: Bowls, Rampas, Obstáculos y Horarios. ",
+    "li.street": "Lugares callejeros: Escaleras, Barandas, ledges, gaps, DIY.",
+    "li.live": "EN VIVO: Lugares con actividad reciente.",
+    "h2.secondtitle": "2. Spots destacados (DEMO)",
+    "li.firstspot": "Puntos Callejeros – Centro: Escaleras · Barandas · San José ",
+    "li.secondspot": "Skatepark Norte: Bowl · Rampas · Heredia",
+    "li.thirdspot": "Old School Ledge: Ledge · Manual Pad",
+    // ========= Events & Competitions. =========
+    "h2.events": "Eventos & Competencias",
+    "div.eventos": "🏆 Callejeando / Eventos",
+    "p.descriptionevent": "Explora eventos por país, inscríbete como competidor o postúlate como juez. El dashboard habilita funciones según rol.",
+    "h2.eventfirstitle": " 1. Próximos eventos",
+    "li.firstevent": "Copa Street Infantil: Parque Metropolitano · 21 Sept",
+    "li.secondevent": "Mejor Truco: Escaleras 9 · 30 Sept",
+    "li.thirdevent": "Bowl Jam Tsunami: Tsunami Street Spot · 5 ",
+    "h2.eventsecondtitle": "2. Inscripciones por rol",
+    "li.eventfirstrole": "Competidor: se registra y se inscribe según país.",
+    "li.eventsecondrole": "Juez: Se registra, admin lo asigna a eventos.",
+    "li.eventthirdrole": "Admin: Crea eventos, asigna jueces y valida resultados.",
+    "h2.eventhirdtitle": "3. Resultados y rankings",
+    "p.eventdescription": " La idea es que un juez pueda calificar desde el dashboard y automáticamente se publiquen resultados en tiempo real.",
+    // ========= FAQs =========
+    "h2.faq": "Preguntas Frecuentes",
+    "h1.faq": "Preguntas frecuentes",
+    "p.faqdescription": "Respuestas rápidas sobre spots, eventos, roles y funcionamiento de la app.",
+    "h2.account": "1. Cuenta",
+    "li.firstfaq": "¿Necesito cuenta? Para explorar no. Para inscribirte o ser juez, sí.",
+    "li.secondfaq": "¿Puedo cambiar de rol? Sí, pero juez/admin dependen de asignación.",
+    "li.thirdfaq": "¿Qué es “LIVE”? Sesiones recientes o actividad marcada por los administradores.",
+    "li.fourthfaq": "¿Puedo agregar un spot? En la versión completa: sí, con validación por administradores.",
+    "li.fifthfaq": "¿Cómo me inscribo? Desde la página de eventos o dashboard de competidor.",
+    "li.sixthfaq": "¿Cómo funciona un juez? Se asigna a eventos y califica desde el dashboard.",
+    "li.sevenfaq": "Empezamos por Centroamérica para construir una base sólida con la escena local. La expansión se hará por etapas.",
+    "h2.location": " 4. Centroamérica",
+    // ========= CONTACT US =========
+    "h2.contact": "Contáctenos",
+    "header.contact": "📩 Callejeando / Contacto",
+    "h1.contact": "Contáctenos",
+    "p.contact": "¿Tienes un skatepark, un spot, un evento o una propuesta de sponsor? Escríbenos y lo revisamos.",
+    "h2.contactheader": "1. Enviar mensaje",
+    "label.name": "Nombre",
+    "input.name": "Tu Nombre",
+    "label.email": "Correo electrónico",
+    "label.motivo": "Motivo",
+    "option.reason": "Selecciona una opción",
+    "option.firstreason": "Reportar Spot",
+    "option.secondreason": "Registrar Evento",
+    "option.thirdreason": "Ser Patrocinador",
+    "option.fourthreason": "Soporte",
+    "label.subject": "Mensaje",
+    "button.send": "Enviar",
+    // ========= FOOTER =========
+    "p.footer": "© 2026 Callejeando. Todos los derechos reservados.",
+    "a.terminos": "Términos & Condiciones",
+    "a.privacidad": "Privacidad",
+    "a.contacto": "Contáctenos",
+    // ========= TERMS & CONDITIONS =========
+    "div.terms": "📄 Callejeando / Términos y Condiciones.",
+    "h1.legalheader": "Términos y Condiciones.",
+    "p.legaldescription": " Estas condiciones regulan el uso de la plataforma Callejeando. Al acceder y utilizar la app,aceptas estos términos y condiciones.",
+    "p.termsupdate": "Última actualización: 2025",
+    "h2.legaluse": "1. Uso de la plataforma",
+    "h2.legalusedescription": "Callejeando permite descubrir skateparks, street spots y eventos. Puedes navegar la información pública y, si creas una cuenta, participar según tu rol (competidor o juez).",
+    "h2.responsabilities": "2. Roles y responsabilidades",
+    "li.competitor": "Competidor: Inscribirse a eventos y respetar reglas del organizador.",
+    "li.judge": " Juez: Participar en eventos asignados y evaluar con criterio justo.",
+    "h2.conduct": "3. Conducta.",
+    "p.firstconduct": "No está permitido publicar información falsa, ofensiva o que ponga en riesgo a la comunidad.Callejeando puede suspender cuentas por abuso.",
+    "h2.events": "Eventos & competencias.",
+    "p.eventsdescription": "El skateboarding implica riesgos. Callejeando no se hace responsable por lesiones, daños,pérdidas o conflictos ocurridos durante sesiones o eventos.",
+    "h2.changes": "5. Cambios",
+    "p.changesdescription": "Podemos actualizar estos términos cuando sea necesario. Si continúas usando la plataforma,se entiende que aceptas los cambios.",
+    // ========= PRIVACY =========
+    "div.privacy": "🔒 Callejeando / Política de Privacidad",
+    "h1.privacy": "Política de privacidad",
+    "p.privacydescription": "Explica cómo se recopila y usa tu información dentro de Callejeando.",
+    "h2.privacydata": "1. Datos que recopilamos",
+    "li.name": "Nombre y correo (para iniciar sesión).",
+    "li.country": "País/ubicación aproximada (para mostrar contenido relevante).",
+    "li.rol": "Rol (admin, juez o competidor) para habilitar funciones.",
+    "h2.privacyuse": "2. Cómo usamos tus datos",
+    "p.privacyuse": "Usamos tu información para personalizar la experiencia, mostrar spots/eventos cercanos,y permitir inscripciones o asignaciones en eventos según rol.",
+    "h2.privacysecurity": "3. Seguridad",
+    "p.privacysecurity": "Implementamos buenas prácticas para proteger tu información, pero ningún sistema es 100% infalible.",
+    "h2.privacyrights": "4. Tus derechos",
+    "p.privacyrights": "Puedes solicitar actualización o eliminación de tus datos según disponibilidad técnica y legal.",
+  },
+  en: {
+    // ========= TOPBAR =========
+    "nav.about": "About",
+    "nav.spots": "Spots",
+    "nav.events": "Events",
+    "nav.faq": "FAQs",
+    "nav.contact": "Contact Us",
+    "search.placeholder": "Spots or Events",
+    // ========= HERO =========
+    "hero.line1": "MAKE SKATEBOARDING",
+    "hero.line2": "HISTORY.",
+    // ========= ABOUT =========
+    "h2.about": "¿What is Callejeando?",
+    "header.about": "🛹 Callejeando / About",
+    "h2.vision": "1. Vision",
+    "p.vision": "Callejeando was created so that skaters from Central America have a place to find spots and skateparks, find out about events and compete with real organization.",
+    "h2.whatcanyoudo": "2. What you can do",
+    "p.description": "A platform to connect the skateboarding scene in Central America: spots, parks and events.",
+    "h2.focus": "3. Central America Focus",
+    "li.explore": "Explore skateparks and street spots .",
+    "li.explored": "View upcoming events and competitions by country.",
+    "p.about": "The app starts with Central America to respect the local reality: real spots, real names, local admins, and nearby events.",
+    "h2.roles": "3. Roles",
+    "li.roles.competitor": "Competitor: Registers for and participates in events.",
+    "li.roles.judge": "Judge: Evaluates assigned events.",
+    "li.roles.admin": "Local Admin manages and validates content by country.",
+    // ====== SPOTS ======
+    "div.spots": "Callejeando / Spots.",
+    "h2.spots": "Street spots & Skateparks",
+    "p.spots": "Find places to skate in Central America. Coming soon: filters by country, distance, and 'LIVE' status.",
+    "h2.firstitle": "1. What will you see here?",
+    "li.skateparks": "Skateparks: bowls, ramps, obstacles and schedules.",
+    "li.street": "Street spots: stairs, railings, ledges, gaps, DIY.",
+    "li.live": "LIVE: spots with recent activity (sessions marked by users).",
+    "h2.secondtitle": "2. Featured Spots (DEMO)",
+    "li.firstspot": "Street Spot -- Downtown: Stairs · Railings · San Jose.",
+    "li.secondspot": "North Skatepark:Bowl · Ramps · Heredia",
+    "li.thirdspot": "Old School Ledge: Ledge · Manual Pad · Alajuela",
+    // ========= Events & Competitions. =========
+    "h2.events": "Events & Competitions.",
+    "div.eventos": "🏆 Callejeando / Events",
+    "p.descriptionevent": "Explore events by country, register as a competitor, or apply to be a judge. The dashboard enables features based on your role.",
+    "h2.eventfirstitle": " 1. Upcoming events",
+    "li.firstevent": "Children's Street Cup: Metropolitan Park · 21 Sept",
+    "li.secondevent": "Best Trick Session: Escaleras 9 · 30 Sept",
+    "li.thirdevent": "Bowl Jam Tsunami: Tsunami Street Spot · 5",
+    "h2.eventsecondtitle": "2. Registrations by role",
+    "li.eventfirstrole": "Competitor: registers and enrolls according to country.",
+    "li.eventsecondrole": "Judge: It is registered, admin assigns it to events.",
+    "li.eventthirdrole": "Admin: Creates events, assigns judges, and validates results.",
+    "h2.eventhirdtitle": "3. Results and rankings",
+    "p.eventdescription": "The idea is that a judge can rate from the dashboard and the results will be automatically published in real time.",
+    // ========= FAQs =========
+    "h2.faq": "Frequently Asked Questions",
+    "h1.faq": "Frequently Asked Questions",
+    "p.faqdescription": "Quick answers about spots, events, roles, and how the app works.",
+    "h2.account": "1. Account",
+    "li.firstfaq": "Do I need an account? Not to explore. Yes to sign up or be a judge.",
+    "li.secondfaq": "Can I change roles? Yes, but judge/admin roles depend on assignment.",
+    "li.thirdfaq": "What is “LIVE”? Recent sessions or activity flagged by administrators.",
+    "li.fourthfaq": "Can I add a spot? In the full version: yes, with admin validation.",
+    "h2.faqevent": "3. Events",
+    "li.fifthfaq": "How do I register? From the events page or competitors' board.",
+    "li.sixthfaq": "How does a judge work? They are assigned to events and score from the dashboard.",
+    "li.sevenfaq": "We started in Central America to build a solid foundation with the local scene. Expansion will be done in stages.",
+    "h2.location": "4. Central America",
+    // ========= CONTACT US =========
+    "h2.contact": "Contact Us",
+    "header.contact": "📩 Callejeando / Contact",
+    "h1.contact": "Contact Us",
+    "p.contact": "Do you have a skatepark, a spot, an event, or a sponsorship proposal? Write to us and we'll review it.",
+    "h2.contactheader": "1. Send message",
+    "label.name": "Name",
+    "input.name": "Your Name",
+    "label.email": "Email",
+    "label.motivo": "Reason",
+    "option.reason": "Select an option",
+    "option.firstreason": "Report Spot",
+    "option.secondreason": "Register Event",
+    "option.thirdreason": "Become a Sponsor",
+    "option.fourthreason": "Support",
+    "label.subject": "Subject",
+    "button.send": "Send",
+    // ========= FOOTER =========
+    "p.footer": "© 2026 Callejeando. All rights reserved.",
+    "a.terminos": "Terms & Conditions",
+    "a.privacidad": "Privacy",
+    "a.contacto": "Contact Us",
+    // ========= TERMS & CONDITIONS ========= 
+    "div.terms": "📄 Callejeando / Terms and Conditions.",
+    "h1.legalheader": "Terms and Conditions.",
+    "p.legaldescription": "These conditions govern the use of the Callejeando platform. By accessing and using the application, you accept these terms and conditions.",
+    "p.termsupdate": "Latest Update: 2025",
+    "h2.legaluse": "1. Use of the platform",
+    "h2.legalusedescription": "Callejeando lets you discover skateparks, street spots, and events. You can browse public information and, if you create an account, participate according to your role (competitor or judge).",
+    "h2.responsabilities": "2. Roles and responsibilities",
+    "li.competitor": "Competitor: Register for events and respect the organizer's rules.",
+    "li.judge": "Judge: Participate in assigned events and evaluate with fair judgment.",
+    "h2.conduct": "3. Conduct.",
+    "p.firstconduct": "Posting false, offensive, or community-threatening information is not permitted. Callejeando may suspend accounts for abuse.",
+    "h2.events": "Events & Competitions.",
+    "p.eventsdescription": "Skateboarding involves risks. Callejeando is not responsible for injuries, damages, losses, or conflicts that occur during sessions or events.",
+    "h2.changes": "5. Changes",
+    "p.changesdescription": "We may update these terms when necessary. If you continue to use the platform, it will be understood that you accept the changes.",
+    // ========= PRIVACY ========= 
+    "div.privacy": "🔒 Callejeando / Privacy Policy",
+    "h1.privacy": "Privacy Policy",
+    "p.privacydescription": "Explains how your information is collected and used within Callejeando.",
+    "h2.privacydata": "1. Data we collect",
+    "li.name": "Name and email (Log in).",
+    "li.country": "Country/approximate location (to display relevant content).",
+    "li.rol": "Role (admin, judge, or competitor) to enable functions.",
+    "h2.privacyuse": "2. How we use your data",
+    "p.privacyuse": "We use your information to personalize the experience, show nearby spots/events, and allow registrations or assignments to events according to role.",
+    "h2.privacysecurity": "3. Security",
+    "p.privacysecurity": "We implement best practices to protect your information, but no system is 100% infallible.",
+    "h2.privacyrights": "4. Your rights",
+    "p.privacyrights": "You can request an update or deletion of your data depending on technical and legal availability."
+  },
+};
+
+function setLanguage(lang) {
+  const dict = I18N[lang] || I18N.es;
+
+  // textos normales
+  document.querySelectorAll("[data-i18n]").forEach((el) => {
+    const key = el.getAttribute("data-i18n");
+    if (dict[key]) el.textContent = dict[key];
+  });
+
+  // placeholders
+  document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
+    const key = el.getAttribute("data-i18n-placeholder");
+    if (dict[key]) el.setAttribute("placeholder", dict[key]);
+  });
+
+  // guardar preferencia
+  localStorage.setItem("lang", lang);
+}
+
+// clicks en los dropdowns (desktop + mobile)
+document.addEventListener("click", (e) => {
+  const a = e.target.closest("[data-lang]");
+  if (!a) return;
+
+  e.preventDefault();
+  const lang = a.getAttribute("data-lang");
+  setLanguage(lang);
+
+  // cerrar dropdown móvil si estaba abierto
+  const mobileLangDropdown = document.getElementById("mobileLangDropdown");
+  if (mobileLangDropdown) mobileLangDropdown.classList.remove("show");
+});
+
+// idioma inicial al cargar
+document.addEventListener("DOMContentLoaded", () => {
+  const saved = localStorage.getItem("lang") || "es";
+  setLanguage(saved);
+});

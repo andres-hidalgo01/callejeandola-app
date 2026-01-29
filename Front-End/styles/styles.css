@@ -1,0 +1,1635 @@
+/* ==========================================================
+  CALLEJEANDO — styles.css (REFactor)
+  - Ordenado por secciones
+  - Sin duplicados
+  - Mantiene: topbar glass, mobile menu, hero video, flechas, sponsor marquee, legal pages
+========================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:root {
+  /* Brand */
+  --lime: #c6ff00;
+  --bg-dark: #0b0b0f;
+
+  /* Layout */
+  --container: 1200px;
+  --topbar-h: 72px;
+
+  /* UI */
+  --radius: 18px;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  --glass: rgba(255, 255, 255, 0.08);
+  --glass-border: rgba(255, 255, 255, 0.18);
+  --glass-blur: 10px;
+
+  /* Text */
+  --text: #111;
+  --muted: #666;
+
+  /* Dark text */
+  --text-on-dark: rgba(255, 255, 255, 0.92);
+  --muted-on-dark: rgba(255, 255, 255, 0.75);
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  scroll-behavior: smooth;
+
+}
+
+/* Si scroll-snap te da problemas, podés apagarlo cambiando "mandatory" a "proximity" */
+body {
+  font-family: Arial, sans-serif;
+  scroll-snap-type: y proximity;
+  overflow-y: scroll;
+}
+
+/* Links */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Tipos de body */
+.home-body {
+  min-height: 100vh;
+  background: #000;
+  color: #000;
+}
+
+.page-body {
+  min-height: 100vh;
+  background: #f5f5f5;
+  color: #111;
+}
+
+/* Wrapper genérico */
+.page-wrapper {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 24px 16px 60px;
+}
+
+/* Utilidades */
+.text-center {
+  text-align: center;
+}
+
+.mt-2 {
+  margin-top: 8px;
+}
+
+.mt-3 {
+  margin-top: 16px;
+}
+
+.mt-4 {
+  margin-top: 24px;
+}
+
+.mt-5 {
+  margin-top: 32px;
+}
+
+/* ==========================================================
+  1) COMPONENTES — BOTONES + TAGS
+========================================================== */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  background: #111;
+  color: #fff;
+  transition:
+    background 0.2s ease,
+    transform 0.1s ease;
+}
+
+.btn:hover {
+  background: #000;
+  transform: translateY(-1px);
+}
+
+.btn-outline {
+  background: transparent;
+  border: 2px solid #111;
+  color: #111;
+}
+
+.btn-outline:hover {
+  background: #111;
+  color: #fff;
+}
+
+.btn-primary {
+  background: #ff6f00;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: #e65c00;
+}
+
+/* Tags */
+.tag {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: #eee;
+  color: #333;
+}
+
+.tag.live {
+  background: #16a34a;
+  color: #fff;
+}
+
+.tag.raffle {
+  background: #f97316;
+  color: #fff;
+}
+
+.tag.final {
+  background: #0f172a;
+  color: #fff;
+}
+
+/* ==========================================================
+  2) TOPBAR (GLASS) + NAV
+========================================================== */
+
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: var(--glass);
+  border-bottom: 1px solid var(--glass-border);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+}
+
+.topbar,
+.topbar a {
+  color: #fff;
+}
+
+.topbar-inner {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+/* Logo link */
+.topbar-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: #fff;
+}
+
+/* Logo principal (icono) */
+.topbar-logo img {
+  height: 44px;
+  width: auto;
+  display: block;
+  /* si tu logo icono debe ser blanco: */
+  /* filter: brightness(0) invert(1); */
+  opacity: 0.95;
+}
+
+/* Wordmark opcional (si usás .logo-wordmark en el HTML) */
+.logo-wordmark {
+  height: 44px;
+  width: auto;
+  display: block;
+  opacity: 1;
+  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.45)) brightness(1.15);
+  transition:
+    transform 0.25s ease,
+    filter 0.25s ease;
+}
+
+.topbar-logo:hover .logo-wordmark {
+  transform: translateY(-1px);
+  filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.55)) brightness(1.2);
+}
+
+.topbar-logo span {
+  color: #fff;
+  font-size: 20px;
+  line-height: 1;
+  opacity: 0.95;
+  text-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+/* Menú desktop */
+.topbar-menu {
+  display: flex;
+  gap: 18px;
+  list-style: none;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 0;
+  margin: 0;
+}
+
+/* Search */
+.topbar-search {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.topbar-search-inner {
+  width: 100%;
+  max-width: 520px;
+  border-radius: 999px;
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.topbar-search-inner input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 13px;
+  color: #111;
+  background: transparent;
+}
+
+.topbar-search-inner .search-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #111;
+  color: #fff;
+}
+
+/* Right actions */
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Idioma */
+.lang-dropdown {
+  position: relative;
+  font-size: 13px;
+}
+
+.lang-btn {
+  background: transparent;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.flag {
+  width: 34px;
+  height: 34px;
+  object-fit: cover;
+  border-radius: 50%;
+  background: #fff;
+}
+
+/* Menú idioma (glass) */
+.lang-menu {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 22px;
+
+  min-width: 140px;
+  border-radius: 10px;
+  overflow: hidden;
+  z-index: 60;
+
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.22);
+}
+
+.lang-menu.open {
+  display: block;
+}
+
+.lang-dropdown:hover .lang-menu {
+  display: block;
+}
+
+.lang-menu a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  font-size: 13px;
+  color: #111;
+}
+
+.lang-menu a:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+/* Hamburger (solo mobile) */
+.nav-toggle {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 10px;
+  padding: 8px;
+  display: none;
+  cursor: pointer;
+}
+
+.nav-toggle span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: #fff;
+}
+
+.nav-toggle span+span {
+  margin-top: 4px;
+}
+
+/* ==========================================================
+  3) MOBILE MENU (DRAWER)
+========================================================== */
+
+.mobile-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(3px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease;
+  z-index: 1200;
+}
+
+.mobile-overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.mobile-menu {
+  position: fixed;
+  inset: 0;
+  padding: 20px;
+  color: #fff;
+  overflow-y: auto;
+  display: none;
+  z-index: 1300;
+
+  /* Glass dark */
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.mobile-menu.open {
+  display: block;
+}
+
+/* Si en tu JS añadís body.menu-open, esto evita doble header visual */
+body.menu-open {
+  overflow: hidden;
+}
+
+body.menu-open .topbar {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.mobile-menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+}
+
+.mobile-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mobile-header-left img {
+  height: 50px;
+  width: auto;
+  filter: brightness(0) invert(1);
+}
+
+.mobile-header-left span {
+  font-weight: 800;
+  font-size: 18px;
+  letter-spacing: 0.5px;
+}
+
+.mobile-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.close-btn {
+  color: #fff;
+  font-size: 36px;
+  padding: 0;
+  margin-left: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* Idioma móvil */
+.mobile-header-lang {
+  position: relative;
+}
+
+.mobile-header-lang button {
+  background: transparent;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 50%;
+  font-size: 14px;
+}
+
+#mobileLangDropdown {
+  display: none;
+  position: absolute;
+  right: 0;
+  margin-top: 10px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+  z-index: 300;
+  min-width: 160px;
+}
+
+#mobileLangDropdown.show {
+  display: block;
+}
+
+#mobileLangDropdown a {
+  color: #111;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+#mobileLangDropdown a:last-child {
+  border-bottom: none;
+}
+
+#mobileLangDropdown a:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+/* Search móvil */
+.mobile-search {
+  display: flex;
+  background: #fff;
+  border: 2px solid #006d46;
+  border-radius: 999px;
+  padding: 8px 12px;
+  margin-bottom: 20px;
+}
+
+.mobile-search input {
+  flex: 1;
+  border: 0;
+  outline: none;
+  font-size: 15px;
+  background: transparent;
+}
+
+.mobile-search-btn {
+  background: #006d46;
+  border: none;
+  color: #fff;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.mobile-modules {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px 0;
+}
+
+.mobile-modules li {
+  margin: 14px 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+/* ==========================================================
+  4) HERO (VIDEO)
+========================================================== */
+
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.hero-media {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+}
+
+.hero-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.6s ease;
+}
+
+.hero:hover .hero-video {
+  transform: scale(1.07);
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(to bottom,
+      rgba(0, 0, 0, 0.25),
+      rgba(0, 0, 0, 0.6));
+}
+
+.hero-inner {
+  width: 100%;
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: calc(var(--topbar-h) + 24px) 16px 60px;
+  display: flex;
+  flex-direction: column;
+}
+
+.hero-content {
+  margin: 30px auto 0 auto;
+  text-align: center;
+}
+
+.hero-title {
+  font-size: clamp(30px, 6vw, 72px);
+  line-height: 1.1;
+  text-transform: uppercase;
+  margin: 0 0 16px;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 0 14px 40px rgba(0, 0, 0, 0.55);
+}
+
+.hero-title-highlight {
+  color: var(--lime);
+}
+
+.hero-subtitle {
+  font-size: clamp(14px, 2.2vw, 18px);
+  margin: 0 0 30px;
+  color: var(--muted-on-dark);
+}
+
+/* ==========================================================
+  5) HOME SECTIONS (FONDOS CON IMAGEN + OVERLAY)
+  - Para usar: .section-about { --bg: url("..."); } etc.
+========================================================== */
+
+.section {
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  /* padding: 96px 16px; */
+  padding: 0px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  color: #fff;
+  /* default para secciones con imagen */
+  scroll-snap-align: start;
+}
+
+/* Imagen + overlay */
+.section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.52), rgba(0, 0, 0, 0.78)),
+    var(--bg, linear-gradient(180deg, #14141a, #0b0b0f));
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  transform: scale(1.02);
+}
+
+/* grain muy sutil */
+.section::after {
+  content: "";
+  position: absolute;
+  inset: -60px;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.12;
+  background-image: repeating-linear-gradient(0deg,
+      rgba(255, 255, 255, 0.06),
+      rgba(255, 255, 255, 0.06) 1px,
+      transparent 1px,
+      transparent 3px);
+  transform: rotate(-1deg);
+}
+
+.section-inner {
+  max-width: var(--container);
+  width: 100%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.section>.section-inner>h2 {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  display: grid;
+  place-items: center;
+  margin: 0;
+
+  /* en vez de empujar el scroll, empujamos el contenido */
+  padding: calc(var(--topbar-h) + 8px) 16px 0;
+
+  background: transparent;
+}
+
+
+
+/* Título tipo pantalla */
+.section h2 {
+  margin: 0;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  font-size: clamp(34px, 6vw, 84px);
+  line-height: 1.05;
+  text-shadow: 0 12px 35px rgba(0, 0, 0, 0.55);
+}
+
+/* Si usás subtítulos */
+.section-subtitle {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.82);
+  margin: 18px auto 0;
+  max-width: 70ch;
+}
+
+/* ==========================================================
+  6) FLECHA (CTA) — NO SE QUITA
+========================================================== */
+
+.scroll-arrow {
+  position: absolute;
+  left: 50%;
+  bottom: 26px;
+  transform: translateX(-50%);
+  width: 56px;
+  height: 56px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  z-index: 5;
+
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  animation: arrow-bounce 1.6s infinite;
+  transition:
+    transform 0.18s ease,
+    background 0.18s ease;
+}
+
+.scroll-arrow i {
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.scroll-arrow:hover {
+  transform: translateX(-50%) scale(1.06);
+  background: rgba(255, 255, 255, 0.16);
+}
+
+@keyframes arrow-bounce {
+
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    transform: translate(-50%, 0);
+  }
+
+  40% {
+    transform: translate(-50%, 10px);
+  }
+
+  60% {
+    transform: translate(-50%, 5px);
+  }
+}
+
+/* ==========================================================
+  7) CARDS / GRIDS (si las usás en otras páginas)
+========================================================== */
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+  color: #111;
+}
+
+.card h3 {
+  font-size: 18px;
+  margin: 0 0 4px;
+}
+
+.card p {
+  font-size: 14px;
+  color: #555;
+  margin: 0 0 4px;
+}
+
+.spot-card img {
+  width: 100%;
+  border-radius: 10px;
+  margin-bottom: 8px;
+}
+
+.event-card .card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* ==========================================================
+  8) SPONSOR MARQUEE (UNIFICADO)
+  - Duplica el set (en HTML o por JS) para loop perfecto
+========================================================== */
+
+.sponsor-bar {
+  width: 100%;
+  background: #000;
+  border-top: 1px solid #111;
+  padding: 18px 0;
+  overflow: hidden;
+}
+
+.sponsor-marquee {
+  /* width: 100%; */
+  max-width: var(--container);
+  overflow: hidden;
+  /* display: flex;
+  justify-content: center; */
+  margin: 0 auto;
+}
+
+.sponsor-track {
+  display: flex;
+  align-items: center;
+  gap: 56px;
+  width: max-content;
+  padding: 0 24px;
+
+  animation: sponsor-scroll 22s linear infinite;
+  will-change: transform;
+
+}
+
+.img-link {
+  display: inline-flex;
+}
+
+.sponsor-bar img {
+  height: 78px;
+  width: auto;
+  object-fit: contain;
+  opacity: .9;
+  transition: transform .25s ease, opacity .25s ease;
+}
+
+.img-link:hover img {
+  transform: scale(1.06);
+  opacity: 1;
+}
+
+@keyframes sponsor-scroll {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.sponsor-marquee:hover .sponsor-track {
+  animation-play-state: paused;
+}
+
+
+/* ==========================================================
+  9) FOOTER
+========================================================== */
+
+.footer {
+  background: #111;
+  color: #aaa;
+  padding: 18px 0;
+  font-size: 13px;
+}
+
+.footer-inner {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 16px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.footer-links {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.footer-links a {
+  color: #ccc;
+  margin-left: 0px;
+}
+
+/* ==========================================================
+  10) AUTH (LOGIN / REGISTER)
+========================================================== */
+
+.auth-body {
+  min-height: 100vh;
+  margin: 0;
+  background-image: url("../images/background.jpg");
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: -1;
+}
+
+.auth-container {
+  background-color: rgba(0, 0, 0, 0.75);
+  border-radius: 16px;
+  padding: 32px 28px;
+  width: 100%;
+  max-width: 380px;
+  color: #fff;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.auth-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0 0 16px;
+}
+
+.auth-form .field {
+  margin-bottom: 16px;
+}
+
+.auth-form label {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.auth-form input,
+.auth-form select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: none;
+  background: #333;
+  color: #fff;
+  font-size: 14px;
+}
+
+.auth-form input:focus,
+.auth-form select:focus {
+  outline: 2px solid #ff6f00;
+}
+
+.auth-extra {
+  font-size: 13px;
+  margin-top: 12px;
+}
+
+/* ==========================================================
+  11) DASHBOARD (base)
+========================================================== */
+
+.dashboard-layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  min-height: 100vh;
+}
+
+.sidebar {
+  background: #111827;
+  color: #e5e7eb;
+  padding: 20px 18px;
+}
+
+.sidebar-logo {
+  font-weight: 700;
+  margin-bottom: 18px;
+}
+
+.sidebar-nav {
+  list-style: none;
+  padding: 0;
+  margin-top: 10px;
+}
+
+.sidebar-nav li {
+  margin-bottom: 8px;
+}
+
+.sidebar-nav a {
+  display: block;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.sidebar-nav a:hover,
+.sidebar-nav a.active {
+  background: #1f2937;
+}
+
+.dashboard-main {
+  background: #f5f5f5;
+  padding: 20px;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.dashboard-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.stats-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.stats-card h3 {
+  font-size: 14px;
+  color: #555;
+  margin: 0;
+}
+
+.stats-card .big {
+  font-size: 26px;
+  font-weight: 800;
+}
+
+/* Config */
+.config-form .field {
+  margin-bottom: 16px;
+}
+
+.config-form input[type="text"],
+.config-form input[type="color"] {
+  width: 100%;
+  max-width: 320px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+/* Stats grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.stats-box {
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+}
+
+/* ==========================================================
+  12) FAQ + CONTACT (Home)
+  - Si tenés la sección combinada, esto la estiliza
+========================================================== */
+
+.section-faq-contact {
+  background: var(--bg-dark);
+  color: #fff;
+}
+
+.section-faq-contact h2 {
+  color: var(--lime);
+}
+
+/* FAQ */
+.faq-list {
+  max-width: 800px;
+  margin: 0 auto 60px;
+}
+
+.faq-item {
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  margin-bottom: 12px;
+  padding: 14px 18px;
+  cursor: pointer;
+}
+
+.faq-item summary {
+  font-weight: 700;
+  font-size: 16px;
+  list-style: none;
+}
+
+.faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-item p {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #ddd;
+  line-height: 1.5;
+}
+
+/* CONTACT */
+.contact-box {
+  max-width: 600px;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 18px;
+  padding: 24px;
+  backdrop-filter: blur(10px);
+}
+
+.contact-text {
+  margin-bottom: 20px;
+  color: #ccc;
+  font-size: 14px;
+}
+
+.contact-form .field {
+  margin-bottom: 14px;
+}
+
+.contact-form label {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 4px;
+  color: #aaa;
+}
+
+.contact-form input,
+.contact-form textarea {
+  width: 100%;
+  border-radius: 10px;
+  border: none;
+  padding: 10px 12px;
+  background: #111;
+  color: #fff;
+  font-size: 14px;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+  outline: 2px solid var(--lime);
+}
+
+/* ==========================================================
+  13) LEGAL PAGES (Privacidad / Términos)
+========================================================== */
+
+.legal-hero {
+  position: relative;
+  overflow: hidden;
+  min-height: 50svh;
+  padding-top: var(--topbar-h);
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+}
+
+.legal-hero .hero-media {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+}
+
+.legal-hero .hero-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center 35%;
+  filter: grayscale(1) contrast(1.05) brightness(0.9);
+}
+
+.legal-hero .hero-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(to bottom,
+      rgba(0, 0, 0, 0.25) 0%,
+      rgba(0, 0, 0, 0.65) 60%,
+      rgba(0, 0, 0, 0.85) 100%);
+}
+
+.legal-hero-inner {
+  /* max-width: var(--container);
+  padding: 28px 16px 22px;*/
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 34px 16px 28px;
+  color: #fff;
+}
+
+.legal-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+.legal-title {
+  margin: 10px 0 6px;
+  font-size: clamp(28px, 4.5vw, 54px);
+  line-height: 1.05;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.legal-subtitle {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.85);
+  max-width: 70ch;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.legal-page {
+  background: var(--bg-dark);
+  color: #e9e9ee;
+  padding: 38px 16px 70px;
+}
+
+.legal-container {
+  max-width: 950px;
+  margin: 0 auto;
+}
+
+.legal-card {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 18px;
+  padding: 22px;
+  backdrop-filter: blur(10px);
+}
+
+.legal-card h2 {
+  margin: 22px 0 8px;
+  font-size: 18px;
+  color: var(--lime);
+}
+
+.legal-card p,
+.legal-card li {
+  color: rgba(233, 233, 238, 0.85);
+  line-height: 1.65;
+  font-size: 14px;
+}
+
+.legal-card ul {
+  padding-left: 18px;
+  margin: 10px 0 0;
+}
+
+.legal-divider {
+  margin: 18px 0;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+}
+
+/* Contact form dentro del legal */
+.legal-form {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.legal-form label {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.legal-form input,
+.legal-form select,
+.legal-form textarea {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(0, 0, 0, 0.35);
+  color: #fff;
+}
+
+.legal-form input::placeholder,
+.legal-form textarea::placeholder {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.legal-form input:focus,
+.legal-form select:focus,
+.legal-form textarea:focus {
+  outline: 2px solid var(--lime);
+  border-color: transparent;
+}
+
+/* ==========================================================
+  14) PÁGINAS INTERNAS (STATIC)
+========================================================== */
+
+.page-hero {
+  min-height: 50vh;
+  padding-top: calc(var(--topbar-h) + 48px);
+  text-align: center;
+  background: linear-gradient(to bottom,
+      rgba(0, 0, 0, 0.65),
+      rgba(0, 0, 0, 0.85));
+  color: #fff;
+}
+
+.legal-hero .hero-media {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+
+  /* 🔥 IMAGEN AQUÍ */
+  background-image: url("../images/homepage/about.webp");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Overlay se mantiene */
+.legal-hero .hero-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(to bottom,
+      rgba(0, 0, 0, 0.25),
+      rgba(0, 0, 0, 0.75));
+}
+
+/* Texto */
+.legal-hero-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 28px 16px 22px;
+  color: #fff;
+}
+
+.page-hero h1 {
+  font-size: clamp(36px, 6vw, 64px);
+  margin: 0 0 10px;
+}
+
+.page-hero p {
+  font-size: 16px;
+  opacity: 0.85;
+  margin: 0;
+}
+
+.page-content {
+  padding: 80px 16px;
+  display: flex;
+  justify-content: center;
+}
+
+.page-card {
+  max-width: 720px;
+  background: #fff;
+  border-radius: 14px;
+  padding: 32px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+  line-height: 1.7;
+  color: #111;
+}
+
+.feature-list {
+  margin-top: 24px;
+  padding-left: 0;
+  list-style: none;
+}
+
+.feature-list li {
+  margin-bottom: 10px;
+  font-size: 15px;
+}
+
+details {
+  margin-top: 16px;
+}
+
+summary {
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.contact-form {
+  display: grid;
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.contact-form input,
+.contact-form textarea {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+/* ==========================================================
+  15) FIX: ANCHORS con topbar fixed
+========================================================== */
+
+section[id] {
+  scroll-margin-top: 0;
+  /* calc(var(--topbar-h) + 14px); */
+
+}
+
+/* ==========================================================
+  16) RESPONSIVE
+========================================================== */
+
+@media (max-width: 900px) {
+  .topbar-menu {
+    display: none;
+  }
+
+  .topbar .lang-dropdown {
+    display: none !important;
+  }
+
+  .nav-toggle {
+    display: inline-flex;
+    flex-direction: column;
+  }
+
+  .hero-inner {
+    padding-top: calc(var(--topbar-h) + 10px);
+  }
+
+  .card-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .dashboard-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    display: none;
+  }
+
+  .legal-hero .hero-image {
+    object-position: center 30%;
+  }
+
+  .section-about {
+    background-position: center 40%;
+    /* prueba 35%-55% */
+    min-height: 100svh;
+  }
+
+  .footer-inner {
+    flex-wrap: wrap;
+  }
+
+  .footer-links {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 600px) {
+  .topbar-search-inner {
+    display: none;
+  }
+
+  .topbar .lang-dropdown {
+    display: none !important;
+  }
+
+  .hero-content {
+    margin-top: 40px;
+  }
+
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-cards,
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .topbar-logo span {
+    font-size: 18px;
+    letter-spacing: 0.08em;
+  }
+
+  .topbar-logo img {
+    height: 40px;
+  }
+
+  .footer-inner {
+    flex-wrap: wrap;
+  }
+
+  .footer-links {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+}
+
+/* ==========================================================
+  17) FONDOS POR SECCIÓN — 3 VERSIONES (elige UNA)
+  - Colocá tus imágenes en: /images/sections/
+  - Cambiá los filenames y listo
+========================================================== */
+
+/* ===== VERSION A: Cinematic Night Skate ===== */
+.section-about {
+  --bg: url("../images/homepage/about.webp");
+}
+
+.section-spots {
+  --bg: url("../images/homepage/spots.webp");
+}
+
+.section-events {
+  --bg: url("../images/homepage/events.webp");
+}
+
+.section-faq {
+  --bg: url("../images/homepage/faq.webp");
+}
+
+.section-contact {
+  --bg: url("../images/homepage/contact.webp");
+}
+
+/* ===== VERSION B: Central America (más cálido) ===== */
+
+.section::before {
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.78)),
+    var(--bg, linear-gradient(180deg, #14141a, #0b0b0f));
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 50%;
+  background-attachment: scroll;
+}
+
+/* .section-about {
+  --bg: url("../images/homepage/about.webp");
+}
+
+.section-spots {
+  --bg: url("../images/homepage/spots.jpg");
+}
+
+.section-events {
+  --bg: url("../images/homepage/events.png");
+}
+
+.section-faq {
+  --bg: url("../images/homepage/faq.jpg");
+}
+
+.section-contact {
+  --bg: url("../images/homepage/contact.jpg");
+} */
+
+/* ===== VERSION C: Editorial B/W + lime ===== */
+
+.section::before {
+  filter: grayscale(1) contrast(1.06);
+}
+
+.section h2 {
+  color: var(--lime);
+}

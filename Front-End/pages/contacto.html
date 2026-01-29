@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contacto | Callejeando</title>
+
+  <link rel="stylesheet" href="../styles/styles.css" />
+  <link rel="icon" href="../images/icons/pushing.png" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+</head>
+
+<body class="home-body">
+  <!-- ================= TOPBAR ================= -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a href="../index.html" class="topbar-logo" aria-label="Callejeando Home">
+        <img src="../images/icons/logo.png" alt="Callejeando" class="logo-wordmark" />
+      </a>
+
+      <!-- Menú desktop -->
+      <ul class="topbar-menu">
+        <li><a href="../pages/acerca.html" data-i18n="nav.about">About Us</a></li>
+        <li><a href="../pages/spots.html" data-i18n="nav.spots">Spots</a></li>
+        <li><a href="../pages/eventos.html" data-i18n="nav.events">Events</a></li>
+        <li><a href="../pages/faqs.html" data-i18n="nav.faq">FAQS</a></li>
+        <li><a href="../pages/contacto.html" data-i18n="nav.contact">Contact Us</a></li>
+      </ul>
+
+      <!-- Busqueda -->
+      <div class="topbar-search">
+        <div class="topbar-search-inner">
+          <input type="text" placeholder="Spots or Events" data-i18n-placeholder="search.placeholder" />
+
+          <div class="search-icon" aria-hidden="true">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Idioma + Auth -->
+      <div class="topbar-right">
+        <!-- Idioma dropdown (SOLO desktop) -->
+        <div class="lang-dropdown">
+          <button class="lang-btn">
+            <img src="../images/icons/world.png" class="flag" alt="ES" />
+            <span></span>
+          </button>
+
+          <div class="lang-menu">
+            <a href="#" data-lang="es"><img src="../images/icons/es.webp" class="flag" /> Español</a>
+            <a href="#" data-lang="en"><img src="../images/icons/en.webp" class="flag" /> English</a>
+          </div>
+        </div>
+
+        <!-- Hamburger mobile -->
+        <button class="nav-toggle" id="navToggle" aria-label="Menú">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============== OVERLAY + MOBILE MENU ============== -->
+  <div class="mobile-overlay" id="mobileOverlay"></div>
+  <div class="mobile-menu" id="mobileMenu">
+    <div class="mobile-menu-header">
+      <!-- LOGO -->
+      <div class="mobile-header-left">
+        <img src="../images/icons/logo.png" alt="Callejeando" />
+      </div>
+
+      <div id="mobileUserName" class="mobile-username"></div>
+
+      <!-- LOGIN + IDIOMA + CLOSE -->
+      <div class="mobile-header-actions">
+        <!-- IDIOMA DROPDOWN -->
+        <div class="mobile-header-lang">
+          <button id="mobileLangTrigger">
+            <img src="../images/icons/world.png" class="flag" alt="ES" />
+            <span></span>
+            <!-- <i class="fa-solid fa-globe"></i> ▾ -->
+          </button>
+
+          <div id="mobileLangDropdown">
+            <a href="#" data-lang="es"><img src="../images/icons/es.webp" class="flag" /> Español</a>
+            <a href="#" data-lang="en"><img src="../images/icons/en.webp" class="flag" /> English</a>
+          </div>
+        </div>
+
+        <!-- CERRAR -->
+        <button id="closeMobileMenu" class="close-btn">&times;</button>
+      </div>
+    </div>
+
+    <!-- Search -->
+    <div class="mobile-search">
+      <input type="text" placeholder="Events or Code" />
+      <button class="mobile-search-btn">
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </button>
+    </div>
+    <hr />
+
+    <!-- Módulos -->
+    <ul class="mobile-modules">
+      <li><a href="../pages/acerca.html" data-i18n="nav.about">Acerca de</a></li>
+      <li><a href="../pages/spots.html" data-i18n="nav.spots">Spots</a></li>
+      <li><a href="../pages/eventos.html" data-i18n="nav.events">Eventos</a></li>
+      <li><a href="../pages/faqs.html" data-i18n="nav.faq">FAQS</a></li>
+      <li><a href="../pages/contacto.html" data-i18n="nav.contact">Contacto</a></li>
+    </ul>
+
+    <div id="dashboardHeader"></div>
+    <div id="dashboardLinks"></div>
+
+    <hr />
+  </div>
+  <header class="legal-hero">
+    <div class="hero-media">
+      <img class="hero-image" src="../images/homepage/contact.webp" alt="Skateboarding en la calle" />
+    </div>
+    <div class="hero-overlay"></div>
+
+    <div class="legal-hero-inner">
+      <div class="legal-kicker" data-i18n="header.contact">
+        📩 Callejeando / Contacto
+      </div>
+      <h1 class="legal-title" data-i18n="h1.contact">Hablemos</h1>
+      <p class="legal-subtitle" data-i18n="p.contact">
+        ¿Tienes un skatepark, un spot, un evento o una propuesta de sponsor?
+        Escríbenos y lo revisamos.
+      </p>
+    </div>
+  </header>
+
+  <main class="legal-page">
+    <div class="legal-container">
+      <div class="legal-card">
+        <h2 data-i18n="h2.contactheader">1. Enviar mensaje</h2>
+        <form class="legal-form">
+          <label data-i18n="label.name">Nombre</label>
+          <input data-i18n="input.name" type="text" placeholder="Tu Nombre" required />
+
+          <label data-i18n="label.email">Email</label>
+          <input type="email" placeholder="mail@callejeando.com" required />
+
+          <label data-i18n="label.motivo">Motivo</label>
+          <select>
+            <option value="" data-i18n="option.reason">
+              Selecciona una opción
+            </option>
+            <option data-i18n="option.firstreason">Reportar Spot</option>
+            <option data-i18n="option.secondreason">Registrar Evento</option>
+            <option data-i18n="option.thirdreason">Ser Patrocinador</option>
+            <option data-i18n="option.fourthreason">Soporte</option>
+          </select>
+
+          <label data-i18n="label.subject">Mensaje</label>
+          <textarea rows="5" placeholder="..."></textarea>
+
+          <button class="btn btn-primary" data-i18n="button.send" type="submit">
+            Enviar
+          </button>
+        </form>
+
+        <h2>2. Nota</h2>
+        <p>Esta es una versión base.</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <p data-i18n="p.footer">© 2026 Callejeando. All rights reserved.</p>
+      <div class="footer-links">
+        <a href="../p terminos.html" data-i18n="a.terminos">Terms and Conditions</a>
+        <a href="../p privacidad.html" data-i18n="a.privacidad">Privacy</a>
+        <a href="../p contacto.html" data-i18n="a.contacto">ContactUs</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/main.js"></script>
+  <script src="../js/i18n.js"></script>
+</body>
+
+</html>
