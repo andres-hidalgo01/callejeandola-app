@@ -4,10 +4,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>About | Callejeando</title>
+  <title data-i18n="title.about">About us| Callejeando</title>
 
-  <link rel="stylesheet" href="../styles/styles.css" />
   <link rel="icon" href="../images/icons/pushing.png" />
+  <link rel="stylesheet" href="../styles/styles.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 </head>
 
@@ -19,31 +19,26 @@
         <img src="../images/icons/logo.png" alt="Callejeando" class="logo-wordmark" />
       </a>
 
-      <!-- Menú desktop -->
       <ul class="topbar-menu">
-        <li><a href="../pages/acerca.html" data-i18n="nav.about">About Us</a></li>
+        <li><a href="../pages/acerca.html" data-i18n="nav.about" aria-current="page">About Us</a></li>
         <li><a href="../pages/spots.html" data-i18n="nav.spots">Spots</a></li>
         <li><a href="../pages/eventos.html" data-i18n="nav.events">Events</a></li>
         <li><a href="../pages/faqs.html" data-i18n="nav.faq">FAQS</a></li>
         <li><a href="../pages/contacto.html" data-i18n="nav.contact">Contact Us</a></li>
       </ul>
 
-      <!-- Busqueda -->
       <div class="topbar-search">
         <div class="topbar-search-inner">
           <input type="text" placeholder="Spots or Events" data-i18n-placeholder="search.placeholder" />
-
           <div class="search-icon" aria-hidden="true">
             <i class="fa-solid fa-magnifying-glass"></i>
           </div>
         </div>
       </div>
 
-      <!-- Idioma + Auth -->
       <div class="topbar-right">
-        <!-- Idioma dropdown (SOLO desktop) -->
         <div class="lang-dropdown">
-          <button class="lang-btn">
+          <button class="lang-btn" type="button" aria-label="Change language">
             <img src="../images/icons/world.png" class="flag" alt="ES" />
             <span></span>
           </button>
@@ -54,7 +49,6 @@
           </div>
         </div>
 
-        <!-- Hamburger mobile -->
         <button class="nav-toggle" id="navToggle" aria-label="Menú">
           <span></span><span></span><span></span>
         </button>
@@ -66,18 +60,15 @@
   <div class="mobile-overlay" id="mobileOverlay"></div>
   <div class="mobile-menu" id="mobileMenu">
     <div class="mobile-menu-header">
-      <!-- LOGO -->
       <div class="mobile-header-left">
         <img src="../images/icons/logo.png" alt="Callejeando" />
       </div>
 
       <div id="mobileUserName" class="mobile-username"></div>
 
-      <!-- LOGIN + IDIOMA + CLOSE -->
       <div class="mobile-header-actions">
-        <!-- IDIOMA DROPDOWN -->
         <div class="mobile-header-lang">
-          <button id="mobileLangTrigger">
+          <button id="mobileLangTrigger" type="button" aria-label="Change language">
             <img src="../images/icons/world.png" class="flag" alt="ES" />
             <span></span>
           </button>
@@ -88,23 +79,20 @@
           </div>
         </div>
 
-        <!-- CERRAR -->
-        <button id="closeMobileMenu" class="close-btn">&times;</button>
+        <button id="closeMobileMenu" class="close-btn" type="button">&times;</button>
       </div>
     </div>
 
-    <!-- Search -->
     <div class="mobile-search">
-      <input type="text" placeholder="Events or Code" />
-      <button class="mobile-search-btn">
+      <input type="text" placeholder="Spots or Events" data-i18n-placeholder="search.placeholder" />
+      <button class="mobile-search-btn" type="button" aria-label="Search">
         <i class="fa-solid fa-magnifying-glass"></i>
       </button>
     </div>
     <hr />
 
-    <!-- Módulos -->
     <ul class="mobile-modules">
-      <li><a href="../pages/acerca.html" data-i18n="nav.about">Acerca de</a></li>
+      <li><a href="../pages/acerca.html" data-i18n="nav.about" aria-current="page">Acerca de</a></li>
       <li><a href="../pages/spots.html" data-i18n="nav.spots">Spots</a></li>
       <li><a href="../pages/eventos.html" data-i18n="nav.events">Eventos</a></li>
       <li><a href="../pages/faqs.html" data-i18n="nav.faq">FAQS</a></li>
@@ -113,7 +101,6 @@
 
     <div id="dashboardHeader"></div>
     <div id="dashboardLinks"></div>
-
     <hr />
   </div>
 
@@ -125,56 +112,172 @@
     <div class="hero-overlay"></div>
 
     <div class="legal-hero-inner">
-      <div class="legal-kicker" data-i18n="header.about">
-        🛹 Callejeando / About
-      </div>
+      <div class="legal-kicker" data-i18n="header.about">🛹 Callejeando / About</div>
       <h1 class="legal-title" data-i18n="h2.about">¿Qué es Callejeando?</h1>
-      <p class="legal-subtitle" data-i18n="p.description">
-        Una plataforma para conectar la escena del skateboarding en
-        Centroamérica: spots, parks y eventos.
-      </p>
+
+      <!-- Chips / highlights -->
+      <div class="about-chips" aria-label="Highlights">
+        <span class="about-chip">
+          <i class="fa-solid fa-location-dot"></i>
+          <span data-i18n="about.spots">Lugares</span>
+        </span>
+
+        <span class="about-chip">
+          <i class="fa-solid fa-calendar-days"></i>
+          <span data-i18n="about.events">Eventos</span>
+        </span>
+
+        <span class="about-chip">
+          <i class="fa-solid fa-trophy"></i>
+          <span data-i18n="about.competitions">Competencias</span>
+        </span>
+
+        <span class="about-chip">
+          <i class="fa-solid fa-users"></i>
+          <span data-i18n="about.community">Comunidad</span>
+        </span>
+      </div>
+
     </div>
   </header>
 
   <!-- ============== CONTENT ============== -->
   <main class="legal-page">
     <div class="legal-container">
-      <div class="legal-card">
-        <h2 data-i18n="h2.vision">1. Vision</h2>
-        <p data-i18n="p.vision">
-          Callejeando was created so that skaters from Central America have a
-          place to find spots and skateparks, find out about events and
-          compete with real organization.
-        </p>
+      <section class="legal-card about-card">
+        <header class="about-exec">
+          <h2 data-i18n="about.h2">Callejeando</h2>
+          <p class="about-muted" data-i18n="about.p">
+            Una plataforma para la escena skate en Centroamérica que centraliza
+            spots reales> y eventos con estructura,ofreciendo información clara,
+            actualizada y enfocada en la comunidad.
+          </p>
+        </header>
 
-        <h2 data-i18n="h2.whatcanyoudo">2. Qué puedes hacer?</h2>
-        <ul>
-          <li data-i18n="li.explore">
-            Explore <strong>skateparks</strong> and
-            <strong>street spots</strong>.
-          </li>
-          <li data-i18n="li.explored">
-            Ver <strong>eventos y competencias</strong> próximos por país.
-          </li>
-          <!-- <li>
-              Inscribirte como <strong>competidor</strong> o postularte como
-              <strong>juez</strong>.
-            </li> -->
-        </ul>
+        <hr class="about-divider" />
 
-        <h2 data-i18n="h2.focus">3. Central America Focus</h2>
-        <p data-i18n="p.about">
-          The app starts with Central America to respect the local reality:
-          real spots, real names, local admins, and nearby events.
-        </p>
+        <section class="about-two-col">
+          <div class="about-panel">
+            <h3 data-i18n="h3.whatwedefend">Lo que defendemos</h3>
+            <p class="about-muted" data-i18n="p.whatwedefend">
+              Respeto al spot, información útil y comunidad por delante. Si algo no ayuda a salir a patinar, no estorba
+              aquí.
+            </p>
+          </div>
+          <div class="about-panel">
+            <h3 data-i18n="h3.whynow">Por qué ahora</h3>
+            <p class="about-muted" data-i18n="p.whynow">
+              La escena crece, pero la información está regada. Callejeando ordena lo esencial para que más gente
+              llegue, participe y se quede.
+            </p>
+          </div>
+        </section>
 
-        <h2 data-i18n="h2.roles">3. Roles</h2>
-        <ul>
-          <li data-i18n="li.roles.competitor">Competidor: se inscribe a eventos y participa.</li>
-          <li data-i18n="li.roles.judge">Juez: califica en eventos asignados.</li>
-          <li data-i18n="li.roles.admin">Admin local gestiona y valida contenido por país.</li>
-        </ul>
-      </div>
+        <hr class="about-divider" />
+
+        <section class="about-section">
+          <h2 data-i18n="h2.essential">Lo esencial</h2>
+          <p data-i18n="p.essential">
+            Callejeando centraliza spots reales y eventos activospara la escena skate en Centroamérica.
+            La información se mantiene útil mediante validación local, actualización constante y estructura clara en
+            competencias.
+          </p>
+
+          <div class="about-pillers">
+            <article class="about-feature">
+              <div class="about-icon"><i class="fa-solid fa-location-dot"></i></div>
+              <h3 data-i18n="about.spots">Lugares</h3>
+              <p data-i18n="p.spot">Ubicación y datos prácticos para patinar sin perder tiempo.</p>
+            </article>
+
+            <article class="about-feature">
+              <div class="about-icon"><i class="fa-solid fa-calendar-days"></i></div>
+              <h3 data-i18n="about.events">Eventos</h3>
+              <p data-i18n="p.events">Fechas, formato y lugar claros para participar.</p>
+            </article>
+
+            <article class="about-feature">
+              <div class="about-icon"><i class="fa-solid fa-shield"></i></div>
+              <h3 data-i18n="about.reliability">Confiabilidad</h3>
+              <p data-i18n="p.reliability">Validación local y actualización continua.</p>
+            </article>
+          </div>
+        </section>
+
+        <hr class="about-divider" />
+
+        <section class="about-section">
+          <h2 data-i18n="h2.scene">Para la escena</h2>
+          <div class="about-audience">
+            <div class="about-audience-item">
+              <i class="fa-solid fa-person-skating"></i>
+              <div>
+                <h4>Skaters</h4>
+                <p data-i18n="p.skaters">Descubrir spots, guardar favoritos, ir a eventos.</p>
+              </div>
+            </div>
+            <div class="about-audience-item">
+              <i class="fa-solid fa-users"></i>
+              <div>
+                <h4>Crews</h4>
+                <p data-i18n="p.crews">Conectar y mover sesiones en la ciudad.</p>
+              </div>
+            </div>
+            <div class="about-audience-item">
+              <i class="fa-solid fa-bullhorn"></i>
+              <div>
+                <h4 data-i18n="about.organizers">Organizadores</h4>
+                <p data-i18n="p.organizers">Más alcance con info clara y ordenada.</p>
+              </div>
+            </div>
+            <div class="about-audience-item">
+              <i class="fa-solid fa-store"></i>
+              <div>
+                <h4 data-i18n="about.skateshops">Tiendas</h4>
+                <p data-i18n="p.skateshops">Apoyar eventos con visibilidad sin spam.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <hr class="about-divider" />
+
+        <!-- <section class="about-section">
+          <h2 data-i18n="">Qué viene</h2>
+          <div class="about-roadmap">
+            <div class="about-road-item">
+              <span class="about-badge">01</span>
+              <div>
+                <h4>Más spots</h4>
+                <p>Mejor búsqueda, filtros y experiencia.</p>
+              </div>
+            </div>
+            <div class="about-road-item">
+              <span class="about-badge">02</span>
+              <div>
+                <h4>Más eventos</h4>
+                <p>Inscripciones y publicación más completa.</p>
+              </div>
+            </div>
+            <div class="about-road-item">
+              <span class="about-badge">03</span>
+              <div>
+                <h4>Ranking</h4>
+                <p>Jueces, scores y resultados.</p>
+              </div>
+            </div>
+          </div>
+        </section> -->
+
+        <section class="about-cta">
+          <div class="about-cta-text">
+            <h3 data-i18n="about.footer">Sumá un spot / publicá un evento</h3>
+            <p data-i18n="p.about">Si es real y sirve, va. Contáctanos para agregarlo.</p>
+          </div>
+          <a class="about-cta-btn" href="../pages/contacto.html" data-i18n="a.about">Contactenos</a>
+        </section>
+
+      </section>
     </div>
   </main>
 
@@ -185,7 +288,7 @@
       <div class="footer-links">
         <a href="../pages/terminos.html" data-i18n="a.terminos">Terms and Conditions</a>
         <a href="../pages/privacidad.html" data-i18n="a.privacidad">Privacy</a>
-        <a href="../pages/contacto.html" data-i18n="a.contacto">ContactUs</a>
+        <a href="../pages/contacto.html" data-i18n="a.contacto">Contact Us</a>
       </div>
     </div>
   </footer>
