@@ -46,9 +46,11 @@ const I18N = {
     "p.organizers": "Más alcance con info clara y ordenada.",
     "about.skateshops": "Tiendas",
     "p.skateshops": "Apoyar eventos con visibilidad sin spam.",
-    "about.footer": "Sumá un spot / publicá un evento",
-    "p.about": "Si es real y sirve, va. Contáctanos para agregarlo.",
-    "a.about": "Contactenos",
+    "about.cta.title": "Sumá un spot / publicá un evento",
+    "about.cta.subtitle": "Si es real y sirve, va. Ayúdanos a mantener la info actualizada.",
+    "about.cta.spots": "Explorar spots",
+    "about.cta.events": "Ver eventos",
+    "about.cta.contact": "Contáctanos",
 
     // ========= SPOTS =========
     "div.spots": "Callejeando / Lugares.",
@@ -171,7 +173,6 @@ const I18N = {
     "p.essential": "Callejeando centralizes real spots and active events for the skate scene in Central America. The information remains useful through local validation, constant updating, and a clear structure in competitions.",
     "about.spots": "Spots",
     "p.spot": "Location and practical information for skating without wasting time.",
-
     "about.events": "Events",
     "p.events": "Clear dates, format and location for participation.",
     "about.reliability": "Reliability",
@@ -183,9 +184,11 @@ const I18N = {
     "p.organizers": "Greater reach with clear and organized information.",
     "about.skateshops": "Skateshops",
     "p.skateshops": "Support events with visibility without spam.",
-    "about.footer": "Add a spot / publish an event",
-    "p.about": "If it's real and useful, it's fine. Contact us to add it.",
-    "a.about": "Contact us",
+    "about.cta.title": "Add a spot / publish an event",
+    "about.cta.subtitle": "If it's real and useful, great. Help us keep the information updated.",
+    "about.cta.spots": "Explore spots",
+    "about.cta.events": "View events",
+    "about.cta.contact": "Contact Us",
     // ====== SPOTS ======
     "div.spots": "Callejeando / Spots.",
     "h2.spots": "Street spots & Skateparks",
