@@ -50,12 +50,20 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-
 const track = document.getElementById("sponsorTrack");
 
 if (track) {
   const items = track.innerHTML;
   track.innerHTML += items; // duplica automáticamente
 }
+
+document.querySelectorAll(".filter-chip").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".filter-chip").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+  });
+});
+
+
 
 

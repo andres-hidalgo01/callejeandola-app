@@ -136,30 +136,166 @@
     </div>
   </header>
 
+  <!-- ========== MAIN ========== -->
   <main class="legal-page">
-    <div class="legal-container">
-      <div class="legal-card">
+    <div class="spotlist-wrap">
 
-        <h2 data-i18n="h2.firstitle">1. ¿Qué verás aquí?</h2>
-        <ul>
-          <li data-i18n="li.skateparks"><strong>Skateparks:</strong> bowls, rampas, obstáculos y horarios.</li>
-          <li data-i18n="li.street"><strong>Street spots:</strong> escaleras, barandas, ledges, gaps, DIY.</li>
-          <li data-i18n="li.live"><strong>LIVE:</strong> spots con actividad reciente (sesiones marcadas por usuarios).
-          </li>
-        </ul>
+      <section class="spotlist-shell">
 
-        <h2 data-i18n="h2.secondtitle">2. Spots destacados (DEMO)</h2>
-        <ul>
-          <li data-i18n="li.firstspot">Street Spot – Downtown: Escaleras · Barandas · San José</li>
-          <li data-i18n="li.secondspot">Skatepark Norte: Bowl · Rampas · Heredia</li>
-          <li data-i18n="li.thirdspot">Old School Ledge: Ledge · Manual pad · Alajuela</li>
-        </ul>
+        <!-- Top controls (iconos + selects) -->
+        <div class="spotlist-controls spotlist-controls--full">
 
-        <!-- <h2>3. Próximo paso</h2=>
-        <p>Cuando conectes tu backend, esta página puede volverse un catálogo con:
-          mapa, filtros por país/ciudad, búsqueda, y botón “Agregar spot” (solo admin).
-        </p> -->
-      </div>
+          <div class="spotlist-control">
+            <i class="fa-solid fa-location-dot"></i>
+            <input type="text" placeholder="Ciudad o país (ej. San José)" />
+          </div>
+
+          <div class="spotlist-control">
+            <i class="fa-solid fa-layer-group"></i>
+            <select>
+              <option>Todos</option>
+              <option>Skateparks</option>
+              <option>Street</option>
+            </select>
+          </div>
+
+          <div class="spotlist-control">
+            <i class="fa-solid fa-shield"></i>
+            <select>
+              <option>Estado: cualquiera</option>
+              <option>Activo</option>
+              <option>Dudoso</option>
+              <option>Cerrado</option>
+            </select>
+          </div>
+
+          <button class="spotlist-search-btn" type="button">Buscar</button>
+        </div>
+
+        <!-- Results (sin sidebar) -->
+        <section class="spotlist-results spotlist-results--solo">
+
+          <div class="spotlist-results-head">
+            <div>
+              <h3>Resultados</h3>
+              <p>Mostrando 3 spots (demo)</p>
+            </div>
+
+            <div class="spotlist-sort">
+              <span>Ordenar:</span>
+              <select>
+                <option>Relevancia</option>
+                <option>Más recientes</option>
+                <option>Mejor estado</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Item 1 -->
+          <article class="spotitem">
+            <div class="spotitem-media">
+              <img src="../images/homepage/about.webp" alt="Downtown Set" loading="lazy" />
+            </div>
+
+            <div class="spotitem-body">
+              <div class="spotitem-top">
+                <h4>Downtown Set</h4>
+                <span class="spotitem-badge street">Street</span>
+              </div>
+
+              <div class="spotitem-loc">
+                <i class="fa-solid fa-location-dot"></i> San José
+              </div>
+
+              <p class="spotitem-desc">
+                Escaleras con baranda y buen piso. Ideal para líneas cortas. Recomendado en la tarde.
+              </p>
+
+              <div class="spotitem-meta">
+                <span class="spotitem-pill active"><i class="fa-solid fa-circle-check"></i> Activo</span>
+                <span class="spotitem-muted">Actualizado: 2026-02-01</span>
+              </div>
+            </div>
+
+            <div class="spotitem-actions">
+              <a class="spotitem-btn" href="../pages/spot-detalle.html">Ver detalles</a>
+            </div>
+          </article>
+
+          <!-- Item 2 -->
+          <article class="spotitem">
+            <div class="spotitem-media">
+              <img src="../images/homepage/about.webp" alt="Skatepark Norte" loading="lazy" />
+            </div>
+
+            <div class="spotitem-body">
+              <div class="spotitem-top">
+                <h4>Skatepark Norte</h4>
+                <span class="spotitem-badge park">Skatepark</span>
+              </div>
+
+              <div class="spotitem-loc">
+                <i class="fa-solid fa-location-dot"></i> Heredia
+              </div>
+
+              <p class="spotitem-desc">
+                Bowl y zona street. Espacio abierto ideal para sesiones largas y aprender transiciones.
+              </p>
+
+              <div class="spotitem-meta">
+                <span class="spotitem-pill active"><i class="fa-solid fa-circle-check"></i> Activo</span>
+                <span class="spotitem-muted">Actualizado: 2026-01-20</span>
+              </div>
+            </div>
+
+            <div class="spotitem-actions">
+              <a class="spotitem-btn" href="../pages/spot-detalle.html">Ver detalles</a>
+            </div>
+          </article>
+
+          <!-- Item 3 -->
+          <article class="spotitem">
+            <div class="spotitem-media">
+              <img src="../images/homepage/about.webp" alt="Old DIY Ledge" loading="lazy" />
+            </div>
+
+            <div class="spotitem-body">
+              <div class="spotitem-top">
+                <h4>Old DIY Ledge</h4>
+                <span class="spotitem-badge street">Street</span>
+              </div>
+
+              <div class="spotitem-loc">
+                <i class="fa-solid fa-location-dot"></i> Alajuela
+              </div>
+
+              <p class="spotitem-desc">
+                Spot reportado como removido / no patinable. Útil como referencia histórica de la escena.
+              </p>
+
+              <div class="spotitem-meta">
+                <span class="spotitem-pill closed"><i class="fa-solid fa-triangle-exclamation"></i> Cerrado</span>
+                <span class="spotitem-muted">Actualizado: 2025-12-10</span>
+              </div>
+            </div>
+
+            <div class="spotitem-actions">
+              <a class="spotitem-btn" href="../pages/spot-detalle.html">Ver detalles</a>
+            </div>
+          </article>
+
+          <!-- CTA -->
+          <section class="spotlist-cta">
+            <div>
+              <h3>¿Quieres agregar o actualizar un spot?</h3>
+              <p>Envíanos la info desde Contacto para mantener el catálogo real.</p>
+            </div>
+            <a class="about-cta-btn" href="../pages/contacto.html">Ir a Contacto</a>
+          </section>
+
+        </section>
+
+      </section>
     </div>
   </main>
 

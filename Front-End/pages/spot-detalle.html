@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spot | Callejeando</title>
+
+    <link rel="stylesheet" href="../styles/styles.css" />
+    <link rel="icon" href="../images/icons/pushing.png" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+</head>
+
+<body class="home-body">
+
+    <!-- ================= TOPBAR ================= -->
+    <header class="topbar">
+        <div class="topbar-inner">
+            <a href="../index.html" class="topbar-logo" aria-label="Callejeando Home">
+                <img src="../images/icons/logo.png" alt="Callejeando" class="logo-wordmark" />
+            </a>
+
+            <!-- Menú desktop -->
+            <ul class="topbar-menu">
+                <li><a href="../pages/acerca.html" data-i18n="nav.about">About Us</a></li>
+                <li><a href="../pages/spots.html" data-i18n="nav.spots">Spots</a></li>
+                <li><a href="../pages/eventos.html" data-i18n="nav.events">Events</a></li>
+                <li><a href="../pages/faqs.html" data-i18n="nav.faq">FAQS</a></li>
+                <li><a href="../pages/contacto.html" data-i18n="nav.contact">Contact Us</a></li>
+            </ul>
+
+            <!-- Busqueda -->
+            <div class="topbar-search">
+                <div class="topbar-search-inner">
+                    <input type="text" placeholder="Spots or Events" data-i18n-placeholder="search.placeholder" />
+
+                    <div class="search-icon" aria-hidden="true">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Idioma + Auth -->
+            <div class="topbar-right">
+                <!-- Idioma dropdown (SOLO desktop) -->
+                <div class="lang-dropdown">
+                    <button class="lang-btn">
+                        <img src="../images/icons/world.png" class="flag" alt="ES" />
+                        <span></span>
+                    </button>
+
+                    <div class="lang-menu">
+                        <a href="#" data-lang="es"><img src="../images/icons/es.webp" class="flag" /> Español</a>
+                        <a href="#" data-lang="en"><img src="../images/icons/en.webp" class="flag" /> English</a>
+                    </div>
+                </div>
+
+                <!-- Hamburger mobile -->
+                <button class="nav-toggle" id="navToggle" aria-label="Menú">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ============== OVERLAY + MOBILE MENU ============== -->
+    <div class="mobile-overlay" id="mobileOverlay"></div>
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu-header">
+            <div class="mobile-header-left">
+                <img src="../images/icons/logo.png" alt="Callejeando" />
+            </div>
+
+            <div id="mobileUserName" class="mobile-username"></div>
+
+            <div class="mobile-header-actions">
+                <div class="mobile-header-lang">
+                    <button id="mobileLangTrigger">
+                        <img src="../images/icons/world.png" class="flag" alt="ES" />
+                        <span></span>
+                    </button>
+
+                    <div id="mobileLangDropdown">
+                        <a href="#" data-lang="es"><img src="../images/icons/es.webp" class="flag" /> Español</a>
+                        <a href="#" data-lang="en"><img src="../images/icons/en.webp" class="flag" /> English</a>
+                    </div>
+                </div>
+
+                <button id="closeMobileMenu" class="close-btn">&times;</button>
+            </div>
+        </div>
+
+        <div class="mobile-search">
+            <input type="text" placeholder="Buscar" />
+            <button class="mobile-search-btn">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+        </div>
+
+        <hr />
+
+        <ul class="mobile-modules">
+            <li><a href="../pages/acerca.html">Acerca de</a></li>
+            <li><a href="../pages/spots.html">Spots</a></li>
+            <li><a href="../pages/eventos.html">Eventos</a></li>
+            <li><a href="../pages/faqs.html">FAQs</a></li>
+            <li><a href="../pages/contacto.html">Contacto</a></li>
+        </ul>
+
+        <hr />
+    </div>
+
+    <!-- ================= HERO / COVER ================= -->
+    <header class="legal-hero">
+        <div class="hero-media">
+            <!-- usa la foto del spot o una cover -->
+            <img class="hero-image" src="../images/homepage/spots.webp" alt="Spot Downtown Set" />
+        </div>
+
+        <div class="hero-overlay"></div>
+
+        <div class="legal-hero-inner">
+            <div class="legal-kicker">
+                CALLEJEANDO / LUGARES.
+            </div>
+
+            <!-- título: el spot -->
+            <h1 class="legal-title">Downtown Set</h1>
+
+            <!-- chips: tipo / ubicación / estado -->
+            <p class="legal-subtitle" style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;">
+                <span class="spot-chip"><i class="fa-solid fa-road"></i> Street</span>
+                <span class="spot-chip"><i class="fa-solid fa-location-dot"></i> San José</span>
+                <span class="spot-chip status active"><i class="fa-solid fa-circle-check"></i> Activo</span>
+            </p>
+
+            <!-- botones -->
+            <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:18px;">
+                <a class="spot-primary-btn" href="../pages/contacto.html">
+                    <i class="fa-solid fa-flag"></i> Reportar cambio
+                </a>
+
+                <a class="spot-secondary-btn" href="../pages/spots.html">
+                    <i class="fa-solid fa-arrow-left"></i> Volver
+                </a>
+            </div>
+        </div>
+    </header>
+
+
+    <!-- ========= CONTENT ================= -->
+    <main class="legal-page">
+        <div class="legal-container">
+            <section class="legal-card spot-detail-card">
+
+                <!-- Resumen -->
+                <section class="spot-section">
+                    <h2>Resumen</h2>
+                    <p class="spot-muted">
+                        Escaleras con baranda y buen piso. Spot ideal para líneas cortas. Recomendado en la tarde por
+                        luz y flujo.
+                    </p>
+                </section>
+
+                <hr class="about-divider" />
+
+                <!-- Info rápida -->
+                <section class="spot-section">
+                    <h2>Info rápida</h2>
+
+                    <div class="spot-kpi-grid">
+                        <div class="spot-kpi">
+                            <div class="spot-kpi-icon"><i class="fa-solid fa-clock"></i></div>
+                            <div>
+                                <h4>Mejor hora</h4>
+                                <p>Tarde (4pm – 7pm)</p>
+                            </div>
+                        </div>
+
+                        <div class="spot-kpi">
+                            <div class="spot-kpi-icon"><i class="fa-solid fa-person-walking"></i></div>
+                            <div>
+                                <h4>Tráfico</h4>
+                                <p>Medio (evitar hora pico)</p>
+                            </div>
+                        </div>
+
+                        <div class="spot-kpi">
+                            <div class="spot-kpi-icon"><i class="fa-solid fa-shield"></i></div>
+                            <div>
+                                <h4>Seguridad</h4>
+                                <p>Normal (ser discreto)</p>
+                            </div>
+                        </div>
+
+                        <div class="spot-kpi">
+                            <div class="spot-kpi-icon"><i class="fa-solid fa-wrench"></i></div>
+                            <div>
+                                <h4>Condición</h4>
+                                <p>Buen piso / baranda estable</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <hr class="about-divider" />
+
+                <!-- Galería -->
+                <section class="spot-section">
+                    <h2>Fotos</h2>
+                    <div class="spot-gallery">
+                        <img src="../images/homepage/about.webp" alt="Foto del spot 1" loading="lazy" />
+                        <img src="../images/homepage/about.webp" alt="Foto del spot 2" loading="lazy" />
+                        <img src="../images/homepage/about.webp" alt="Foto del spot 3" loading="lazy" />
+                    </div>
+                    <p class="spot-hint">
+                        Tip: cuando tengas fotos reales, esta sección hace que la página se sienta “definitiva”.
+                    </p>
+                </section>
+
+                <hr class="about-divider" />
+
+                <!-- Reseña corta -->
+                <section class="spot-section">
+                    <h2>Reseña</h2>
+                    <div class="spot-review-card">
+                        <p>
+                            Spot rápido y directo. La baranda permite trucos constantes y hay espacio para entrar y
+                            salir.
+                            Si hay gente, respetar el paso y evitar bloquear áreas.
+                        </p>
+
+                        <div class="spot-review-tags">
+                            <span class="spot-tag">Rails</span>
+                            <span class="spot-tag">Stairs</span>
+                            <span class="spot-tag">Tech</span>
+                        </div>
+                    </div>
+                </section>
+
+                <hr class="about-divider" />
+
+                <!-- Estado + actualización -->
+                <section class="spot-section">
+                    <h2>Estado y actualización</h2>
+
+                    <div class="spot-status-row">
+                        <div class="spot-status-box">
+                            <h4>Estado actual</h4>
+                            <p><span class="spot-status-pill active">Activo</span></p>
+                        </div>
+
+                        <div class="spot-status-box">
+                            <h4>Última actualización</h4>
+                            <p>2026-02-01</p>
+                        </div>
+
+                        <div class="spot-status-box">
+                            <h4>¿Cambió algo?</h4>
+                            <p>Repórtalo para mantener la info real.</p>
+                        </div>
+                    </div>
+
+                    <div class="spot-footer-cta">
+                        <div>
+                            <h3>¿Este spot cambió o ya no existe?</h3>
+                            <p>Usa el formulario y selecciona “Reportar cambio de spot”.</p>
+                        </div>
+                        <a class="about-cta-btn" href="../pages/contacto.html">Ir a Contacto</a>
+                    </div>
+                </section>
+
+            </section>
+        </div>
+    </main>
+
+    <!-- ========== FOOTER ========== -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <p>© 2026 Callejeando. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="../pages/terminos.html">Términos</a>
+                <a href="../pages/privacidad.html">Privacidad</a>
+                <a href="../pages/contacto.html">Contacto</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/i18n.js"></script>
+
+</body>
+
+</html>
