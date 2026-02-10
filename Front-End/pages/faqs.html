@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -19,42 +19,35 @@
         <img src="../images/icons/logo.png" alt="Callejeando" class="logo-wordmark" />
       </a>
 
-      <!-- Menú desktop -->
       <ul class="topbar-menu">
-        <li><a href="../pages/acerca.html" data-i18n="nav.about">About Us</a></li>
-        <li><a href="../pages/spots.html" data-i18n="nav.spots">Spots</a></li>
-        <li><a href="../pages/eventos.html" data-i18n="nav.events">Events</a></li>
-        <li><a href="../pages/faqs.html" data-i18n="nav.faq">FAQS</a></li>
-        <li><a href="../pages/contacto.html" data-i18n="nav.contact">Contact Us</a></li>
+        <li><a href="../pages/acerca.html">Acerca de</a></li>
+        <li><a href="../pages/spots.html">Lugares</a></li>
+        <li><a href="../pages/eventos.html">Eventos</a></li>
+        <li><a href="../pages/faqs.html">FAQs</a></li>
+        <li><a href="../pages/contacto.html">Contacto</a></li>
       </ul>
 
-      <!-- Busqueda -->
       <div class="topbar-search">
         <div class="topbar-search-inner">
-          <input type="text" placeholder="Spots or Events" data-i18n-placeholder="search.placeholder" />
-
+          <input type="text" placeholder="Spots o Eventos" />
           <div class="search-icon" aria-hidden="true">
             <i class="fa-solid fa-magnifying-glass"></i>
           </div>
         </div>
       </div>
 
-      <!-- Idioma + Auth -->
       <div class="topbar-right">
-        <!-- Idioma dropdown (SOLO desktop) -->
         <div class="lang-dropdown">
           <button class="lang-btn">
             <img src="../images/icons/world.png" class="flag" alt="ES" />
             <span></span>
           </button>
-
           <div class="lang-menu">
             <a href="#" data-lang="es"><img src="../images/icons/es.webp" class="flag" /> Español</a>
             <a href="#" data-lang="en"><img src="../images/icons/en.webp" class="flag" /> English</a>
           </div>
         </div>
 
-        <!-- Hamburger mobile -->
         <button class="nav-toggle" id="navToggle" aria-label="Menú">
           <span></span><span></span><span></span>
         </button>
@@ -66,129 +59,161 @@
   <div class="mobile-overlay" id="mobileOverlay"></div>
   <div class="mobile-menu" id="mobileMenu">
     <div class="mobile-menu-header">
-      <!-- LOGO -->
       <div class="mobile-header-left">
         <img src="../images/icons/logo.png" alt="Callejeando" />
       </div>
 
       <div id="mobileUserName" class="mobile-username"></div>
 
-      <!-- LOGIN + IDIOMA + CLOSE -->
       <div class="mobile-header-actions">
-        <!-- IDIOMA DROPDOWN -->
         <div class="mobile-header-lang">
           <button id="mobileLangTrigger">
             <img src="../images/icons/world.png" class="flag" alt="ES" />
             <span></span>
           </button>
-
           <div id="mobileLangDropdown">
             <a href="#" data-lang="es"><img src="../images/icons/es.webp" class="flag" /> Español</a>
             <a href="#" data-lang="en"><img src="../images/icons/en.webp" class="flag" /> English</a>
           </div>
         </div>
-
-        <!-- CERRAR -->
         <button id="closeMobileMenu" class="close-btn">&times;</button>
       </div>
     </div>
 
-    <!-- Search -->
     <div class="mobile-search">
-      <input type="text" placeholder="Events or Code" />
+      <input type="text" placeholder="Spots o Eventos" />
       <button class="mobile-search-btn">
         <i class="fa-solid fa-magnifying-glass"></i>
       </button>
     </div>
     <hr />
 
-    <!-- Módulos -->
     <ul class="mobile-modules">
-      <li><a href="../pages/acerca.html" data-i18n="nav.about">Acerca de</a></li>
-      <li><a href="../pages/spots.html" data-i18n="nav.spots">Spots</a></li>
-      <li><a href="../pages/eventos.html" data-i18n="nav.events">Eventos</a></li>
-      <li><a href="../pages/faqs.html" data-i18n="nav.faq">FAQS</a></li>
-      <li><a href="../pages/contacto.html" data-i18n="nav.contact">Contacto</a></li>
+      <li><a href="../pages/acerca.html">Acerca de</a></li>
+      <li><a href="../pages/spots.html">Lugares</a></li>
+      <li><a href="../pages/eventos.html">Eventos</a></li>
+      <li><a href="../pages/faqs.html">FAQs</a></li>
+      <li><a href="../pages/contacto.html">Contacto</a></li>
     </ul>
 
     <div id="dashboardHeader"></div>
     <div id="dashboardLinks"></div>
-
     <hr />
   </div>
 
+  <!-- ============== HERO ============== -->
   <header class="legal-hero">
     <div class="hero-media">
-      <img class="hero-image" src="../images/homepage/faq.webp" alt="Skateboarding en la calle" />
+      <img class="hero-image" src="../images/homepage/about.webp" alt="Preguntas frecuentes" />
     </div>
     <div class="hero-overlay"></div>
 
     <div class="legal-hero-inner">
-      <div class="legal-kicker">❓ Callejeando / FAQs</div>
-      <h1 class="legal-title" data-i18n="h1.faq">Preguntas frecuentes</h1>
-      <p class="legal-subtitle" data-i18n="p.faqdescription">
-        Respuestas rápidas sobre spots, eventos, roles y funcionamiento de la
-        app.
+      <div class="legal-kicker">CALLEJEANDO / AYUDA.</div>
+      <h1 class="legal-title">PREGUNTAS FRECUENTES.</h1>
+      <p class="legal-subtitle">
+        Respuestas rápidas sobre spots, eventos, reportes y cómo mantener la info real.
       </p>
     </div>
   </header>
 
+  <!-- ============== CONTENT ============== -->
   <main class="legal-page">
     <div class="legal-container">
-      <div class="legal-card">
-        <h2 data-i18n="h2.account">1. Cuenta</h2>
-        <ul>
-          <li data-i18n="li.firstfaq">
-            ¿Necesito cuenta? Para explorar no. Para inscribirte o ser
-            juez,sí.
-          </li>
-
-          <li data-i18n="li.secondfaq">
-            ¿Puedo cambiar de rol? Sí, pero juez/admin dependen de asignación.
-          </li>
-        </ul>
-
-        <h2>2. Spots</h2>
-        <ul>
-          <li data-i18n="li.thirdfaq">
-            ¿Qué es “LIVE”? Sesiones recientes o actividad marcada por los
-            administradores.
-          </li>
-          <li data-i18n="li.fourthfaq">
-            ¿Puedo agregar un spot? En la versión completa: sí, con validación por
-            administradores.
-          </li>
-        </ul>
-
-        <h2 data-i18n="h2.faqevent">3. Eventos</h2>
-        <ul>
-          <li data-i18n="li.fifthfaq">
-            ¿Cómo me inscribo? Desde la página de eventos o dashboard de
-            competidor.
-          </li>
-          <li data-i18n="li.sixthfaq">
-            ¿Cómo funciona un juez? Se asigna a eventos y califica desde el
-            dashboard.
-          </li>
-        </ul>
-
-        <h2 data-i18n="h2.location">4. Centroamérica</h2>
-        <p data-i18n="li.sevenfaq">
-          Empezamos por Centroamérica para construir una base sólida con la
-          escena local. La expansión se hará por etapas.
+      <section class="legal-card faq-card">
+        <h2 style="margin:0; color: var(--lime);">Lo básico</h2>
+        <p style="margin:8px 0 0; color: rgba(255,255,255,.72);">
+          Si no está aquí, escríbenos por Contacto.
         </p>
-      </div>
+
+        <div class="faq-list">
+          <details class="faq-item" open>
+            <summary>
+              <span class="faq-q"><i class="fa-solid fa-circle-question"></i> ¿Qué es Callejeando?</span>
+              <span class="faq-arrow"><i class="fa-solid fa-chevron-down"></i></span>
+            </summary>
+            <div class="faq-a">
+              Un catálogo de <strong>spots</strong> y <strong>skateparks</strong> + un calendario de
+              <strong>eventos</strong> en Centroamérica, con info clara y actualizable.
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary>
+              <span class="faq-q"><i class="fa-solid fa-flag"></i> ¿Cómo reporto que un spot ya no existe?</span>
+              <span class="faq-arrow"><i class="fa-solid fa-chevron-down"></i></span>
+            </summary>
+            <div class="faq-a">
+              Entra a <strong>Contacto</strong> y envía: nombre del spot, ciudad, qué cambió (removido / inseguro /
+              cerrado) y si puedes, links (Maps/IG) o fotos.
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary>
+              <span class="faq-q"><i class="fa-solid fa-shield"></i> ¿Qué significa “Activo / Cerrado / Por
+                confirmar”?</span>
+              <span class="faq-arrow"><i class="fa-solid fa-chevron-down"></i></span>
+            </summary>
+            <div class="faq-a">
+              <strong>Activo</strong>: se patina normalmente. <strong>Cerrado</strong>: ya no es patinable o fue
+              removido. <strong>Por confirmar</strong>: hay reportes mezclados, pendiente de verificación.
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary>
+              <span class="faq-q"><i class="fa-solid fa-rotate"></i> ¿Cómo se mantiene confiable la información?</span>
+              <span class="faq-arrow"><i class="fa-solid fa-chevron-down"></i></span>
+            </summary>
+            <div class="faq-a">
+              Con <strong>reportes de la comunidad</strong>, validación local y actualización continua. Si algo cambió,
+              se ajusta el estado y la fecha de actualización.
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary>
+              <span class="faq-q"><i class="fa-solid fa-calendar-days"></i> ¿Cómo publico o actualizo un evento?</span>
+              <span class="faq-arrow"><i class="fa-solid fa-chevron-down"></i></span>
+            </summary>
+            <div class="faq-a">
+              En <strong>Contacto</strong> envía: nombre del evento, sede, fecha/hora, formato (jam/competencia/demo),
+              reglas básicas y link de inscripción si existe.
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary>
+              <span class="faq-q"><i class="fa-solid fa-user-shield"></i> ¿Para qué sirve el dashboard por roles?</span>
+              <span class="faq-arrow"><i class="fa-solid fa-chevron-down"></i></span>
+            </summary>
+            <div class="faq-a">
+              Cuando lo conectes al backend: <strong>admin</strong> valida, <strong>juez</strong> califica,
+              <strong>competidor</strong> se inscribe y ve su estado.
+            </div>
+          </details>
+        </div>
+
+        <div class="cta-bar" style="margin-top:16px;">
+          <div class="cta-text">
+            <strong>¿No encontraste tu respuesta?</strong><br />
+            Escríbenos y te respondemos con lo necesario.
+          </div>
+          <a class="cta-btn" href="../pages/contacto.html">Ir a Contacto</a>
+        </div>
+      </section>
     </div>
   </main>
 
   <!-- ========== FOOTER ========== -->
   <footer class="footer">
     <div class="footer-inner">
-      <p data-i18n="p.footer">© 2026 Callejeando. All rights reserved.</p>
+      <p>© 2026 Callejeando. All rights reserved.</p>
       <div class="footer-links">
-        <a href="../pages/terminos.html" data-i18n="a.terminos">Terms and Conditions</a>
-        <a href="../pages/privacidad.html" data-i18n="a.privacidad">Privacy</a>
-        <a href="../pages/contacto.html" data-i18n="a.contacto">ContactUs</a>
+        <a href="../pages/terminos.html">Términos</a>
+        <a href="../pages/privacidad.html">Privacidad</a>
+        <a href="../pages/contacto.html">Contacto</a>
       </div>
     </div>
   </footer>

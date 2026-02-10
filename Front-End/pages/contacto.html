@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -19,42 +19,35 @@
         <img src="../images/icons/logo.png" alt="Callejeando" class="logo-wordmark" />
       </a>
 
-      <!-- Menú desktop -->
       <ul class="topbar-menu">
-        <li><a href="../pages/acerca.html" data-i18n="nav.about">About Us</a></li>
-        <li><a href="../pages/spots.html" data-i18n="nav.spots">Spots</a></li>
-        <li><a href="../pages/eventos.html" data-i18n="nav.events">Events</a></li>
-        <li><a href="../pages/faqs.html" data-i18n="nav.faq">FAQS</a></li>
-        <li><a href="../pages/contacto.html" data-i18n="nav.contact">Contact Us</a></li>
+        <li><a href="../pages/acerca.html">Acerca de</a></li>
+        <li><a href="../pages/spots.html">Lugares</a></li>
+        <li><a href="../pages/eventos.html">Eventos</a></li>
+        <li><a href="../pages/faqs.html">FAQs</a></li>
+        <li><a href="../pages/contacto.html">Contacto</a></li>
       </ul>
 
-      <!-- Busqueda -->
       <div class="topbar-search">
         <div class="topbar-search-inner">
-          <input type="text" placeholder="Spots or Events" data-i18n-placeholder="search.placeholder" />
-
+          <input type="text" placeholder="Spots o Eventos" />
           <div class="search-icon" aria-hidden="true">
             <i class="fa-solid fa-magnifying-glass"></i>
           </div>
         </div>
       </div>
 
-      <!-- Idioma + Auth -->
       <div class="topbar-right">
-        <!-- Idioma dropdown (SOLO desktop) -->
         <div class="lang-dropdown">
           <button class="lang-btn">
             <img src="../images/icons/world.png" class="flag" alt="ES" />
             <span></span>
           </button>
-
           <div class="lang-menu">
             <a href="#" data-lang="es"><img src="../images/icons/es.webp" class="flag" /> Español</a>
             <a href="#" data-lang="en"><img src="../images/icons/en.webp" class="flag" /> English</a>
           </div>
         </div>
 
-        <!-- Hamburger mobile -->
         <button class="nav-toggle" id="navToggle" aria-label="Menú">
           <span></span><span></span><span></span>
         </button>
@@ -66,119 +59,135 @@
   <div class="mobile-overlay" id="mobileOverlay"></div>
   <div class="mobile-menu" id="mobileMenu">
     <div class="mobile-menu-header">
-      <!-- LOGO -->
       <div class="mobile-header-left">
         <img src="../images/icons/logo.png" alt="Callejeando" />
       </div>
 
       <div id="mobileUserName" class="mobile-username"></div>
 
-      <!-- LOGIN + IDIOMA + CLOSE -->
       <div class="mobile-header-actions">
-        <!-- IDIOMA DROPDOWN -->
         <div class="mobile-header-lang">
           <button id="mobileLangTrigger">
             <img src="../images/icons/world.png" class="flag" alt="ES" />
             <span></span>
-            <!-- <i class="fa-solid fa-globe"></i> ▾ -->
           </button>
-
           <div id="mobileLangDropdown">
             <a href="#" data-lang="es"><img src="../images/icons/es.webp" class="flag" /> Español</a>
             <a href="#" data-lang="en"><img src="../images/icons/en.webp" class="flag" /> English</a>
           </div>
         </div>
-
-        <!-- CERRAR -->
         <button id="closeMobileMenu" class="close-btn">&times;</button>
       </div>
     </div>
 
-    <!-- Search -->
     <div class="mobile-search">
-      <input type="text" placeholder="Events or Code" />
+      <input type="text" placeholder="Spots o Eventos" />
       <button class="mobile-search-btn">
         <i class="fa-solid fa-magnifying-glass"></i>
       </button>
     </div>
     <hr />
 
-    <!-- Módulos -->
     <ul class="mobile-modules">
-      <li><a href="../pages/acerca.html" data-i18n="nav.about">Acerca de</a></li>
-      <li><a href="../pages/spots.html" data-i18n="nav.spots">Spots</a></li>
-      <li><a href="../pages/eventos.html" data-i18n="nav.events">Eventos</a></li>
-      <li><a href="../pages/faqs.html" data-i18n="nav.faq">FAQS</a></li>
-      <li><a href="../pages/contacto.html" data-i18n="nav.contact">Contacto</a></li>
+      <li><a href="../pages/acerca.html">Acerca de</a></li>
+      <li><a href="../pages/spots.html">Lugares</a></li>
+      <li><a href="../pages/eventos.html">Eventos</a></li>
+      <li><a href="../pages/faqs.html">FAQs</a></li>
+      <li><a href="../pages/contacto.html">Contacto</a></li>
     </ul>
 
     <div id="dashboardHeader"></div>
     <div id="dashboardLinks"></div>
-
     <hr />
   </div>
+
+  <!-- ============== HERO ============== -->
   <header class="legal-hero">
     <div class="hero-media">
-      <img class="hero-image" src="../images/homepage/contact.webp" alt="Skateboarding en la calle" />
+      <img class="hero-image" src="../images/homepage/about.webp" alt="Contacto" />
     </div>
     <div class="hero-overlay"></div>
 
     <div class="legal-hero-inner">
-      <div class="legal-kicker" data-i18n="header.contact">
-        📩 Callejeando / Contacto
-      </div>
-      <h1 class="legal-title" data-i18n="h1.contact">Hablemos</h1>
-      <p class="legal-subtitle" data-i18n="p.contact">
-        ¿Tienes un skatepark, un spot, un evento o una propuesta de sponsor?
-        Escríbenos y lo revisamos.
+      <div class="legal-kicker">CALLEJEANDO / CONTACTO.</div>
+      <h1 class="legal-title">CONTÁCTANOS.</h1>
+      <p class="legal-subtitle">
+        Para agregar spots, reportar cambios o publicar eventos. Si tienes links (Maps/IG), mejor.
       </p>
     </div>
   </header>
 
+  <!-- ============== CONTENT ============== -->
   <main class="legal-page">
     <div class="legal-container">
-      <div class="legal-card">
-        <h2 data-i18n="h2.contactheader">1. Enviar mensaje</h2>
-        <form class="legal-form">
-          <label data-i18n="label.name">Nombre</label>
-          <input data-i18n="input.name" type="text" placeholder="Tu Nombre" required />
+      <section class="legal-card contact-card">
+        <h2 style="margin:0; color: var(--lime);">Formulario</h2>
+        <p style="margin:8px 0 0; color: rgba(255,255,255,.72);">
+          Envíanos lo esencial. Nosotros lo validamos y lo dejamos publicado.
+        </p>
 
-          <label data-i18n="label.email">Email</label>
-          <input type="email" placeholder="mail@callejeando.com" required />
+        <form class="contact-form" action="#" method="post">
+          <div class="contact-grid">
+            <div class="contact-field">
+              <label><i class="fa-solid fa-user"></i> Nombre</label>
+              <input type="text" placeholder="Tu nombre" required />
+            </div>
 
-          <label data-i18n="label.motivo">Motivo</label>
-          <select>
-            <option value="" data-i18n="option.reason">
-              Selecciona una opción
-            </option>
-            <option data-i18n="option.firstreason">Reportar Spot</option>
-            <option data-i18n="option.secondreason">Registrar Evento</option>
-            <option data-i18n="option.thirdreason">Ser Patrocinador</option>
-            <option data-i18n="option.fourthreason">Soporte</option>
-          </select>
+            <div class="contact-field">
+              <label><i class="fa-solid fa-envelope"></i> Email</label>
+              <input type="email" placeholder="tucorreo@ejemplo.com" required />
+            </div>
 
-          <label data-i18n="label.subject">Mensaje</label>
-          <textarea rows="5" placeholder="..."></textarea>
+            <div class="contact-field">
+              <label><i class="fa-solid fa-tag"></i> Tipo</label>
+              <select required>
+                <option value="spot_add">Agregar spot</option>
+                <option value="spot_report">Reportar cambio de spot</option>
+                <option value="event_add">Publicar evento</option>
+                <option value="event_report">Reportar cambio de evento</option>
+                <option value="other">Otro</option>
+              </select>
+            </div>
 
-          <button class="btn btn-primary" data-i18n="button.send" type="submit">
-            Enviar
-          </button>
+            <div class="contact-field">
+              <label><i class="fa-solid fa-location-dot"></i> País / Ciudad</label>
+              <input type="text" placeholder="San José, Costa Rica" />
+            </div>
+
+            <div class="contact-field" style="grid-column: 1 / -1;">
+              <label><i class="fa-solid fa-link"></i> Links (opcional)</label>
+              <input type="text" placeholder="Google Maps / Instagram / video / album de fotos" />
+            </div>
+
+            <div class="contact-field" style="grid-column: 1 / -1;">
+              <label><i class="fa-solid fa-message"></i> Mensaje</label>
+              <textarea
+                placeholder="Ej: Nombre del spot/evento, ubicación exacta, estado actual, qué cambió y por qué..."
+                required></textarea>
+            </div>
+          </div>
+
+          <div class="contact-actions">
+            <span class="contact-note">
+              Tip: “Estado” + “ubicación exacta” + “foto/link” = validación más rápida.
+            </span>
+            <button class="contact-submit" type="submit">
+              <i class="fa-solid fa-paper-plane"></i> Enviar
+            </button>
+          </div>
         </form>
-
-        <h2>2. Nota</h2>
-        <p>Esta es una versión base.</p>
-      </div>
+      </section>
     </div>
   </main>
 
   <!-- ========== FOOTER ========== -->
   <footer class="footer">
     <div class="footer-inner">
-      <p data-i18n="p.footer">© 2026 Callejeando. All rights reserved.</p>
+      <p>© 2026 Callejeando. All rights reserved.</p>
       <div class="footer-links">
-        <a href="../p terminos.html" data-i18n="a.terminos">Terms and Conditions</a>
-        <a href="../p privacidad.html" data-i18n="a.privacidad">Privacy</a>
-        <a href="../p contacto.html" data-i18n="a.contacto">ContactUs</a>
+        <a href="../pages/terminos.html">Términos</a>
+        <a href="../pages/privacidad.html">Privacidad</a>
+        <a href="../pages/faqs.html">FAQs</a>
       </div>
     </div>
   </footer>

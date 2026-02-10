@@ -12,32 +12,45 @@
 </head>
 
 <body class="home-body">
-
-  <!-- TOPBAR (igual al resto) -->
+  <!-- ================= TOPBAR ================= -->
   <header class="topbar">
     <div class="topbar-inner">
       <a href="../index.html" class="topbar-logo" aria-label="Callejeando Home">
         <img src="../images/icons/logo.png" alt="Callejeando" class="logo-wordmark" />
       </a>
 
+      <!-- Menú desktop -->
       <ul class="topbar-menu">
-        <li><a href="../pages/acerca.html">Acerca de</a></li>
-        <li><a href="../pages/spots.html">Lugares</a></li>
-        <li><a href="../pages/eventos.html" class="is-active">Eventos</a></li>
-        <li><a href="../pages/faqs.html">FAQs</a></li>
-        <li><a href="../pages/contacto.html">Contacto</a></li>
+        <li><a href="../pages/acerca.html" data-i18n="nav.about">Acerca de</a></li>
+        <li><a href="../pages/spots.html" data-i18n="nav.spots">Lugares</a></li>
+        <li><a href="../pages/eventos.html" data-i18n="nav.events">Eventos</a></li>
+        <li><a href="../pages/faqs.html" data-i18n="nav.faq">FAQs</a></li>
+        <li><a href="../pages/contacto.html" data-i18n="nav.contact">Contacto</a></li>
       </ul>
 
+      <!-- Busqueda -->
       <div class="topbar-search">
         <div class="topbar-search-inner">
-          <input type="text" placeholder="Spots o Eventos" />
+          <input type="text" placeholder="Spots o Eventos" data-i18n-placeholder="search.placeholder" />
           <div class="search-icon" aria-hidden="true">
             <i class="fa-solid fa-magnifying-glass"></i>
           </div>
         </div>
       </div>
 
+      <!-- Idioma + Auth -->
       <div class="topbar-right">
+        <div class="lang-dropdown">
+          <button class="lang-btn">
+            <img src="../images/icons/world.png" class="flag" alt="ES" />
+            <span></span>
+          </button>
+          <div class="lang-menu">
+            <a href="#" data-lang="es"><img src="../images/icons/es.webp" class="flag" /> Español</a>
+            <a href="#" data-lang="en"><img src="../images/icons/en.webp" class="flag" /> English</a>
+          </div>
+        </div>
+
         <button class="nav-toggle" id="navToggle" aria-label="Menú">
           <span></span><span></span><span></span>
         </button>
@@ -45,200 +58,219 @@
     </div>
   </header>
 
-  <!-- HERO (igual vibe que spots) -->
-  <!-- <header class="spotlist-hero">
-    <div class="spotlist-hero-inner">
-      <div class="spotlist-kicker">🏆CALLEJEANDO / EVENTOS.</div>
-      <h1 class="spotlist-title">EVENTOS & COMPETENCIAS</h1>
-      <p class="spotlist-sub">
-        Fechas claras, ubicación y formato. Si un evento cambia o se cancela, repórtalo para mantenerlo real.
-      </p>
-    </div>
-  </header> -->
+  <!-- ============== OVERLAY + MOBILE MENU ============== -->
+  <div class="mobile-overlay" id="mobileOverlay"></div>
+  <div class="mobile-menu" id="mobileMenu">
+    <div class="mobile-menu-header">
+      <div class="mobile-header-left">
+        <img src="../images/icons/logo.png" alt="Callejeando" />
+      </div>
 
+      <div id="mobileUserName" class="mobile-username"></div>
+
+      <div class="mobile-header-actions">
+        <div class="mobile-header-lang">
+          <button id="mobileLangTrigger">
+            <img src="../images/icons/world.png" class="flag" alt="ES" />
+            <span></span>
+          </button>
+          <div id="mobileLangDropdown">
+            <a href="#" data-lang="es"><img src="../images/icons/es.webp" class="flag" /> Español</a>
+            <a href="#" data-lang="en"><img src="../images/icons/en.webp" class="flag" /> English</a>
+          </div>
+        </div>
+        <button id="closeMobileMenu" class="close-btn">&times;</button>
+      </div>
+    </div>
+
+    <div class="mobile-search">
+      <input type="text" placeholder="Spots o Eventos" />
+      <button class="mobile-search-btn">
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </button>
+    </div>
+    <hr />
+
+    <ul class="mobile-modules">
+      <li><a href="../pages/acerca.html" data-i18n="nav.about">Acerca de</a></li>
+      <li><a href="../pages/spots.html" data-i18n="nav.spots">Lugares</a></li>
+      <li><a href="../pages/eventos.html" data-i18n="nav.events">Eventos</a></li>
+      <li><a href="../pages/faqs.html" data-i18n="nav.faq">FAQs</a></li>
+      <li><a href="../pages/contacto.html" data-i18n="nav.contact">Contacto</a></li>
+    </ul>
+
+    <div id="dashboardHeader"></div>
+    <div id="dashboardLinks"></div>
+    <hr />
+  </div>
+
+  <!-- ============== HERO ============== -->
   <header class="legal-hero">
     <div class="hero-media">
-      <img class="hero-image" src="../images/homepage/events.webp" alt="Skateboarding en la calle" />
+      <img class="hero-image" src="../images/homepage/events.webp" alt="Eventos de skate" />
     </div>
-    </div>
-
     <div class="hero-overlay"></div>
 
     <div class="legal-hero-inner">
-      <div class="legal-kicker">🏆 CALLEJEANDO / EVENTOS.</div>
-      <h1 class="legal-title">EVENTOS & COMPETENCIAS</h1>
+      <div class="legal-kicker">CALLEJEANDO / EVENTOS.</div>
+      <h1 class="legal-title">EVENTOS & COMPETENCIAS.</h1>
       <p class="legal-subtitle">
-        Fechas claras, ubicación y formato. Si un evento cambia o se cancela, repórtalo para mantenerlo real.
+        Calendario simple y confiable: fecha, sede y estado del evento. Si algo cambia, repórtalo para mantener la info
+        real.
       </p>
     </div>
   </header>
 
-  <!-- ========== MAIN ========== -->
+  <!-- ============== CONTENT ============== -->
   <main class="legal-page">
-    <div class="spotlist-wrap">
-      <section class="spotlist-shell">
+    <div class="legal-container">
+      <section class="legal-card events-card">
+        <h2 style="margin: 0; color: var(--lime);">Eventos</h2>
+        <p style="margin: 8px 0 0; color: rgba(255,255,255,.72);">
+          Próximos, confirmados y actualizaciones por la comunidad. (Demo)
+        </p>
 
-        <!-- CONTROLS (mismo formato que Spots) -->
-        <div class="spotlist-controls spotlist-controls--full">
-
-          <div class="spotlist-control">
-            <i class="fa-solid fa-location-dot"></i>
-            <input type="text" placeholder="Ciudad o país (ej. San José)" />
-          </div>
-
-          <div class="spotlist-control">
-            <i class="fa-solid fa-ticket"></i>
-            <select>
-              <option>Todos</option>
-              <option>Competencia</option>
-              <option>Jam / Sesión</option>
-              <option>Demo / Tour</option>
-            </select>
-          </div>
-
-          <div class="spotlist-control">
-            <i class="fa-solid fa-calendar-days"></i>
-            <select>
-              <option>Estado: cualquiera</option>
-              <option>Próximo</option>
-              <option>En curso</option>
-              <option>Finalizado</option>
-              <option>Cancelado</option>
-            </select>
-          </div>
-
-          <button class="spotlist-search-btn" type="button">Buscar</button>
-        </div>
-
-        <!-- RESULTADOS -->
-        <section class="spotlist-results spotlist-results--solo">
-
-          <div class="spotlist-results-head">
-            <div>
-              <h3>Resultados</h3>
-              <p>Mostrando 3 eventos (demo)</p>
+        <!-- Finder -->
+        <div class="finder">
+          <div class="finder-row">
+            <div class="finder-field">
+              <i class="fa-solid fa-location-dot"></i>
+              <input type="text" placeholder="Ciudad o país (ej. San José)" />
             </div>
 
-            <div class="spotlist-sort">
-              <span>Ordenar:</span>
+            <div class="finder-field">
+              <i class="fa-solid fa-layer-group"></i>
               <select>
-                <option>Relevancia</option>
-                <option>Más recientes</option>
-                <option>Más próximos</option>
+                <option>Todos</option>
+                <option>Competencia</option>
+                <option>Jam</option>
+                <option>Demo</option>
               </select>
             </div>
+
+            <div class="finder-field">
+              <i class="fa-solid fa-shield"></i>
+              <select>
+                <option>Estado: cualquiera</option>
+                <option>Próximo</option>
+                <option>Confirmado</option>
+                <option>Cancelado</option>
+              </select>
+            </div>
+
+            <button class="finder-btn">Buscar</button>
           </div>
+        </div>
 
-          <!-- Event item 1 -->
-          <article class="eventitem">
-            <div class="eventitem-media">
-              <img src="../images/homepage/about.webp" alt="Callejeando Open" loading="lazy" />
-            </div>
+        <!-- Results head -->
+        <div class="results-head">
+          <div class="results-meta">Mostrando 3 eventos (demo)</div>
+          <div class="order-row">
+            <span>Ordenar:</span>
+            <select>
+              <option>Relevancia</option>
+              <option>Más recientes</option>
+              <option>Mejor estado</option>
+            </select>
+          </div>
+        </div>
 
-            <div class="eventitem-body">
-              <div class="eventitem-top">
-                <h4>Callejeando Open</h4>
-                <span class="eventitem-badge comp">Competencia</span>
+        <!-- Results list -->
+        <div class="list">
+          <!-- Item 1 -->
+          <article class="list-item">
+            <img class="list-thumb" src="../images/homepage/events.webp" alt="Callejeando Open" />
+            <div class="list-body">
+              <div class="list-title">Callejeando Open</div>
+
+              <div class="detail-chips">
+                <span class="chip"><i class="fa-solid fa-location-dot"></i> San José</span>
+                <span class="chip"><i class="fa-solid fa-calendar-days"></i> 2026-03-10</span>
+                <span class="chip"><i class="fa-solid fa-clock"></i> 2:00 PM</span>
+                <span class="chip"><i class="fa-solid fa-trophy"></i> Competencia</span>
+                <span class="chip chip-status status-active"><i class="fa-solid fa-circle-check"></i> Próximo</span>
               </div>
 
-              <div class="eventitem-row">
-                <span class="eventitem-chip"><i class="fa-solid fa-location-dot"></i> San José</span>
-                <span class="eventitem-chip"><i class="fa-solid fa-calendar"></i> 2026-03-10</span>
-                <span class="eventitem-chip"><i class="fa-solid fa-clock"></i> 2:00 PM</span>
-              </div>
-
-              <p class="eventitem-desc">
-                Formato street + jam. Registro en sitio. Categorías por nivel. Música y comunidad.
+              <p class="list-desc">
+                Evento principal para la escena local: formato street + jam. Info clara, horarios, reglas y cambios
+                reportables.
               </p>
 
-              <div class="eventitem-meta">
-                <span class="eventitem-pill upcoming"><i class="fa-solid fa-circle-check"></i> Próximo</span>
-                <span class="eventitem-muted">Actualizado: 2026-02-02</span>
+              <div class="detail-actions">
+                <a class="btn-primary" href="../pages/evento-detalle.html"><i class="fa-solid fa-eye"></i> Ver
+                  detalles</a>
+                <a class="btn-secondary" href="../pages/contacto.html"><i class="fa-solid fa-flag"></i> Reportar
+                  cambio</a>
               </div>
-            </div>
-
-            <div class="eventitem-actions">
-              <a class="eventitem-btn" href="../pages/evento-detalle.html">Ver detalles</a>
             </div>
           </article>
 
-          <!-- Event item 2 -->
-          <article class="eventitem">
-            <div class="eventitem-media">
-              <img src="../images/homepage/about.webp" alt="Session Night" loading="lazy" />
-            </div>
+          <!-- Item 2 -->
+          <article class="list-item">
+            <img class="list-thumb" src="../images/homepage/events.webp" alt="Best Trick Session" />
+            <div class="list-body">
+              <div class="list-title">Best Trick Session</div>
 
-            <div class="eventitem-body">
-              <div class="eventitem-top">
-                <h4>Session Night</h4>
-                <span class="eventitem-badge jam">Jam / Sesión</span>
+              <div class="detail-chips">
+                <span class="chip"><i class="fa-solid fa-location-dot"></i> Heredia</span>
+                <span class="chip"><i class="fa-solid fa-calendar-days"></i> 2026-04-02</span>
+                <span class="chip"><i class="fa-solid fa-clock"></i> 5:30 PM</span>
+                <span class="chip"><i class="fa-solid fa-bolt"></i> Jam</span>
+                <span class="chip chip-status status-active"><i class="fa-solid fa-circle-check"></i> Confirmado</span>
               </div>
 
-              <div class="eventitem-row">
-                <span class="eventitem-chip"><i class="fa-solid fa-location-dot"></i> Heredia</span>
-                <span class="eventitem-chip"><i class="fa-solid fa-calendar"></i> 2026-02-25</span>
-                <span class="eventitem-chip"><i class="fa-solid fa-clock"></i> 6:30 PM</span>
-              </div>
-
-              <p class="eventitem-desc">
-                Sesión abierta para la escena local. Lleva luces y respeto al spot. Sin inscripción.
+              <p class="list-desc">
+                Sesión abierta con formato best trick. Ideal para crews, filmers y skate shops. Premios por sponsor
+                (demo).
               </p>
 
-              <div class="eventitem-meta">
-                <span class="eventitem-pill live"><i class="fa-solid fa-bolt"></i> En curso</span>
-                <span class="eventitem-muted">Actualizado: 2026-02-01</span>
+              <div class="detail-actions">
+                <a class="btn-primary" href="../pages/evento-detalle.html"><i class="fa-solid fa-eye"></i> Ver
+                  detalles</a>
+                <a class="btn-secondary" href="../pages/contacto.html"><i class="fa-solid fa-flag"></i> Reportar
+                  cambio</a>
               </div>
-            </div>
-
-            <div class="eventitem-actions">
-              <a class="eventitem-btn" href="../pages/evento-detalle.html">Ver detalles</a>
             </div>
           </article>
 
-          <!-- Event item 3 -->
-          <article class="eventitem">
-            <div class="eventitem-media">
-              <img src="../images/homepage/about.webp" alt="DIY Contest" loading="lazy" />
-            </div>
+          <!-- Item 3 -->
+          <article class="list-item">
+            <img class="list-thumb" src="../images/homepage/events.webp" alt="Demo & Community" />
+            <div class="list-body">
+              <div class="list-title">Demo & Community</div>
 
-            <div class="eventitem-body">
-              <div class="eventitem-top">
-                <h4>DIY Contest</h4>
-                <span class="eventitem-badge comp">Competencia</span>
+              <div class="detail-chips">
+                <span class="chip"><i class="fa-solid fa-location-dot"></i> Alajuela</span>
+                <span class="chip"><i class="fa-solid fa-calendar-days"></i> 2026-02-18</span>
+                <span class="chip"><i class="fa-solid fa-clock"></i> 1:00 PM</span>
+                <span class="chip"><i class="fa-solid fa-users"></i> Demo</span>
+                <span class="chip chip-status status-closed"><i class="fa-solid fa-triangle-exclamation"></i>
+                  Cancelado</span>
               </div>
 
-              <div class="eventitem-row">
-                <span class="eventitem-chip"><i class="fa-solid fa-location-dot"></i> Alajuela</span>
-                <span class="eventitem-chip"><i class="fa-solid fa-calendar"></i> 2025-12-10</span>
-                <span class="eventitem-chip"><i class="fa-solid fa-clock"></i> 3:00 PM</span>
-              </div>
-
-              <p class="eventitem-desc">
-                Evento reportado como cancelado. Si vuelve a activarse, repórtalo para re-publicarlo.
+              <p class="list-desc">
+                Actividad comunitaria con demo y talleres. Reportado como cancelado (demo). Mantener como referencia
+                histórica.
               </p>
 
-              <div class="eventitem-meta">
-                <span class="eventitem-pill canceled"><i class="fa-solid fa-triangle-exclamation"></i> Cancelado</span>
-                <span class="eventitem-muted">Actualizado: 2025-12-10</span>
+              <div class="detail-actions">
+                <a class="btn-primary" href="../pages/evento-detalle.html"><i class="fa-solid fa-eye"></i> Ver
+                  detalles</a>
+                <a class="btn-secondary" href="../pages/contacto.html"><i class="fa-solid fa-flag"></i> Reportar
+                  cambio</a>
               </div>
             </div>
-
-            <div class="eventitem-actions">
-              <a class="eventitem-btn" href="../pages/evento-detalle.html">Ver detalles</a>
-            </div>
           </article>
+        </div>
 
-          <!-- CTA -->
-          <section class="spotlist-cta">
-            <div>
-              <h3>¿Quieres publicar o actualizar un evento?</h3>
-              <p>Envíanos la info por Contacto para mantener el calendario real.</p>
-            </div>
-            <a class="about-cta-btn" href="../pages/contacto.html">Ir a Contacto</a>
-          </section>
-
-        </section>
-
+        <!-- CTA -->
+        <div class="cta-bar">
+          <div class="cta-text">
+            <strong>¿Quieres publicar un evento o reportar un cambio?</strong><br />
+            Envíanos la info por el formulario para mantener el calendario real.
+          </div>
+          <a class="cta-btn" href="../pages/contacto.html">Ir a Contacto</a>
+        </div>
       </section>
     </div>
   </main>
@@ -246,11 +278,11 @@
   <!-- ========== FOOTER ========== -->
   <footer class="footer">
     <div class="footer-inner">
-      <p data-i18n="p.footer">© 2026 Callejeando. All rights reserved.</p>
+      <p>© 2026 Callejeando. All rights reserved.</p>
       <div class="footer-links">
-        <a href="../pages/terminos.html" data-i18n="a.terminos">Terms and Conditions</a>
-        <a href="../pages/privacidad.html" data-i18n="a.privacidad">Privacy</a>
-        <a href="../pages/contacto.html" data-i18n="a.contacto">ContactUs</a>
+        <a href="../pages/terminos.html">Términos</a>
+        <a href="../pages/privacidad.html">Privacidad</a>
+        <a href="../pages/contacto.html">Contacto</a>
       </div>
     </div>
   </footer>
