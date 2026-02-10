@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Evento | Callejeando</title>
+
+    <link rel="stylesheet" href="../styles/styles.css" />
+    <link rel="icon" href="../images/icons/pushing.png" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+</head>
+
+<body class="home-body">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+        <div class="topbar-inner">
+            <a href="../index.html" class="topbar-logo" aria-label="Callejeando Home">
+                <img src="../images/icons/logo.png" alt="Callejeando" class="logo-wordmark" />
+            </a>
+
+            <ul class="topbar-menu">
+                <li><a href="../pages/acerca.html">Acerca de</a></li>
+                <li><a href="../pages/spots.html">Lugares</a></li>
+                <li><a href="../pages/eventos.html" class="is-active">Eventos</a></li>
+                <li><a href="../pages/faqs.html">FAQs</a></li>
+                <li><a href="../pages/contacto.html">Contacto</a></li>
+            </ul>
+
+            <div class="topbar-search">
+                <div class="topbar-search-inner">
+                    <input type="text" placeholder="Spots o Eventos" />
+                    <div class="search-icon" aria-hidden="true">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="topbar-right">
+                <button class="nav-toggle" id="navToggle" aria-label="Menú">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO (mismo enfoque que spot-detalle, estilo C) -->
+    <header class="legal-hero">
+        <div class="hero-media">
+            <img class="hero-image" src="../images/homepage/spots.webp" alt="Downtown Set" />
+        </div>
+        <div class="hero-overlay"></div>
+
+        <div class="legal-hero-inner">
+            <div class="legal-kicker">CALLEJEANDO / LUGARES.</div>
+            <h1 class="legal-title">DOWNTOWN SET</h1>
+
+            <div class="detail-chips">
+                <!-- <span class="detail-chip"><i class="fa-solid fa-location-dot"></i> San José</span>
+                <span class="detail-chip"><i class="fa-solid fa-calendar-days"></i> 2026-03-10</span>
+                <span class="detail-chip"><i class="fa-solid fa-clock"></i> 2:00 PM</span>
+                <span class="detail-chip"><i class="fa-solid fa-road"></i> Street</span>
+                <span class="detail-chip detail-status"><i class="fa-solid fa-circle-check"></i> Activo</span> -->
+
+
+                <span class="detail-chip"><i class="fa-solid fa-location-dot"></i> San José</span>
+                <span class="detail-chip"><i class="fa-solid fa-calendar-days"></i> 2026-03-10</span>
+                <span class="detail-chip"><i class="fa-solid fa-clock"></i> 2:00 PM</span>
+                <span class="detail-chip"><i class="fa-solid fa-ticket"></i> Competencia</span>
+                <span class="detail-chip status upcoming"><i class="fa-solid fa-circle-check"></i> Próximo</span>
+
+
+            </div>
+
+            <!-- <div class="event-sub-2">
+                <span class="event-chip-2"><i class="fa-solid fa-location-dot"></i> San José</span>
+                <span class="event-chip-2"><i class="fa-solid fa-calendar-days"></i> 2026-03-10</span>
+                <span class="event-chip-2"><i class="fa-solid fa-clock"></i> 2:00 PM</span>
+                <span class="event-chip-2"><i class="fa-solid fa-ticket"></i> Competencia</span>
+                <span class="event-chip-2 status upcoming"><i class="fa-solid fa-circle-check"></i> Próximo</span>
+            </div> -->
+
+            <div class="detail-actions">
+                <a class="detail-primary" href="../pages/contacto.html">
+                    <i class="fa-solid fa-flag"></i> Reportar cambio
+                </a>
+                <a class="detail-secondary" href="../pages/spots.html">
+                    <i class="fa-solid fa-arrow-left"></i> Volver
+                </a>
+            </div>
+        </div>
+    </header>
+
+
+    <!-- ========== MAIN ========== -->
+    <main class="legal-page">
+        <div class="legal-container">
+            <section class="legal-card event-card">
+
+                <!-- Resumen -->
+                <h2>Resumen</h2>
+                <p>
+                    Evento principal para la escena local: formato street + jam, categorías por nivel, música y
+                    comunidad.
+                    Si cambia la sede, el horario o se cancela, repórtalo para mantener la info real.
+                </p>
+
+                <div class="event-divider"></div>
+
+                <!-- Info rápida -->
+                <h2>Info rápida</h2>
+                <div class="event-quick">
+                    <div class="event-quick-item">
+                        <div class="event-quick-ico"><i class="fa-solid fa-clipboard-check"></i></div>
+                        <div>
+                            <strong>Registro</strong>
+                            <div class="event-muted">En sitio / por anuncio</div>
+                        </div>
+                    </div>
+
+                    <div class="event-quick-item">
+                        <div class="event-quick-ico"><i class="fa-solid fa-trophy"></i></div>
+                        <div>
+                            <strong>Formato</strong>
+                            <div class="event-muted">Street + Jam</div>
+                        </div>
+                    </div>
+
+                    <div class="event-quick-item">
+                        <div class="event-quick-ico"><i class="fa-solid fa-people-group"></i></div>
+                        <div>
+                            <strong>Categorías</strong>
+                            <div class="event-muted">Amateur / Open</div>
+                        </div>
+                    </div>
+
+                    <div class="event-quick-item">
+                        <div class="event-quick-ico"><i class="fa-solid fa-shield"></i></div>
+                        <div>
+                            <strong>Reglas</strong>
+                            <div class="event-muted">Respeto al spot</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="event-divider"></div>
+
+                <!-- Agenda -->
+                <h2>Agenda</h2>
+                <div class="event-agenda">
+                    <div class="event-agenda-row">
+                        <span class="event-time">1:00 PM</span>
+                        <div class="event-step">
+                            <strong>Check-in y registro</strong>
+                            <div class="event-muted">Confirmación de categoría y brazalete.</div>
+                        </div>
+                    </div>
+
+                    <div class="event-agenda-row">
+                        <span class="event-time">2:00 PM</span>
+                        <div class="event-step">
+                            <strong>Warm-up / práctica</strong>
+                            <div class="event-muted">Tiempo de prueba y reconocimiento del spot.</div>
+                        </div>
+                    </div>
+
+                    <div class="event-agenda-row">
+                        <span class="event-time">3:00 PM</span>
+                        <div class="event-step">
+                            <strong>Heat principal</strong>
+                            <div class="event-muted">Rondas por categoría.</div>
+                        </div>
+                    </div>
+
+                    <div class="event-agenda-row">
+                        <span class="event-time">5:00 PM</span>
+                        <div class="event-step">
+                            <strong>Final / Premiación</strong>
+                            <div class="event-muted">Resultados y cierre.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="event-divider"></div>
+
+                <!-- Ubicación -->
+                <h2>Ubicación</h2>
+                <p class="event-muted">
+                    Dirección exacta y link a mapa se agregan cuando el evento queda confirmado (demo).
+                </p>
+
+                <div class="event-location">
+                    <div class="event-location-left">
+                        <div class="event-location-line">
+                            <i class="fa-solid fa-location-dot"></i>
+                            <span><strong>Ciudad:</strong> San José</span>
+                        </div>
+                        <div class="event-location-line">
+                            <i class="fa-solid fa-map"></i>
+                            <span><strong>Referencia:</strong> Skatepark / spot principal (por confirmar)</span>
+                        </div>
+                        <div class="event-location-line">
+                            <i class="fa-solid fa-link"></i>
+                            <span><strong>Mapa:</strong> disponible pronto</span>
+                        </div>
+                    </div>
+
+                    <div class="event-location-right">
+                        <div class="event-map-placeholder">
+                            <i class="fa-solid fa-map-location-dot"></i>
+                            <p>Mapa (demo)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="event-divider"></div>
+
+                <!-- Requisitos -->
+                <h2>Requisitos</h2>
+                <ul class="event-list">
+                    <li><strong>Casco recomendado</strong> (según spot / organización).</li>
+                    <li><strong>Respeto a la comunidad</strong>: sin basura, sin destruir el spot.</li>
+                    <li><strong>Confirmar horarios</strong> el día del evento.</li>
+                </ul>
+
+                <div class="event-divider"></div>
+
+                <!-- Fotos -->
+                <h2>Fotos</h2>
+                <div class="event-gallery">
+                    <img src="../images/homepage/about.webp" alt="Foto 1" />
+                    <img src="../images/homepage/about.webp" alt="Foto 2" />
+                    <img src="../images/homepage/about.webp" alt="Foto 3" />
+                </div>
+
+                <!-- <p class="event-muted" style="margin-top:10px;">
+                    Tip: cuando tengas fotos reales (spot, flyer, mapa), esta sección hace que la página se sienta
+                    “definitiva”.
+                </p> -->
+
+                <!-- CTA final -->
+                <section class="spotlist-cta" style="margin-top:18px;">
+                    <div>
+                        <h3>¿Quieres publicar o actualizar un evento?</h3>
+                        <p>Envíanos la info por Contacto para mantener el calendario real.</p>
+                    </div>
+                    <a class="about-cta-btn" href="../pages/contacto.html">Ir a Contacto</a>
+                </section>
+
+            </section>
+        </div>
+    </main>
+
+    <!-- ========== FOOTER ========== -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <p>© 2026 Callejeando. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="../pages/terminos.html">Términos</a>
+                <a href="../pages/privacidad.html">Privacidad</a>
+                <a href="../pages/contacto.html">Contacto</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/i18n.js"></script>
+</body>
+
+</html>
