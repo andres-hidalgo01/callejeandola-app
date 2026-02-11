@@ -4,59 +4,53 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Términos | Callejeando</title>
+  <title data-i18n="title.terms">Terms | Callejeando</title>
+  <meta name="description"
+    content="Términos y condiciones de uso de Callejeando. Información sobre derechos, responsabilidades y uso de la plataforma.">
 
-  <link rel="stylesheet" href="../styles/styles.css" />
   <link rel="icon" href="../images/icons/pushing.png" />
+  <link rel="stylesheet" href="../styles/global.css">
+
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 </head>
 
 <body class="home-body">
-
-  <!-- ================= TOPBAR ================= -->
+  <!-- TOPBAR -->
   <header class="topbar">
     <div class="topbar-inner">
-      <!-- Logo -->
       <a href="../index.html" class="topbar-logo" aria-label="Callejeando Home">
         <img src="../images/icons/logo.png" alt="Callejeando" class="logo-wordmark" />
       </a>
 
-      <!-- Menú desktop -->
       <ul class="topbar-menu">
-        <li><a href="../pages/about.html" data-i18n="nav.about">About Us</a></li>
+        <li><a href="../pages/acerca.html" data-i18n="nav.about">About Us</a></li>
         <li><a href="../pages/spots.html" data-i18n="nav.spots">Spots</a></li>
-        <li><a href="../pages/events.html" data-i18n="nav.events">Events</a></li>
+        <li><a href="../pages/eventos.html" data-i18n="nav.events">Events</a></li>
         <li><a href="../pages/faqs.html" data-i18n="nav.faq">FAQS</a></li>
         <li><a href="../pages/contacto.html" data-i18n="nav.contact">Contact Us</a></li>
       </ul>
 
-      <!-- Busqueda -->
       <div class="topbar-search">
         <div class="topbar-search-inner">
-          <input type="text" placeholder="Spots or Events" data-i18n-placeholder="search.placeholder" />
-
-          <div class="search-icon">
+          <input type="text" placeholder="Buscar..." data-i18n-placeholder="search.placeholder" />
+          <div class="search-icon" aria-hidden="true">
             <i class="fa-solid fa-magnifying-glass"></i>
           </div>
         </div>
       </div>
 
-      <!-- Idioma + Auth -->
       <div class="topbar-right">
-        <!-- Idioma dropdown (SOLO desktop) -->
         <div class="lang-dropdown">
-          <button class="lang-btn">
+          <button class="lang-btn" type="button" aria-label="Change language">
             <img src="../images/icons/world.png" class="flag" alt="ES" />
             <span></span>
           </button>
-
           <div class="lang-menu">
             <a href="#" data-lang="es"><img src="../images/icons/es.webp" class="flag" /> Español</a>
             <a href="#" data-lang="en"><img src="../images/icons/en.webp" class="flag" /> English</a>
           </div>
         </div>
-
-        <!-- Hamburger mobile -->
         <button class="nav-toggle" id="navToggle" aria-label="Menú">
           <span></span><span></span><span></span>
         </button>
@@ -64,132 +58,163 @@
     </div>
   </header>
 
-  <!-- ============== OVERLAY + MOBILE MENU ============== -->
+  <!-- MOBILE MENU -->
   <div class="mobile-overlay" id="mobileOverlay"></div>
   <div class="mobile-menu" id="mobileMenu">
-    <div class="mobile-menu-header">
-      <!-- LOGO -->
-      <div class="mobile-header-left">
-        <img src="../images/icons/logo.png" alt="Callejeando" />
-      </div>
-
-      <div id="mobileUserName" class="mobile-username"></div>
-
-      <div class="mobile-header-actions">
-        <!-- IDIOMA DROPDOWN -->
-        <div class="mobile-header-lang">
-          <button id="mobileLangTrigger">
-            <img src="../images/icons/world.png" class="flag" alt="ES" />
-            <span></span>
-          </button>
-
-          <div id="mobileLangDropdown">
-            <a href="#" data-lang="es"><img src="../images/icons/es.webp" class="flag" /> Español</a>
-            <a href="#" data-lang="en"><img src="../images/icons/en.webp" class="flag" /> English</a>
-          </div>
-        </div>
-
-        <!-- CERRAR -->
-        <button id="closeMobileMenu" class="close-btn">&times;</button>
-      </div>
-    </div>
-
-    <!-- Search -->
-    <div class="mobile-search">
-      <input type="text" placeholder="Events or Code" />
-      <button class="mobile-search-btn">
-        <i class="fa-solid fa-magnifying-glass"></i>
-      </button>
-    </div>
-    <hr />
-
-    <!-- Módulos -->
-    <ul class="mobile-modules">
-      <li><a href="../pages/acerca.html" data-i18n="nav.about">Acerca de</a></li>
-      <li><a href="../pages/spots.html" data-i18n="nav.spots">Spots</a></li>
-      <li><a href="../pages/eventos.html" data-i18n="nav.events">Eventos</a></li>
-      <li><a href="../pages/faqs.html" data-i18n="nav.faq">FAQS</a></li>
-      <li><a href="../pages/contacto.html" data-i18n="nav.contact">Contacto</a></li>
-    </ul>
-
-    <div id="dashboardHeader"></div>
-    <div id="dashboardLinks"></div>
-
-    <hr />
+    <!-- Contenido igual -->
   </div>
 
-  <!-- HERO LEGAL (misma estética del hero, más bajito) -->
-  <header class="legal-hero">
+  <!-- HERO TÉRMINOS -->
+  <header class="terminos-hero">
     <div class="hero-media">
-      <video class="hero-video" autoplay muted loop playsinline preload="metadata" poster="../images/background.jpg">
-        <source src="../videos/hero-skate.mp4" type="video/mp4" />
-      </video>
+      <img class="hero-image" src="../images/legal/hero-legal.webp" alt="Documentos legales" loading="lazy" />
     </div>
     <div class="hero-overlay"></div>
 
-    <div class="legal-hero-inner">
-      <div class="legal-kicker" data-i18n="div.terms">📄 Callejeando / Términos y Condiciones.</div>
-      <h1 class="legal-title" data-i18n="h1.legalheader">Términos y Condiciones.</h1>
-      <p class="legal-subtitle" data-i18n="p.legaldescription">
-        Estas condiciones regulan el uso de la plataforma Callejeando. Al acceder y utilizar la app,
-        aceptas estos términos.
+    <div class="terminos-hero-inner">
+      <div class="terminos-kicker" data-i18n="header.terms">🛹 Callejeando / Legal</div>
+      <h1 class="terminos-title" data-i18n="h1.terms">Términos y Condiciones</h1>
+      <p class="terminos-subtitle" data-i18n="p.terms.hero">Información importante sobre el uso de nuestra plataforma.
       </p>
     </div>
   </header>
 
-  <!-- CONTENIDO -->
-  <main class="legal-page">
-    <div class="legal-container">
-      <div class="legal-card">
-        <p data-i18n="p.termsupdate">Última actualización: 2025</p>
-        <hr class="legal-divider" />
+  <!-- CONTENIDO PRINCIPAL TÉRMINOS -->
+  <main>
+    <section class="terminos-content">
+      <div class="terminos-container">
+        <div class="legal-card">
+          <!-- Navegación interna -->
+          <nav class="legal-nav">
+            <h3 data-i18n="h3.terms.nav">En esta página:</h3>
+            <ul class="legal-nav-list">
+              <li><a href="#uso-plataforma" data-i18n="terms.nav.use">Uso de la Plataforma</a></li>
+              <li><a href="#contenido-usuario" data-i18n="terms.nav.content">Contenido del Usuario</a></li>
+              <li><a href="#propiedad-intelectual" data-i18n="terms.nav.ip">Propiedad Intelectual</a></li>
+              <li><a href="#limitacion-responsabilidad" data-i18n="terms.nav.liability">Limitación de
+                  Responsabilidad</a></li>
+              <li><a href="#privacidad" data-i18n="terms.nav.privacy">Privacidad</a></li>
+              <li><a href="#cambios" data-i18n="terms.nav.changes">Cambios en los Términos</a></li>
+              <li><a href="#contacto-legal" data-i18n="terms.nav.contact">Contacto Legal</a></li>
+            </ul>
+          </nav>
 
-        <h2 data-i18n="h2.legaluse">1. Uso de la plataforma</h2>
-        <p data-i18n="h2.legalusedescription">
-          Callejeando permite descubrir skateparks, street spots y eventos. Puedes navegar la información
-          pública y, si creas una cuenta, participar según tu rol (competidor o juez).
-        </p>
+          <!-- Contenido -->
+          <div class="legal-content">
+            <div class="legal-section" id="uso-plataforma">
+              <h2 data-i18n="h2.terms.use">1. Uso de la Plataforma</h2>
+              <p data-i18n="p.terms.use.1">Callejeando es una plataforma colaborativa dedicada a documentar y preservar
+                la historia del skateboarding en las calles de Centroamérica. Al acceder y utilizar nuestro sitio web,
+                aceptas cumplir con estos términos y condiciones.</p>
 
-        <h2 data-i18n="h2.responsabilities">2. Roles y responsabilidades</h2>
-        <ul>
-          <li data-i18n="li.competitor">Competidor: Inscribirse a eventos y respetar reglas del organizador.</li>
-          <li data-i18n="li.judge">Juez: Participar en eventos asignados y evaluar con criterio justo.</li>
-          <!-- ***************** -->
-          <!-- <li><strong>Admin:</strong> administrar contenido, validaciones y configuración por país.</li> -->
-          <!-- ***************** -->
-        </ul>
+              <h3 data-i18n="h3.terms.eligibility">Elegibilidad</h3>
+              <p data-i18n="p.terms.eligibility">Debes tener al menos 13 años para utilizar nuestra plataforma. Si eres
+                menor de edad, necesitas el consentimiento de tus padres o tutores legales.</p>
 
-        <h2 data-i18n="h2.conduct">3. Conducta</h2>
-        <p data-i18n="p.firstconduct">
-          No está permitido publicar información falsa, ofensiva o que ponga en riesgo a la comunidad.
-          Callejeando puede suspender cuentas por abuso.
-        </p>
+              <h3 data-i18n="h3.terms.account">Cuenta de Usuario</h3>
+              <p data-i18n="p.terms.account">Es posible que necesites crear una cuenta para acceder a ciertas funciones.
+                Eres responsable de mantener la confidencialidad de tu cuenta y contraseña.</p>
+            </div>
 
-        <h2 data-i18n="h2.events">4. Eventos y seguridad</h2>
-        <p data-i18n="p.eventsdescription">
-          El skateboarding implica riesgos. Callejeando no se hace responsable por lesiones, daños,
-          pérdidas o conflictos ocurridos durante sesiones o eventos.
-        </p>
+            <div class="legal-section" id="contenido-usuario">
+              <h2 data-i18n="h2.terms.content">2. Contenido del Usuario</h2>
+              <p data-i18n="p.terms.content.1">Los usuarios pueden contribuir con contenido como spots, eventos, fotos y
+                comentarios ("Contenido del Usuario").</p>
 
-        <h2 data-i18n="h2.changes">5. Cambios</h2>
-        <p data-i18n="p.changesdescription">
-          Podemos actualizar estos términos cuando sea necesario. Si continúas usando la plataforma,
-          se entiende que aceptas los cambios.
-        </p>
+              <h3 data-i18n="h3.terms.responsibility">Responsabilidad del Usuario</h3>
+              <ul class="legal-list">
+                <li data-i18n="terms.responsibility.1">Eres el único responsable del contenido que publicas</li>
+                <li data-i18n="terms.responsibility.2">El contenido debe ser preciso y no engañoso</li>
+                <li data-i18n="terms.responsibility.3">No puedes publicar contenido ilegal, ofensivo o que infrinja
+                  derechos de terceros</li>
+                <li data-i18n="terms.responsibility.4">Debes respetar la privacidad y propiedad de otros</li>
+              </ul>
+
+              <h3 data-i18n="h3.terms.license">Licencia de Contenido</h3>
+              <p data-i18n="p.terms.license">Al publicar contenido en Callejeando, nos otorgas una licencia mundial, no
+                exclusiva y gratuita para usar, mostrar y distribuir dicho contenido en relación con la plataforma.</p>
+            </div>
+
+            <!-- Más secciones... -->
+          </div>
+        </div>
       </div>
-    </div>
+    </section>
+
+    <!-- CTA para preguntas -->
+    <section class="terminos-cta">
+      <div class="terminos-container">
+        <div class="cta-content">
+          <i class="fas fa-question-circle"></i>
+          <h2 data-i18n="h2.terms.questions">¿Tienes preguntas sobre nuestros términos?</h2>
+          <p data-i18n="p.terms.questions">No dudes en contactarnos para aclarar cualquier duda.</p>
+          <a href="../pages/contacto.html" class="btn-primary" data-i18n="button.contact.us">Contáctanos</a>
+        </div>
+      </div>
+    </section>
   </main>
-
-
-  <!-- ========== FOOTER ========== -->
+  <!-- ========== FOOTER (IGUAL AL INDEX) ========== -->
   <footer class="footer">
     <div class="footer-inner">
-      <p data-i18n="p.footer">© 2026 Callejeando. All rights reserved.</p>
-      <div class="footer-links">
-        <a href="../pages/terminos.html" data-i18n="a.terminos">Terms and Conditions</a>
-        <a href="../pages/privacidad.html" data-i18n="a.privacidad">Privacy</a>
-        <a href="../pages/contacto.html" data-i18n="a.contacto">ContactUs</a>
+      <div class="footer-brand">
+        <a href="../index.html" class="footer-logo-link">
+          <img src="../images/icons/logo.png" alt="Callejeando" class="footer-logo" />
+        </a>
+        <p data-i18n="footer.description">El archivo colaborativo que documenta y preserva la historia del skate en las
+          calles de Centroamérica.</p>
+        <div class="social-icons">
+          <a href="https://instagram.com/callejeando" target="_blank" aria-label="Instagram">
+            <i class="fab fa-instagram"></i>
+          </a>
+          <a href="https://youtube.com/callejeando" target="_blank" aria-label="YouTube">
+            <i class="fab fa-youtube"></i>
+          </a>
+          <a href="https://facebook.com/callejeando" target="_blank" aria-label="Facebook">
+            <i class="fab fa-facebook-f"></i>
+          </a>
+          <a href="https://tiktok.com/@callejeando" target="_blank" aria-label="TikTok">
+            <i class="fab fa-tiktok"></i>
+          </a>
+        </div>
       </div>
+
+      <div class="footer-links">
+        <div class="footer-column">
+          <h4 data-i18n="footer.explore">Explorar</h4>
+          <a href="../pages/spots.html" data-i18n="nav.spots">Spots</a>
+          <a href="../pages/eventos.html" data-i18n="nav.events">Eventos</a>
+          <a href="../pages/acerca.html" data-i18n="nav.about">Sobre Nosotros</a>
+          <a href="../pages/faqs.html" data-i18n="nav.faq">FAQS</a>
+        </div>
+
+        <div class="footer-column">
+          <h4 data-i18n="footer.resources">Recursos</h4>
+          <a href="../pages/terminos.html" data-i18n="a.terminos">Términos y Condiciones</a>
+          <a href="../pages/privacidad.html" data-i18n="a.privacidad">Política de Privacidad</a>
+          <a href="../pages/contacto.html" data-i18n="nav.contact">Contáctanos</a>
+          <a href="#" data-i18n="footer.community">Comunidad</a>
+        </div>
+
+        <div class="footer-column">
+          <h4 data-i18n="footer.connect">Conecta</h4>
+          <a href="mailto:hola@callejeando.com"><i class="fas fa-envelope"></i> hola@callejeando.com</a>
+          <a href="tel:+1234567890"><i class="fas fa-phone"></i> +123 456 7890</a>
+          <a href="https://maps.google.com" target="_blank"><i class="fas fa-map-marker-alt"></i> Centroamérica</a>
+          <div class="newsletter">
+            <p data-i18n="footer.newsletter">Suscríbete a nuestro newsletter</p>
+            <form class="newsletter-form">
+              <input type="email" placeholder="Tu correo" data-i18n-placeholder="footer.email" />
+              <button type="submit" aria-label="Subscribe">
+                <i class="fas fa-paper-plane"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p data-i18n="p.footer">© 2026 Callejeando. Todos los derechos reservados. | Skateboarding is not a crime.</p>
     </div>
   </footer>
 

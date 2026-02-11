@@ -5,9 +5,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title data-i18n="title.about">About us| Callejeando</title>
+  <meta name="description"
+    content="Callejeando es el archivo colaborativo que documenta y preserva la historia del skate en las calles de Centroamérica. Conoce nuestra misión, valores y únete a la comunidad.">
 
   <link rel="icon" href="../images/icons/pushing.png" />
-  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="../styles/global.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 </head>
 
@@ -105,15 +107,17 @@
   </div>
 
   <!-- ============== HERO ============== -->
-  <header class="legal-hero">
+  <header class="about-hero">
     <div class="hero-media">
-      <img class="hero-image" src="../images/homepage/about.webp" alt="Skateboarding en la calle" />
+      <img class="hero-image" src="../images/homepage/about.webp" alt="Skateboarding en la calle" loading="lazy" />
     </div>
     <div class="hero-overlay"></div>
 
-    <div class="legal-hero-inner">
-      <div class="legal-kicker" data-i18n="header.about">🛹 Callejeando / About</div>
-      <h1 class="legal-title" data-i18n="h2.about">¿Qué es Callejeando?</h1>
+    <div class="about-hero-inner">
+      <div class="about-kicker" data-i18n="header.about">🛹 Callejeando / About</div>
+      <h1 class="about-title" data-i18n="h1.about">¿Qué es Callejeando?</h1>
+      <p class="about-subtitle">El archivo colaborativo que documenta y preserva la historia del skate en las calles de
+        Centroamérica.</p>
 
       <!-- Chips / highlights -->
       <div class="about-chips" aria-label="Highlights">
@@ -138,173 +142,118 @@
         </span>
       </div>
 
+      <a href="#mission" class="btn-primary" data-i18n="button.about.mission">Conoce Nuestra Misión</a>
     </div>
   </header>
 
-  <!-- ============== CONTENT ============== -->
-  <main class="legal-page">
-    <div class="legal-container">
-      <section class="legal-card about-card">
-        <header class="about-exec">
-          <h2 data-i18n="about.h2">Callejeando</h2>
-          <p class="about-muted" data-i18n="about.p">
-            Una plataforma para la escena skate en Centroamérica que centraliza
-            spots reales> y eventos con estructura,ofreciendo información clara,
-            actualizada y enfocada en la comunidad.
-          </p>
-        </header>
+  <!-- ============== CONTENIDO PRINCIPAL ============== -->
+  <main>
+    <section id="mission" class="about-section">
+      <div class="about-container">
+        <h2 data-i18n="h2.mission">Haciendo el Skateboarding Histórico</h2>
+        <p>Somos una plataforma creada por y para skaters, con el objetivo de mapear los spots legendarios, documentar
+          los trucos que hicieron historia y conectar a la comunidad a través de eventos y colaboraciones.</p>
+      </div>
+    </section>
 
-        <hr class="about-divider" />
-
-        <section class="about-two-col">
-          <div class="about-panel">
-            <h3 data-i18n="h3.whatwedefend">Lo que defendemos</h3>
-            <p class="about-muted" data-i18n="p.whatwedefend">
-              Respeto al spot, información útil y comunidad por delante. Si algo no ayuda a salir a patinar, no estorba
-              aquí.
-            </p>
+    <section class="about-section about-values">
+      <div class="about-container">
+        <h2 data-i18n="h2.values">Nuestros Valores</h2>
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-map-location-dot"></i></div>
+            <h3 data-i18n="h3.document">Documentar</h3>
+            <p data-i18n="p.document">Preservamos la memoria de los spots antes de que desaparezcan o cambien.</p>
           </div>
-          <div class="about-panel">
-            <h3 data-i18n="h3.whynow">Por qué ahora</h3>
-            <p class="about-muted" data-i18n="p.whynow">
-              La escena crece, pero la información está regada. Callejeando ordena lo esencial para que más gente
-              llegue, participe y se quede.
-            </p>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-people-group"></i></div>
+            <h3 data-i18n="h3.connect">Conectar</h3>
+            <p data-i18n="p.connect">Unimos a skaters de diferentes generaciones y ciudades.</p>
           </div>
-        </section>
-
-        <hr class="about-divider" />
-
-        <section class="about-section">
-          <h2 data-i18n="h2.essential">Lo esencial</h2>
-          <p data-i18n="p.essential">
-            Callejeando centraliza spots reales y eventos activospara la escena skate en Centroamérica.
-            La información se mantiene útil mediante validación local, actualización constante y estructura clara en
-            competencias.
-          </p>
-
-          <div class="about-pillers">
-            <article class="about-feature">
-              <div class="about-icon"><i class="fa-solid fa-location-dot"></i></div>
-              <h3 data-i18n="about.spots">Lugares</h3>
-              <p data-i18n="p.spot">Ubicación y datos prácticos para patinar sin perder tiempo.</p>
-            </article>
-
-            <article class="about-feature">
-              <div class="about-icon"><i class="fa-solid fa-calendar-days"></i></div>
-              <h3 data-i18n="about.events">Eventos</h3>
-              <p data-i18n="p.events">Fechas, formato y lugar claros para participar.</p>
-            </article>
-
-            <article class="about-feature">
-              <div class="about-icon"><i class="fa-solid fa-shield"></i></div>
-              <h3 data-i18n="about.reliability">Confiabilidad</h3>
-              <p data-i18n="p.reliability">Validación local y actualización continua.</p>
-            </article>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-share-alt"></i></div>
+            <h3 data-i18n="h3.share">Compartir</h3>
+            <p data-i18n="p.share">Todo el conocimiento es de la comunidad, para la comunidad.</p>
           </div>
-        </section>
+        </div>
+      </div>
+    </section>
 
-        <hr class="about-divider" />
-
-        <section class="about-section">
-          <h2 data-i18n="h2.scene">Para la escena</h2>
-          <div class="about-audience">
-            <div class="about-audience-item">
-              <i class="fa-solid fa-person-skating"></i>
-              <div>
-                <h4>Skaters</h4>
-                <p data-i18n="p.skaters">Descubrir spots, guardar favoritos, ir a eventos.</p>
-              </div>
-            </div>
-            <div class="about-audience-item">
-              <i class="fa-solid fa-users"></i>
-              <div>
-                <h4>Crews</h4>
-                <p data-i18n="p.crews">Conectar y mover sesiones en la ciudad.</p>
-              </div>
-            </div>
-            <div class="about-audience-item">
-              <i class="fa-solid fa-bullhorn"></i>
-              <div>
-                <h4 data-i18n="about.organizers">Organizadores</h4>
-                <p data-i18n="p.organizers">Más alcance con info clara y ordenada.</p>
-              </div>
-            </div>
-            <div class="about-audience-item">
-              <i class="fa-solid fa-store"></i>
-              <div>
-                <h4 data-i18n="about.skateshops">Tiendas</h4>
-                <p data-i18n="p.skateshops">Apoyar eventos con visibilidad sin spam.</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <hr class="about-divider" />
-
-        <!-- <section class="about-section">
-          <h2 data-i18n="">Qué viene</h2>
-          <div class="about-roadmap">
-            <div class="about-road-item">
-              <span class="about-badge">01</span>
-              <div>
-                <h4>Más spots</h4>
-                <p>Mejor búsqueda, filtros y experiencia.</p>
-              </div>
-            </div>
-            <div class="about-road-item">
-              <span class="about-badge">02</span>
-              <div>
-                <h4>Más eventos</h4>
-                <p>Inscripciones y publicación más completa.</p>
-              </div>
-            </div>
-            <div class="about-road-item">
-              <span class="about-badge">03</span>
-              <div>
-                <h4>Ranking</h4>
-                <p>Jueces, scores y resultados.</p>
-              </div>
-            </div>
-          </div>
-        </section> -->
-
-        <!-- <section class="about-cta">
-          <div class="about-cta-text">
-            <h3 data-i18n="about.footer">Sumá un spot / publicá un evento</h3>
-            <p data-i18n="p.about">Si es real y sirve, va. Contáctanos para agregarlo.</p>
-          </div>
-          <a class="about-cta-btn" href="../pages/contacto.html" data-i18n="a.about">Contactenos</a>
-        </section> -->
-
-
-        <section class="about-cta">
-          <div class="about-cta-text">
-            <h3 data-i18n="about.cta.title">Sumá un spot o publicá un evento</h3>
-            <p data-i18n="about.cta.subtitle">Si es real y sirve, va. Ayúdanos a mantener la info actualizada.</p>
-          </div>
-
-          <div class="about-cta-actions">
-            <a class="about-cta-btn secondary" href="../pages/spots.html" data-i18n="about.cta.spots">Explorar spots</a>
-            <a class="about-cta-btn secondary" href="../pages/eventos.html" data-i18n="about.cta.events">Ver eventos</a>
-            <a class="about-cta-btn" href="../pages/contacto.html" data-i18n="about.cta.contact">Contáctanos</a>
-          </div>
-        </section>
-
-
-      </section>
-    </div>
+    <section class="about-section about-join">
+      <div class="about-container">
+        <h2 data-i18n="h2.join">¿Quieres ser parte?</h2>
+        <p data-i18n="p.join">Únete a nuestra comunidad y ayuda a documentar la historia del skate en Centroamérica.</p>
+        <div class="about-buttons">
+          <a href="../pages/contacto.html" class="btn-primary" data-i18n="button.join.community">Únete a la
+            Comunidad</a>
+          <a href="../pages/spots.html" class="btn-secondary" data-i18n="button.explore.spots">Explora los Spots</a>
+        </div>
+      </div>
+    </section>
   </main>
 
-  <!-- ========== FOOTER ========== -->
+  <!-- ========== FOOTER (IGUAL AL INDEX) ========== -->
   <footer class="footer">
     <div class="footer-inner">
-      <p data-i18n="p.footer">© 2026 Callejeando. All rights reserved.</p>
-      <div class="footer-links">
-        <a href="../pages/terminos.html" data-i18n="a.terminos">Terms and Conditions</a>
-        <a href="../pages/privacidad.html" data-i18n="a.privacidad">Privacy</a>
-        <a href="../pages/contacto.html" data-i18n="a.contacto">Contact Us</a>
+      <div class="footer-brand">
+        <a href="../index.html" class="footer-logo-link">
+          <img src="../images/icons/logo.png" alt="Callejeando" class="footer-logo" />
+        </a>
+        <p data-i18n="footer.description">El archivo colaborativo que documenta y preserva la historia del skate en las
+          calles de Centroamérica.</p>
+        <div class="social-icons">
+          <a href="https://instagram.com/callejeando" target="_blank" aria-label="Instagram">
+            <i class="fab fa-instagram"></i>
+          </a>
+          <a href="https://youtube.com/callejeando" target="_blank" aria-label="YouTube">
+            <i class="fab fa-youtube"></i>
+          </a>
+          <a href="https://facebook.com/callejeando" target="_blank" aria-label="Facebook">
+            <i class="fab fa-facebook-f"></i>
+          </a>
+          <a href="https://tiktok.com/@callejeando" target="_blank" aria-label="TikTok">
+            <i class="fab fa-tiktok"></i>
+          </a>
+        </div>
       </div>
+
+      <div class="footer-links">
+        <div class="footer-column">
+          <h4 data-i18n="footer.explore">Explorar</h4>
+          <a href="../pages/spots.html" data-i18n="nav.spots">Spots</a>
+          <a href="../pages/eventos.html" data-i18n="nav.events">Eventos</a>
+          <a href="../pages/acerca.html" data-i18n="nav.about">Sobre Nosotros</a>
+          <a href="../pages/faqs.html" data-i18n="nav.faq">FAQS</a>
+        </div>
+
+        <div class="footer-column">
+          <h4 data-i18n="footer.resources">Recursos</h4>
+          <a href="../pages/terminos.html" data-i18n="a.terminos">Términos y Condiciones</a>
+          <a href="../pages/privacidad.html" data-i18n="a.privacidad">Política de Privacidad</a>
+          <a href="../pages/contacto.html" data-i18n="nav.contact">Contáctanos</a>
+          <a href="#" data-i18n="footer.community">Comunidad</a>
+        </div>
+
+        <div class="footer-column">
+          <h4 data-i18n="footer.connect">Conecta</h4>
+          <a href="mailto:hola@callejeando.com"><i class="fas fa-envelope"></i> hola@callejeando.com</a>
+          <a href="tel:+1234567890"><i class="fas fa-phone"></i> +123 456 7890</a>
+          <a href="https://maps.google.com" target="_blank"><i class="fas fa-map-marker-alt"></i> Centroamérica</a>
+          <div class="newsletter">
+            <p data-i18n="footer.newsletter">Suscríbete a nuestro newsletter</p>
+            <form class="newsletter-form">
+              <input type="email" placeholder="Tu correo" data-i18n-placeholder="footer.email" />
+              <button type="submit" aria-label="Subscribe">
+                <i class="fas fa-paper-plane"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p data-i18n="p.footer">© 2026 Callejeando. Todos los derechos reservados. | Skateboarding is not a crime.</p>
     </div>
   </footer>
 

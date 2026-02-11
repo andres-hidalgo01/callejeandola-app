@@ -4,22 +4,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Privacidad | Callejeando</title>
+  <title data-i18n="title.privacy">Privacy | Callejeando</title>
+  <meta name="description"
+    content="Política de privacidad de Callejeando. Información sobre cómo recopilamos, usamos y protegemos tus datos personales.">
 
-  <link rel="stylesheet" href="../styles/styles.css" />
   <link rel="icon" href="../images/icons/pushing.png" />
+  <link rel="stylesheet" href="../styles/global.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 </head>
 
 <body class="home-body">
-  <!-- ================= TOPBAR ================= -->
+  <!-- TOPBAR -->
   <header class="topbar">
     <div class="topbar-inner">
       <a href="../index.html" class="topbar-logo" aria-label="Callejeando Home">
         <img src="../images/icons/logo.png" alt="Callejeando" class="logo-wordmark" />
       </a>
 
-      <!-- Menú desktop -->
       <ul class="topbar-menu">
         <li><a href="../pages/acerca.html" data-i18n="nav.about">About Us</a></li>
         <li><a href="../pages/spots.html" data-i18n="nav.spots">Spots</a></li>
@@ -28,33 +29,26 @@
         <li><a href="../pages/contacto.html" data-i18n="nav.contact">Contact Us</a></li>
       </ul>
 
-      <!-- Busqueda -->
       <div class="topbar-search">
         <div class="topbar-search-inner">
-          <input type="text" placeholder="Spots or Events" data-i18n-placeholder="search.placeholder" />
-
+          <input type="text" placeholder="Buscar..." data-i18n-placeholder="search.placeholder" />
           <div class="search-icon" aria-hidden="true">
             <i class="fa-solid fa-magnifying-glass"></i>
           </div>
         </div>
       </div>
 
-      <!-- Idioma + Auth -->
       <div class="topbar-right">
-        <!-- Idioma dropdown (SOLO desktop) -->
         <div class="lang-dropdown">
-          <button class="lang-btn">
+          <button class="lang-btn" type="button" aria-label="Change language">
             <img src="../images/icons/world.png" class="flag" alt="ES" />
             <span></span>
           </button>
-
           <div class="lang-menu">
             <a href="#" data-lang="es"><img src="../images/icons/es.webp" class="flag" /> Español</a>
             <a href="#" data-lang="en"><img src="../images/icons/en.webp" class="flag" /> English</a>
           </div>
         </div>
-
-        <!-- Hamburger mobile -->
         <button class="nav-toggle" id="navToggle" aria-label="Menú">
           <span></span><span></span><span></span>
         </button>
@@ -62,110 +56,191 @@
     </div>
   </header>
 
-  <!-- ============== OVERLAY + MOBILE MENU ============== -->
+  <!-- MOBILE MENU -->
   <div class="mobile-overlay" id="mobileOverlay"></div>
   <div class="mobile-menu" id="mobileMenu">
-    <div class="mobile-menu-header">
-      <!-- LOGO -->
-      <div class="mobile-header-left">
-        <img src="../images/icons/logo.png" alt="Callejeando" />
-      </div>
-
-      <div id="mobileUserName" class="mobile-username"></div>
-
-      <!-- LOGIN + IDIOMA + CLOSE -->
-      <div class="mobile-header-actions">
-        <!-- IDIOMA DROPDOWN -->
-        <div class="mobile-header-lang">
-          <button id="mobileLangTrigger">
-            <img src="../images/icons/world.png" class="flag" alt="ES" />
-            <span></span>
-          </button>
-
-          <div id="mobileLangDropdown">
-            <a href="#" data-lang="es"><img src="../images/icons/es.webp" class="flag" /> Español</a>
-            <a href="#" data-lang="en"><img src="../images/icons/en.webp" class="flag" /> English</a>
-          </div>
-        </div>
-
-        <!-- CERRAR -->
-        <button id="closeMobileMenu" class="close-btn">&times;</button>
-      </div>
-    </div>
-
-    <!-- Search -->
-    <div class="mobile-search">
-      <input type="text" placeholder="Events or Code" />
-      <button class="mobile-search-btn">
-        <i class="fa-solid fa-magnifying-glass"></i>
-      </button>
-    </div>
-    <hr />
-
-    <!-- Módulos -->
-    <ul class="mobile-modules">
-      <li><a href="../pages/acerca.html" data-i18n="nav.about">Acerca de</a></li>
-      <li><a href="../pages/spots.html" data-i18n="nav.spots">Spots</a></li>
-      <li><a href="../pages/eventos.html" data-i18n="nav.events">Eventos</a></li>
-      <li><a href="../pages/faqs.html" data-i18n="nav.faq">FAQS</a></li>
-      <li><a href="../pages/contacto.html" data-i18n="nav.contact">Contacto</a></li>
-    </ul>
-
-    <div id="dashboardHeader"></div>
-    <div id="dashboardLinks"></div>
-
-    <hr />
+    <!-- Contenido igual -->
   </div>
 
-  <!-- ============== HERO ============== -->
-  <header class="legal-hero">
+  <!-- HERO PRIVACIDAD -->
+  <header class="privacidad-hero">
     <div class="hero-media">
-      <video class="hero-video" autoplay muted loop playsinline preload="metadata" poster="../images/homepage/background.webp">
-        <source src="../videos/hero-skate.mp4" type="video/mp4" />
-      </video>
+      <img class="hero-image" src="../images/legal/hero-privacy.webp" alt="Protección de datos" loading="lazy" />
     </div>
     <div class="hero-overlay"></div>
 
-    <div class="legal-hero-inner">
-      <div class="legal-kicker" data-i18n="div.privacy">🔒 Callejeando / Política de privacidad</div>
-      <h1 class="legal-title" data-i18n="h1.privacy">Política de privacidad</h1>
-      <p class="legal-subtitle" data-i18n="p.privacydescription">
-        Explica cómo se recopila y usa tu información dentro de Callejeando.
+    <div class="privacidad-hero-inner">
+      <div class="privacidad-kicker" data-i18n="header.privacy">🛹 Callejeando / Privacidad</div>
+      <h1 class="privacidad-title" data-i18n="h1.privacy">Política de Privacidad</h1>
+      <p class="privacidad-subtitle" data-i18n="p.privacy.hero">Cómo protegemos y utilizamos tu información personal.
       </p>
+      <div class="last-updated" data-i18n="p.privacy.updated">Última actualización: Enero 2026</div>
     </div>
   </header>
 
-  <!-- CONTENIDO -->
-  <main class="legal-page">
-    <div class="legal-container">
-      <div class="legal-card">
-        <p data-i18n="p.termsupdate">Última actualización:2025</p>
-        <hr class="legal-divider" />
+  <!-- CONTENIDO PRINCIPAL PRIVACIDAD -->
+  <main>
+    <section class="privacidad-content">
+      <div class="privacidad-container">
+        <div class="legal-card">
+          <!-- Resumen ejecutivo -->
+          <div class="privacy-summary">
+            <div class="summary-icon">
+              <i class="fas fa-shield-alt"></i>
+            </div>
+            <h2 data-i18n="h2.privacy.summary">Nuestro Compromiso con tu Privacidad</h2>
+            <p data-i18n="p.privacy.summary">En Callejeando, valoramos y respetamos tu privacidad. Esta política explica
+              cómo recopilamos, usamos y protegemos tu información cuando utilizas nuestra plataforma.</p>
+          </div>
 
-        <h2 data-i18n="h2.privacydata">1. Datos que recopilamos</h2>
-        <ul>
-          <li data-i18n="li.name">Nombre y correo (para iniciar sesión).</li>
-          <li data-i18n="li.country">País/ubicación aproximada (para mostrar contenido relevante).</li>
-          <li data-i18n="li.rol">Rol (admin, juez o competidor) para habilitar funciones.</li>
-        </ul>
+          <!-- Contenido -->
+          <div class="legal-content">
+            <div class="legal-section" id="informacion-recopilada">
+              <h2 data-i18n="h2.privacy.info">1. Información que Recopilamos</h2>
 
-        <h2 data-i18n="h2.privacyuse">2. Cómo usamos tus datos</h2>
-        <p data-i18n="p.privacyuse">
-          Usamos tu información para personalizar la experiencia, mostrar spots/eventos cercanos,
-          y permitir inscripciones o asignaciones en eventos según rol.
-        </p>
+              <h3 data-i18n="h3.privacy.info.provided">Información que nos proporcionas</h3>
+              <ul class="legal-list">
+                <li data-i18n="privacy.info.provided.1">Información de registro (nombre, correo electrónico)</li>
+                <li data-i18n="privacy.info.provided.2">Contenido que publicas (spots, eventos, comentarios)</li>
+                <li data-i18n="privacy.info.provided.3">Comunicaciones con nosotros</li>
+                <li data-i18n="privacy.info.provided.4">Información de perfil (foto, biografía)</li>
+              </ul>
 
-        <h2 data-i18n="h2.privacysecurity">3. Seguridad</h2>
-        <p data-i18n="p.privacysecurity">
-          Implementamos buenas prácticas para proteger tu información, pero ningún sistema es 100% infalible.
-        </p>
+              <h3 data-i18n="h3.privacy.info.automatic">Información recopilada automáticamente</h3>
+              <ul class="legal-list">
+                <li data-i18n="privacy.info.automatic.1">Datos de uso (páginas visitadas, tiempo en el sitio)</li>
+                <li data-i18n="privacy.info.automatic.2">Información del dispositivo (tipo, sistema operativo)</li>
+                <li data-i18n="privacy.info.automatic.3">Dirección IP y datos de ubicación aproximada</li>
+                <li data-i18n="privacy.info.automatic.4">Cookies y tecnologías similares</li>
+              </ul>
+            </div>
 
-        <h2 data-i18n="h2.privacyrights">4. Tus derechos</h2>
-        <p data-i18n="p.privacyrights">
-          Puedes solicitar actualización o eliminación de tus datos según disponibilidad técnica y legal.
-        </p>
+            <div class="legal-section" id="uso-informacion">
+              <h2 data-i18n="h2.privacy.use">2. Uso de la Información</h2>
+              <p data-i18n="p.privacy.use.1">Utilizamos tu información para:</p>
+
+              <div class="use-grid">
+                <div class="use-item">
+                  <i class="fas fa-cogs"></i>
+                  <h4 data-i18n="privacy.use.operate">Operar la plataforma</h4>
+                  <p data-i18n="privacy.use.operate.desc">Proveer y mantener nuestros servicios</p>
+                </div>
+
+                <div class="use-item">
+                  <i class="fas fa-user-check"></i>
+                  <h4 data-i18n="privacy.use.personalize">Personalizar experiencia</h4>
+                  <p data-i18n="privacy.use.personalize.desc">Mostrar contenido relevante para ti</p>
+                </div>
+
+                <div class="use-item">
+                  <i class="fas fa-comments"></i>
+                  <h4 data-i18n="privacy.use.communicate">Comunicarnos contigo</h4>
+                  <p data-i18n="privacy.use.communicate.desc">Responder consultas y enviar actualizaciones</p>
+                </div>
+
+                <div class="use-item">
+                  <i class="fas fa-chart-line"></i>
+                  <h4 data-i18n="privacy.use.improve">Mejorar servicios</h4>
+                  <p data-i18n="privacy.use.improve.desc">Analizar uso para mejorar la plataforma</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="legal-section" id="cookies">
+              <h2 data-i18n="h2.privacy.cookies">3. Cookies y Tecnologías Similares</h2>
+              <p data-i18n="p.privacy.cookies.1">Utilizamos cookies para mejorar tu experiencia en nuestra plataforma.
+              </p>
+
+              <div class="cookie-types">
+                <div class="cookie-type">
+                  <h4 data-i18n="privacy.cookies.essential">Esenciales</h4>
+                  <p data-i18n="privacy.cookies.essential.desc">Necesarias para el funcionamiento básico</p>
+                </div>
+
+                <div class="cookie-type">
+                  <h4 data-i18n="privacy.cookies.functional">Funcionales</h4>
+                  <p data-i18n="privacy.cookies.functional.desc">Mejoran la funcionalidad y personalización</p>
+                </div>
+
+                <div class="cookie-type">
+                  <h4 data-i18n="privacy.cookies.analytics">Analíticas</h4>
+                  <p data-i18n="privacy.cookies.analytics.desc">Nos ayudan a entender cómo usas el sitio</p>
+                </div>
+              </div>
+
+              <div class="cookie-control">
+                <h4 data-i18n="h4.privacy.cookies.control">Control de Cookies</h4>
+                <p data-i18n="p.privacy.cookies.control">Puedes gestionar tus preferencias de cookies en cualquier
+                  momento desde la configuración de tu navegador.</p>
+              </div>
+            </div>
+
+            <!-- Más secciones... -->
+          </div>
+        </div>
       </div>
-    </div>
+    </section>
+
+    <!-- Derechos del usuario -->
+    <section class="privacy-rights">
+      <div class="privacidad-container">
+        <h2 data-i18n="h2.privacy.rights">Tus Derechos de Privacidad</h2>
+
+        <div class="rights-grid">
+          <div class="right-card">
+            <div class="right-icon">
+              <i class="fas fa-eye"></i>
+            </div>
+            <h3 data-i18n="privacy.right.access">Acceso</h3>
+            <p data-i18n="privacy.right.access.desc">Solicitar acceso a tus datos personales</p>
+          </div>
+
+          <div class="right-card">
+            <div class="right-icon">
+              <i class="fas fa-edit"></i>
+            </div>
+            <h3 data-i18n="privacy.right.correction">Corrección</h3>
+            <p data-i18n="privacy.right.correction.desc">Rectificar datos inexactos o incompletos</p>
+          </div>
+
+          <div class="right-card">
+            <div class="right-icon">
+              <i class="fas fa-trash-alt"></i>
+            </div>
+            <h3 data-i18n="privacy.right.deletion">Eliminación</h3>
+            <p data-i18n="privacy.right.deletion.desc">Solicitar la eliminación de tus datos</p>
+          </div>
+
+          <div class="right-card">
+            <div class="right-icon">
+              <i class="fas fa-ban"></i>
+            </div>
+            <h3 data-i18n="privacy.right.objection">Oposición</h3>
+            <p data-i18n="privacy.right.objection.desc">Oponerte al procesamiento de tus datos</p>
+          </div>
+        </div>
+
+        <div class="rights-cta">
+          <p data-i18n="p.privacy.rights.cta">Para ejercer cualquiera de estos derechos, contáctanos en <a
+              href="mailto:privacidad@callejeando.com">privacidad@callejeando.com</a></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contacto privacidad -->
+    <section class="privacy-contact">
+      <div class="privacidad-container">
+        <div class="contact-content">
+          <i class="fas fa-user-shield"></i>
+          <h2 data-i18n="h2.privacy.contact">¿Preguntas sobre Privacidad?</h2>
+          <p data-i18n="p.privacy.contact">Nuestro equipo de privacidad está aquí para ayudarte.</p>
+          <a href="mailto:privacidad@callejeando.com" class="btn-primary">
+            <i class="fas fa-envelope"></i>
+            <span data-i18n="button.email.privacy">Contactar a Privacidad</span>
+          </a>
+        </div>
+      </div>
+    </section>
   </main>
 
   <!-- ========== FOOTER ========== -->

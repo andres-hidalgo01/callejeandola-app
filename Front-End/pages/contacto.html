@@ -1,60 +1,54 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Contacto | Callejeando</title>
+  <title data-i18n="title.contact">Contact | Callejeando</title>
+  <meta name="description"
+    content="Contáctanos para añadir spots, crear eventos o cualquier consulta sobre la comunidad skate de Centroamérica.">
 
-  <link rel="stylesheet" href="../styles/styles.css" />
   <link rel="icon" href="../images/icons/pushing.png" />
+  <link rel="stylesheet" href="../styles/global.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 </head>
 
 <body class="home-body">
-  <!-- ================= TOPBAR ================= -->
+  <!-- TOPBAR -->
   <header class="topbar">
     <div class="topbar-inner">
       <a href="../index.html" class="topbar-logo" aria-label="Callejeando Home">
         <img src="../images/icons/logo.png" alt="Callejeando" class="logo-wordmark" />
       </a>
 
-      <!-- Menú desktop -->
       <ul class="topbar-menu">
         <li><a href="../pages/acerca.html" data-i18n="nav.about">About Us</a></li>
         <li><a href="../pages/spots.html" data-i18n="nav.spots">Spots</a></li>
         <li><a href="../pages/eventos.html" data-i18n="nav.events">Events</a></li>
         <li><a href="../pages/faqs.html" data-i18n="nav.faq">FAQS</a></li>
-        <li><a href="../pages/contacto.html" data-i18n="nav.contact">Contact Us</a></li>
+        <li><a href="../pages/contacto.html" data-i18n="nav.contact" aria-current="page">Contact Us</a></li>
       </ul>
 
-      <!-- Busqueda -->
       <div class="topbar-search">
         <div class="topbar-search-inner">
-          <input type="text" placeholder="Spots or Events" data-i18n-placeholder="search.placeholder" />
-
+          <input type="text" placeholder="Buscar..." data-i18n-placeholder="search.placeholder" />
           <div class="search-icon" aria-hidden="true">
             <i class="fa-solid fa-magnifying-glass"></i>
           </div>
         </div>
       </div>
 
-      <!-- Idioma + Auth -->
       <div class="topbar-right">
-        <!-- Idioma dropdown (SOLO desktop) -->
         <div class="lang-dropdown">
-          <button class="lang-btn">
+          <button class="lang-btn" type="button" aria-label="Change language">
             <img src="../images/icons/world.png" class="flag" alt="ES" />
             <span></span>
           </button>
-
           <div class="lang-menu">
             <a href="#" data-lang="es"><img src="../images/icons/es.webp" class="flag" /> Español</a>
             <a href="#" data-lang="en"><img src="../images/icons/en.webp" class="flag" /> English</a>
           </div>
         </div>
-
-        <!-- Hamburger mobile -->
         <button class="nav-toggle" id="navToggle" aria-label="Menú">
           <span></span><span></span><span></span>
         </button>
@@ -62,124 +56,291 @@
     </div>
   </header>
 
-  <!-- ============== OVERLAY + MOBILE MENU ============== -->
+  <!-- MOBILE MENU -->
   <div class="mobile-overlay" id="mobileOverlay"></div>
   <div class="mobile-menu" id="mobileMenu">
-    <div class="mobile-menu-header">
-      <!-- LOGO -->
-      <div class="mobile-header-left">
-        <img src="../images/icons/logo.png" alt="Callejeando" />
-      </div>
-
-      <div id="mobileUserName" class="mobile-username"></div>
-
-      <!-- LOGIN + IDIOMA + CLOSE -->
-      <div class="mobile-header-actions">
-        <!-- IDIOMA DROPDOWN -->
-        <div class="mobile-header-lang">
-          <button id="mobileLangTrigger">
-            <img src="../images/icons/world.png" class="flag" alt="ES" />
-            <span></span>
-            <!-- <i class="fa-solid fa-globe"></i> ▾ -->
-          </button>
-
-          <div id="mobileLangDropdown">
-            <a href="#" data-lang="es"><img src="../images/icons/es.webp" class="flag" /> Español</a>
-            <a href="#" data-lang="en"><img src="../images/icons/en.webp" class="flag" /> English</a>
-          </div>
-        </div>
-
-        <!-- CERRAR -->
-        <button id="closeMobileMenu" class="close-btn">&times;</button>
-      </div>
-    </div>
-
-    <!-- Search -->
-    <div class="mobile-search">
-      <input type="text" placeholder="Events or Code" />
-      <button class="mobile-search-btn">
-        <i class="fa-solid fa-magnifying-glass"></i>
-      </button>
-    </div>
-    <hr />
-
-    <!-- Módulos -->
-    <ul class="mobile-modules">
-      <li><a href="../pages/acerca.html" data-i18n="nav.about">Acerca de</a></li>
-      <li><a href="../pages/spots.html" data-i18n="nav.spots">Spots</a></li>
-      <li><a href="../pages/eventos.html" data-i18n="nav.events">Eventos</a></li>
-      <li><a href="../pages/faqs.html" data-i18n="nav.faq">FAQS</a></li>
-      <li><a href="../pages/contacto.html" data-i18n="nav.contact">Contacto</a></li>
-    </ul>
-
-    <div id="dashboardHeader"></div>
-    <div id="dashboardLinks"></div>
-
-    <hr />
+    <!-- Contenido igual -->
   </div>
-  <header class="legal-hero">
+
+  <!-- HERO CONTACTO -->
+  <header class="contacto-hero">
     <div class="hero-media">
-      <img class="hero-image" src="../images/homepage/contact.webp" alt="Skateboarding en la calle" />
+      <img class="hero-image" src="../images/contacto/hero-contact.webp" alt="Skaters conversando" loading="lazy" />
     </div>
     <div class="hero-overlay"></div>
 
-    <div class="legal-hero-inner">
-      <div class="legal-kicker" data-i18n="header.contact">
-        📩 Callejeando / Contacto
-      </div>
-      <h1 class="legal-title" data-i18n="h1.contact">Hablemos</h1>
-      <p class="legal-subtitle" data-i18n="p.contact">
-        ¿Tienes un skatepark, un spot, un evento o una propuesta de sponsor?
-        Escríbenos y lo revisamos.
-      </p>
+    <div class="contacto-hero-inner">
+      <div class="contacto-kicker" data-i18n="header.contact">🛹 Callejeando / Contacto</div>
+      <h1 class="contacto-title" data-i18n="h1.contact">Conecta con la Comunidad</h1>
+      <p class="contacto-subtitle" data-i18n="p.contact.hero">¿Tienes preguntas, quieres añadir un spot o colaborar?
+        Estamos aquí.</p>
     </div>
   </header>
 
-  <main class="legal-page">
-    <div class="legal-container">
-      <div class="legal-card">
-        <h2 data-i18n="h2.contactheader">1. Enviar mensaje</h2>
-        <form class="legal-form">
-          <label data-i18n="label.name">Nombre</label>
-          <input data-i18n="input.name" type="text" placeholder="Tu Nombre" required />
+  <!-- CONTENIDO PRINCIPAL CONTACTO -->
+  <main>
+    <!-- Opciones de contacto -->
+    <section class="contacto-options">
+      <div class="contacto-container">
+        <h2 data-i18n="h2.contact.how">¿Cómo quieres contactarnos?</h2>
 
-          <label data-i18n="label.email">Email</label>
-          <input type="email" placeholder="mail@callejeando.com" required />
+        <div class="options-grid">
+          <div class="option-card" data-option="add-spot">
+            <div class="option-icon">
+              <i class="fas fa-map-marker-plus"></i>
+            </div>
+            <h3 data-i18n="contact.option.addspot">Añadir un Spot</h3>
+            <p data-i18n="contact.option.addspot.desc">Comparte un lugar que no esté en el mapa</p>
+            <button class="option-btn" data-action="show-spot-form">
+              <span data-i18n="button.start">Comenzar</span>
+              <i class="fas fa-arrow-right"></i>
+            </button>
+          </div>
 
-          <label data-i18n="label.motivo">Motivo</label>
-          <select>
-            <option value="" data-i18n="option.reason">
-              Selecciona una opción
-            </option>
-            <option data-i18n="option.firstreason">Reportar Spot</option>
-            <option data-i18n="option.secondreason">Registrar Evento</option>
-            <option data-i18n="option.thirdreason">Ser Patrocinador</option>
-            <option data-i18n="option.fourthreason">Soporte</option>
-          </select>
+          <div class="option-card" data-option="create-event">
+            <div class="option-icon">
+              <i class="fas fa-calendar-plus"></i>
+            </div>
+            <h3 data-i18n="contact.option.createevent">Crear un Evento</h3>
+            <p data-i18n="contact.option.createevent.desc">Publica tu competencia o jam</p>
+            <button class="option-btn" data-action="show-event-form">
+              <span data-i18n="button.start">Comenzar</span>
+              <i class="fas fa-arrow-right"></i>
+            </button>
+          </div>
 
-          <label data-i18n="label.subject">Mensaje</label>
-          <textarea rows="5" placeholder="..."></textarea>
+          <div class="option-card" data-option="general-contact">
+            <div class="option-icon">
+              <i class="fas fa-envelope"></i>
+            </div>
+            <h3 data-i18n="contact.option.general">Consulta General</h3>
+            <p data-i18n="contact.option.general.desc">Preguntas, sugerencias o colaboraciones</p>
+            <button class="option-btn" data-action="show-general-form">
+              <span data-i18n="button.start">Comenzar</span>
+              <i class="fas fa-arrow-right"></i>
+            </button>
+          </div>
 
-          <button class="btn btn-primary" data-i18n="button.send" type="submit">
-            Enviar
+          <div class="option-card" data-option="report-issue">
+            <div class="option-icon">
+              <i class="fas fa-flag"></i>
+            </div>
+            <h3 data-i18n="contact.option.report">Reportar un Problema</h3>
+            <p data-i18n="contact.option.report.desc">Errores en la plataforma o contenido</p>
+            <button class="option-btn" data-action="show-report-form">
+              <span data-i18n="button.start">Comenzar</span>
+              <i class="fas fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Formulario de contacto -->
+    <section class="contacto-form-section">
+      <div class="contacto-container">
+        <div class="form-header">
+          <h2 id="form-title" data-i18n="h2.contact.form.general">Formulario de Contacto</h2>
+          <p id="form-description" data-i18n="p.contact.form.general">Completa el formulario y nos pondremos en contacto
+            contigo pronto.</p>
+        </div>
+
+        <form id="contactForm" class="contact-form">
+          <div class="form-group">
+            <label for="name" data-i18n="label.name">Nombre completo *</label>
+            <input type="text" id="name" name="name" required />
+          </div>
+
+          <div class="form-group">
+            <label for="email" data-i18n="label.email">Correo electrónico *</label>
+            <input type="email" id="email" name="email" required />
+          </div>
+
+          <div class="form-group">
+            <label for="subject" data-i18n="label.subject">Asunto *</label>
+            <input type="text" id="subject" name="subject" required />
+          </div>
+
+          <!-- Campos específicos para spots -->
+          <div class="form-fields" id="spot-fields" style="display: none;">
+            <div class="form-group">
+              <label for="spot-name" data-i18n="label.spot.name">Nombre del spot *</label>
+              <input type="text" id="spot-name" name="spot-name" />
+            </div>
+
+            <div class="form-group">
+              <label for="spot-location" data-i18n="label.spot.location">Ubicación (Google Maps link) *</label>
+              <input type="text" id="spot-location" name="spot-location" placeholder="https://maps.google.com/..." />
+            </div>
+
+            <div class="form-group">
+              <label for="spot-description" data-i18n="label.spot.description">Descripción del spot</label>
+              <textarea id="spot-description" name="spot-description" rows="3"></textarea>
+            </div>
+          </div>
+
+          <!-- Campos específicos para eventos -->
+          <div class="form-fields" id="event-fields" style="display: none;">
+            <div class="form-group">
+              <label for="event-name" data-i18n="label.event.name">Nombre del evento *</label>
+              <input type="text" id="event-name" name="event-name" />
+            </div>
+
+            <div class="form-group">
+              <label for="event-date" data-i18n="label.event.date">Fecha del evento *</label>
+              <input type="date" id="event-date" name="event-date" />
+            </div>
+
+            <div class="form-group">
+              <label for="event-type" data-i18n="label.event.type">Tipo de evento *</label>
+              <select id="event-type" name="event-type">
+                <option value="competition" data-i18n="event.type.competition">Competencia</option>
+                <option value="jam" data-i18n="event.type.jam">Jam</option>
+                <option value="workshop" data-i18n="event.type.workshop">Workshop</option>
+                <option value="other" data-i18n="event.type.other">Otro</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="message" data-i18n="label.message">Mensaje *</label>
+            <textarea id="message" name="message" rows="6" required></textarea>
+          </div>
+
+          <div class="form-group">
+            <div class="checkbox-group">
+              <input type="checkbox" id="newsletter" name="newsletter" />
+              <label for="newsletter" data-i18n="label.newsletter">Quiero recibir novedades sobre Callejeando</label>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-primary submit-btn" data-i18n="button.send.message">
+            <i class="fas fa-paper-plane"></i>
+            Enviar Mensaje
           </button>
         </form>
-
-        <h2>2. Nota</h2>
-        <p>Esta es una versión base.</p>
       </div>
-    </div>
+    </section>
+
+    <!-- Información de contacto -->
+    <section class="contacto-info">
+      <div class="contacto-container">
+        <div class="info-grid">
+          <div class="info-card">
+            <div class="info-icon">
+              <i class="fas fa-envelope"></i>
+            </div>
+            <h3 data-i18n="contact.info.email">Correo Electrónico</h3>
+            <p>hola@callejeando.com</p>
+            <a href="mailto:hola@callejeando.com" class="info-link" data-i18n="button.write">Escribir</a>
+          </div>
+
+          <div class="info-card">
+            <div class="info-icon">
+              <i class="fas fa-map-marker-alt"></i>
+            </div>
+            <h3 data-i18n="contact.info.location">Ubicación</h3>
+            <p data-i18n="contact.info.location.desc">Centroamérica (Comunidad Digital)</p>
+            <a href="https://maps.google.com" target="_blank" class="info-link" data-i18n="button.view.map">Ver en
+              Mapa</a>
+          </div>
+
+          <div class="info-card">
+            <div class="info-icon">
+              <i class="fas fa-clock"></i>
+            </div>
+            <h3 data-i18n="contact.info.hours">Horario de Respuesta</h3>
+            <p data-i18n="contact.info.hours.desc">24-48 horas hábiles</p>
+            <span class="info-note" data-i18n="contact.info.hours.note">Siempre trabajando para la comunidad</span>
+          </div>
+
+          <div class="info-card">
+            <div class="info-icon">
+              <i class="fas fa-comments"></i>
+            </div>
+            <h3 data-i18n="contact.info.social">Redes Sociales</h3>
+            <div class="social-links">
+              <a href="https://instagram.com/callejeando" target="_blank" aria-label="Instagram">
+                <i class="fab fa-instagram"></i>
+              </a>
+              <a href="https://facebook.com/callejeando" target="_blank" aria-label="Facebook">
+                <i class="fab fa-facebook-f"></i>
+              </a>
+              <a href="https://tiktok.com/@callejeando" target="_blank" aria-label="TikTok">
+                <i class="fab fa-tiktok"></i>
+              </a>
+              <a href="https://youtube.com/callejeando" target="_blank" aria-label="YouTube">
+                <i class="fab fa-youtube"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 
-  <!-- ========== FOOTER ========== -->
+  <!-- ========== FOOTER (IGUAL AL INDEX) ========== -->
   <footer class="footer">
     <div class="footer-inner">
-      <p data-i18n="p.footer">© 2026 Callejeando. All rights reserved.</p>
-      <div class="footer-links">
-        <a href="../p terminos.html" data-i18n="a.terminos">Terms and Conditions</a>
-        <a href="../p privacidad.html" data-i18n="a.privacidad">Privacy</a>
-        <a href="../p contacto.html" data-i18n="a.contacto">ContactUs</a>
+      <div class="footer-brand">
+        <a href="../index.html" class="footer-logo-link">
+          <img src="../images/icons/logo.png" alt="Callejeando" class="footer-logo" />
+        </a>
+        <p data-i18n="footer.description">El archivo colaborativo que documenta y preserva la historia del skate en las
+          calles de Centroamérica.</p>
+        <div class="social-icons">
+          <a href="https://instagram.com/callejeando" target="_blank" aria-label="Instagram">
+            <i class="fab fa-instagram"></i>
+          </a>
+          <a href="https://youtube.com/callejeando" target="_blank" aria-label="YouTube">
+            <i class="fab fa-youtube"></i>
+          </a>
+          <a href="https://facebook.com/callejeando" target="_blank" aria-label="Facebook">
+            <i class="fab fa-facebook-f"></i>
+          </a>
+          <a href="https://tiktok.com/@callejeando" target="_blank" aria-label="TikTok">
+            <i class="fab fa-tiktok"></i>
+          </a>
+        </div>
       </div>
+
+      <div class="footer-links">
+        <div class="footer-column">
+          <h4 data-i18n="footer.explore">Explorar</h4>
+          <a href="../pages/spots.html" data-i18n="nav.spots">Spots</a>
+          <a href="../pages/eventos.html" data-i18n="nav.events">Eventos</a>
+          <a href="../pages/acerca.html" data-i18n="nav.about">Sobre Nosotros</a>
+          <a href="../pages/faqs.html" data-i18n="nav.faq">FAQS</a>
+        </div>
+
+        <div class="footer-column">
+          <h4 data-i18n="footer.resources">Recursos</h4>
+          <a href="../pages/terminos.html" data-i18n="a.terminos">Términos y Condiciones</a>
+          <a href="../pages/privacidad.html" data-i18n="a.privacidad">Política de Privacidad</a>
+          <a href="../pages/contacto.html" data-i18n="nav.contact">Contáctanos</a>
+          <a href="#" data-i18n="footer.community">Comunidad</a>
+        </div>
+
+        <div class="footer-column">
+          <h4 data-i18n="footer.connect">Conecta</h4>
+          <a href="mailto:hola@callejeando.com"><i class="fas fa-envelope"></i> hola@callejeando.com</a>
+          <a href="tel:+1234567890"><i class="fas fa-phone"></i> +123 456 7890</a>
+          <a href="https://maps.google.com" target="_blank"><i class="fas fa-map-marker-alt"></i> Centroamérica</a>
+          <div class="newsletter">
+            <p data-i18n="footer.newsletter">Suscríbete a nuestro newsletter</p>
+            <form class="newsletter-form">
+              <input type="email" placeholder="Tu correo" data-i18n-placeholder="footer.email" />
+              <button type="submit" aria-label="Subscribe">
+                <i class="fas fa-paper-plane"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p data-i18n="p.footer">© 2026 Callejeando. Todos los derechos reservados. | Skateboarding is not a crime.</p>
     </div>
   </footer>
 

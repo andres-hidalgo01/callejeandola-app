@@ -1,60 +1,54 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FAQs | Callejeando</title>
+  <title data-i18n="title.faq">FAQS | Callejeando</title>
+  <meta name="description"
+    content="Preguntas frecuentes sobre Callejeando. Aprende cómo usar la plataforma, añadir spots y ser parte de la comunidad.">
 
-  <link rel="stylesheet" href="../styles/styles.css" />
   <link rel="icon" href="../images/icons/pushing.png" />
+  <link rel="stylesheet" href="../styles/global.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 </head>
 
 <body class="home-body">
-  <!-- ================= TOPBAR ================= -->
+  <!-- TOPBAR -->
   <header class="topbar">
     <div class="topbar-inner">
       <a href="../index.html" class="topbar-logo" aria-label="Callejeando Home">
         <img src="../images/icons/logo.png" alt="Callejeando" class="logo-wordmark" />
       </a>
 
-      <!-- Menú desktop -->
       <ul class="topbar-menu">
         <li><a href="../pages/acerca.html" data-i18n="nav.about">About Us</a></li>
         <li><a href="../pages/spots.html" data-i18n="nav.spots">Spots</a></li>
         <li><a href="../pages/eventos.html" data-i18n="nav.events">Events</a></li>
-        <li><a href="../pages/faqs.html" data-i18n="nav.faq">FAQS</a></li>
+        <li><a href="../pages/faqs.html" data-i18n="nav.faq" aria-current="page">FAQS</a></li>
         <li><a href="../pages/contacto.html" data-i18n="nav.contact">Contact Us</a></li>
       </ul>
 
-      <!-- Busqueda -->
       <div class="topbar-search">
         <div class="topbar-search-inner">
-          <input type="text" placeholder="Spots or Events" data-i18n-placeholder="search.placeholder" />
-
+          <input type="text" placeholder="Buscar en FAQs..." data-i18n-placeholder="search.faqs" />
           <div class="search-icon" aria-hidden="true">
             <i class="fa-solid fa-magnifying-glass"></i>
           </div>
         </div>
       </div>
 
-      <!-- Idioma + Auth -->
       <div class="topbar-right">
-        <!-- Idioma dropdown (SOLO desktop) -->
         <div class="lang-dropdown">
-          <button class="lang-btn">
+          <button class="lang-btn" type="button" aria-label="Change language">
             <img src="../images/icons/world.png" class="flag" alt="ES" />
             <span></span>
           </button>
-
           <div class="lang-menu">
             <a href="#" data-lang="es"><img src="../images/icons/es.webp" class="flag" /> Español</a>
             <a href="#" data-lang="en"><img src="../images/icons/en.webp" class="flag" /> English</a>
           </div>
         </div>
-
-        <!-- Hamburger mobile -->
         <button class="nav-toggle" id="navToggle" aria-label="Menú">
           <span></span><span></span><span></span>
         </button>
@@ -62,134 +56,217 @@
     </div>
   </header>
 
-  <!-- ============== OVERLAY + MOBILE MENU ============== -->
+  <!-- MOBILE MENU -->
   <div class="mobile-overlay" id="mobileOverlay"></div>
   <div class="mobile-menu" id="mobileMenu">
-    <div class="mobile-menu-header">
-      <!-- LOGO -->
-      <div class="mobile-header-left">
-        <img src="../images/icons/logo.png" alt="Callejeando" />
-      </div>
-
-      <div id="mobileUserName" class="mobile-username"></div>
-
-      <!-- LOGIN + IDIOMA + CLOSE -->
-      <div class="mobile-header-actions">
-        <!-- IDIOMA DROPDOWN -->
-        <div class="mobile-header-lang">
-          <button id="mobileLangTrigger">
-            <img src="../images/icons/world.png" class="flag" alt="ES" />
-            <span></span>
-          </button>
-
-          <div id="mobileLangDropdown">
-            <a href="#" data-lang="es"><img src="../images/icons/es.webp" class="flag" /> Español</a>
-            <a href="#" data-lang="en"><img src="../images/icons/en.webp" class="flag" /> English</a>
-          </div>
-        </div>
-
-        <!-- CERRAR -->
-        <button id="closeMobileMenu" class="close-btn">&times;</button>
-      </div>
-    </div>
-
-    <!-- Search -->
-    <div class="mobile-search">
-      <input type="text" placeholder="Events or Code" />
-      <button class="mobile-search-btn">
-        <i class="fa-solid fa-magnifying-glass"></i>
-      </button>
-    </div>
-    <hr />
-
-    <!-- Módulos -->
-    <ul class="mobile-modules">
-      <li><a href="../pages/acerca.html" data-i18n="nav.about">Acerca de</a></li>
-      <li><a href="../pages/spots.html" data-i18n="nav.spots">Spots</a></li>
-      <li><a href="../pages/eventos.html" data-i18n="nav.events">Eventos</a></li>
-      <li><a href="../pages/faqs.html" data-i18n="nav.faq">FAQS</a></li>
-      <li><a href="../pages/contacto.html" data-i18n="nav.contact">Contacto</a></li>
-    </ul>
-
-    <div id="dashboardHeader"></div>
-    <div id="dashboardLinks"></div>
-
-    <hr />
+    <!-- Contenido igual -->
   </div>
 
-  <header class="legal-hero">
+  <!-- HERO FAQS -->
+  <header class="faqs-hero">
     <div class="hero-media">
-      <img class="hero-image" src="../images/homepage/faq.webp" alt="Skateboarding en la calle" />
+      <img class="hero-image" src="../images/faqs/hero-faqs.webp" alt="Skater haciendo truco" loading="lazy" />
     </div>
     <div class="hero-overlay"></div>
 
-    <div class="legal-hero-inner">
-      <div class="legal-kicker">❓ Callejeando / FAQs</div>
-      <h1 class="legal-title" data-i18n="h1.faq">Preguntas frecuentes</h1>
-      <p class="legal-subtitle" data-i18n="p.faqdescription">
-        Respuestas rápidas sobre spots, eventos, roles y funcionamiento de la
-        app.
-      </p>
+    <div class="faqs-hero-inner">
+      <div class="faqs-kicker" data-i18n="header.faqs">🛹 Callejeando / FAQs</div>
+      <h1 class="faqs-title" data-i18n="h1.faqs">Preguntas Frecuentes</h1>
+      <p class="faqs-subtitle" data-i18n="p.faqs.hero">Encuentra respuestas a las preguntas más comunes sobre la
+        plataforma.</p>
+
+      <!-- Búsqueda FAQ -->
+      <div class="faqs-search-box">
+        <input type="text" placeholder="¿Qué quieres saber?" data-i18n-placeholder="search.faqs.input" />
+        <button class="search-btn" aria-label="Buscar">
+          <i class="fas fa-magnifying-glass"></i>
+        </button>
+      </div>
     </div>
   </header>
 
-  <main class="legal-page">
-    <div class="legal-container">
-      <div class="legal-card">
-        <h2 data-i18n="h2.account">1. Cuenta</h2>
-        <ul>
-          <li data-i18n="li.firstfaq">
-            ¿Necesito cuenta? Para explorar no. Para inscribirte o ser
-            juez,sí.
-          </li>
+  <!-- CONTENIDO PRINCIPAL FAQS -->
+  <main>
+    <!-- Categorías -->
+    <section class="faqs-categories">
+      <div class="faqs-container">
+        <h2 data-i18n="h2.faqs.categories">Explora por Categorías</h2>
 
-          <li data-i18n="li.secondfaq">
-            ¿Puedo cambiar de rol? Sí, pero juez/admin dependen de asignación.
-          </li>
-        </ul>
+        <div class="categories-grid">
+          <button class="category-card" data-category="general">
+            <i class="fas fa-question-circle"></i>
+            <h3 data-i18n="faq.category.general">General</h3>
+            <p data-i18n="faq.category.general.desc">Preguntas sobre la plataforma</p>
+          </button>
 
-        <h2>2. Spots</h2>
-        <ul>
-          <li data-i18n="li.thirdfaq">
-            ¿Qué es “LIVE”? Sesiones recientes o actividad marcada por los
-            administradores.
-          </li>
-          <li data-i18n="li.fourthfaq">
-            ¿Puedo agregar un spot? En la versión completa: sí, con validación por
-            administradores.
-          </li>
-        </ul>
+          <button class="category-card" data-category="spots">
+            <i class="fas fa-map-marker-alt"></i>
+            <h3 data-i18n="faq.category.spots">Spots</h3>
+            <p data-i18n="faq.category.spots.desc">Sobre lugares y cómo añadirlos</p>
+          </button>
 
-        <h2 data-i18n="h2.faqevent">3. Eventos</h2>
-        <ul>
-          <li data-i18n="li.fifthfaq">
-            ¿Cómo me inscribo? Desde la página de eventos o dashboard de
-            competidor.
-          </li>
-          <li data-i18n="li.sixthfaq">
-            ¿Cómo funciona un juez? Se asigna a eventos y califica desde el
-            dashboard.
-          </li>
-        </ul>
+          <button class="category-card" data-category="events">
+            <i class="fas fa-calendar-alt"></i>
+            <h3 data-i18n="faq.category.events">Eventos</h3>
+            <p data-i18n="faq.category.events.desc">Sobre competencias y jams</p>
+          </button>
 
-        <h2 data-i18n="h2.location">4. Centroamérica</h2>
-        <p data-i18n="li.sevenfaq">
-          Empezamos por Centroamérica para construir una base sólida con la
-          escena local. La expansión se hará por etapas.
-        </p>
+          <button class="category-card" data-category="community">
+            <i class="fas fa-users"></i>
+            <h3 data-i18n="faq.category.community">Comunidad</h3>
+            <p data-i18n="faq.category.community.desc">Cómo participar y contribuir</p>
+          </button>
+
+          <button class="category-card" data-category="technical">
+            <i class="fas fa-cogs"></i>
+            <h3 data-i18n="faq.category.technical">Técnico</h3>
+            <p data-i18n="faq.category.technical.desc">Problemas y soluciones</p>
+          </button>
+
+          <button class="category-card" data-category="safety">
+            <i class="fas fa-shield-alt"></i>
+            <h3 data-i18n="faq.category.safety">Seguridad</h3>
+            <p data-i18n="faq.category.safety.desc">Consejos y buenas prácticas</p>
+          </button>
+        </div>
       </div>
-    </div>
+    </section>
+
+    <!-- FAQs por categoría -->
+    <section class="faqs-accordions">
+      <div class="faqs-container">
+        <h2 data-i18n="h2.faqs.all">Todas las Preguntas</h2>
+
+        <div class="faq-category-section" id="general-faqs">
+          <h3 class="faq-category-title">
+            <i class="fas fa-question-circle"></i>
+            <span data-i18n="faq.category.general">General</span>
+          </h3>
+
+          <div class="faq-accordion">
+            <button class="faq-question">
+              <span data-i18n="faq.q1">¿Qué es Callejeando?</span>
+              <i class="fas fa-chevron-down"></i>
+            </button>
+            <div class="faq-answer">
+              <p data-i18n="faq.a1">Callejeando es una plataforma colaborativa creada por y para skaters, con el
+                objetivo de documentar y preservar la historia del skateboarding en las calles de Centroamérica.</p>
+            </div>
+          </div>
+
+          <div class="faq-accordion">
+            <button class="faq-question">
+              <span data-i18n="faq.q2">¿Es gratis usar la plataforma?</span>
+              <i class="fas fa-chevron-down"></i>
+            </button>
+            <div class="faq-answer">
+              <p data-i18n="faq.a2">Sí, Callejeando es completamente gratis y siempre lo será. Creemos en el acceso
+                libre al conocimiento de la comunidad skate.</p>
+            </div>
+          </div>
+
+          <!-- Más FAQs generales... -->
+        </div>
+
+        <div class="faq-category-section" id="spots-faqs">
+          <h3 class="faq-category-title">
+            <i class="fas fa-map-marker-alt"></i>
+            <span data-i18n="faq.category.spots">Spots</span>
+          </h3>
+
+          <div class="faq-accordion">
+            <button class="faq-question">
+              <span data-i18n="faq.q3">¿Cómo puedo añadir un spot?</span>
+              <i class="fas fa-chevron-down"></i>
+            </button>
+            <div class="faq-answer">
+              <p data-i18n="faq.a3">Puedes añadir un spot desde la página de contacto o usando el formulario "Añadir
+                Spot". Necesitamos: nombre, ubicación, fotos y una descripción del lugar.</p>
+            </div>
+          </div>
+
+          <!-- Más FAQs de spots... -->
+        </div>
+
+        <!-- Más categorías de FAQs... -->
+      </div>
+    </section>
+
+    <!-- Pregunta no encontrada -->
+    <section class="faqs-not-found">
+      <div class="faqs-container">
+        <div class="not-found-content">
+          <i class="fas fa-search"></i>
+          <h2 data-i18n="h2.faqs.notfound">¿No encontraste tu respuesta?</h2>
+          <p data-i18n="p.faqs.notfound">Estamos aquí para ayudarte. Contáctanos directamente.</p>
+          <a href="../pages/contacto.html" class="btn-primary" data-i18n="button.contact.us">Contáctanos</a>
+        </div>
+      </div>
+    </section>
   </main>
 
-  <!-- ========== FOOTER ========== -->
+  <!-- ========== FOOTER (IGUAL AL INDEX) ========== -->
   <footer class="footer">
     <div class="footer-inner">
-      <p data-i18n="p.footer">© 2026 Callejeando. All rights reserved.</p>
-      <div class="footer-links">
-        <a href="../pages/terminos.html" data-i18n="a.terminos">Terms and Conditions</a>
-        <a href="../pages/privacidad.html" data-i18n="a.privacidad">Privacy</a>
-        <a href="../pages/contacto.html" data-i18n="a.contacto">ContactUs</a>
+      <div class="footer-brand">
+        <a href="../index.html" class="footer-logo-link">
+          <img src="../images/icons/logo.png" alt="Callejeando" class="footer-logo" />
+        </a>
+        <p data-i18n="footer.description">El archivo colaborativo que documenta y preserva la historia del skate en las
+          calles de Centroamérica.</p>
+        <div class="social-icons">
+          <a href="https://instagram.com/callejeando" target="_blank" aria-label="Instagram">
+            <i class="fab fa-instagram"></i>
+          </a>
+          <a href="https://youtube.com/callejeando" target="_blank" aria-label="YouTube">
+            <i class="fab fa-youtube"></i>
+          </a>
+          <a href="https://facebook.com/callejeando" target="_blank" aria-label="Facebook">
+            <i class="fab fa-facebook-f"></i>
+          </a>
+          <a href="https://tiktok.com/@callejeando" target="_blank" aria-label="TikTok">
+            <i class="fab fa-tiktok"></i>
+          </a>
+        </div>
       </div>
+
+      <div class="footer-links">
+        <div class="footer-column">
+          <h4 data-i18n="footer.explore">Explorar</h4>
+          <a href="../pages/spots.html" data-i18n="nav.spots">Spots</a>
+          <a href="../pages/eventos.html" data-i18n="nav.events">Eventos</a>
+          <a href="../pages/acerca.html" data-i18n="nav.about">Sobre Nosotros</a>
+          <a href="../pages/faqs.html" data-i18n="nav.faq">FAQS</a>
+        </div>
+
+        <div class="footer-column">
+          <h4 data-i18n="footer.resources">Recursos</h4>
+          <a href="../pages/terminos.html" data-i18n="a.terminos">Términos y Condiciones</a>
+          <a href="../pages/privacidad.html" data-i18n="a.privacidad">Política de Privacidad</a>
+          <a href="../pages/contacto.html" data-i18n="nav.contact">Contáctanos</a>
+          <a href="#" data-i18n="footer.community">Comunidad</a>
+        </div>
+
+        <div class="footer-column">
+          <h4 data-i18n="footer.connect">Conecta</h4>
+          <a href="mailto:hola@callejeando.com"><i class="fas fa-envelope"></i> hola@callejeando.com</a>
+          <a href="tel:+1234567890"><i class="fas fa-phone"></i> +123 456 7890</a>
+          <a href="https://maps.google.com" target="_blank"><i class="fas fa-map-marker-alt"></i> Centroamérica</a>
+          <div class="newsletter">
+            <p data-i18n="footer.newsletter">Suscríbete a nuestro newsletter</p>
+            <form class="newsletter-form">
+              <input type="email" placeholder="Tu correo" data-i18n-placeholder="footer.email" />
+              <button type="submit" aria-label="Subscribe">
+                <i class="fas fa-paper-plane"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p data-i18n="p.footer">© 2026 Callejeando. Todos los derechos reservados. | Skateboarding is not a crime.</p>
     </div>
   </footer>
 

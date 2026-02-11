@@ -1,72 +1,279 @@
 <!DOCTYPE html>
-<html lang="es" data-lang="es">
+<html lang="es">
+
 <head>
-  <!-- Mismo head que acerca.html -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title data-i18n="title.spots">Spots | Callejeando</title>
+  <meta name="description"
+    content="Descubre los mejores spots de skate en Centroamérica. Lugares legendarios documentados por la comunidad.">
+
+  <link rel="icon" href="../images/icons/pushing.png" />
+  <link rel="stylesheet" href="../styles/global.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 </head>
-<body class="page-body">
-  <!-- Mismo topbar y mobile menu que acerca.html -->
-  
-<!--  -->
 
+<body class="home-body">
+  <!-- TOPBAR (igual en todas las páginas) -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a href="../index.html" class="topbar-logo" aria-label="Callejeando Home">
+        <img src="../images/icons/logo.png" alt="Callejeando" class="logo-wordmark" />
+      </a>
 
+      <ul class="topbar-menu">
+        <li><a href="../pages/acerca.html" data-i18n="nav.about">About Us</a></li>
+        <li><a href="../pages/spots.html" data-i18n="nav.spots" aria-current="page">Spots</a></li>
+        <li><a href="../pages/eventos.html" data-i18n="nav.events">Events</a></li>
+        <li><a href="../pages/faqs.html" data-i18n="nav.faq">FAQS</a></li>
+        <li><a href="../pages/contacto.html" data-i18n="nav.contact">Contact Us</a></li>
+      </ul>
 
-<!--  -->
+      <div class="topbar-search">
+        <div class="topbar-search-inner">
+          <input type="text" placeholder="Buscar spots..." data-i18n-placeholder="search.spots" />
+          <div class="search-icon" aria-hidden="true">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </div>
+        </div>
+      </div>
 
-
-
-  <!-- Hero específico para Spots -->
-  <header class="legal-hero">
-    <div class="hero-media">
-      <img class="hero-image" src="../images/homepage/spots.webp" alt="Mapa de spots de skate" />
-    </div>
-    <div class="hero-overlay"></div>
-    <div class="legal-hero-inner">
-      <div class="legal-kicker" data-i18n="header.spots">🛹 Callejeando / Spots</div>
-      <h1 class="legal-title" data-i18n="h2.spots">Spots & Skateparks</h1>
-      <div class="about-chips">
-        <span class="about-chip"><i class="fa-solid fa-map-location-dot"></i> <span data-i18n="spots.map">Mapa Interactivo</span></span>
-        <span class="about-chip"><i class="fa-solid fa-list"></i> <span data-i18n="spots.list">Lista Completa</span></span>
-        <span class="about-chip"><i class="fa-solid fa-location-dot"></i> <span data-i18n="spots.add">Agregar Spot</span></span>
+      <div class="topbar-right">
+        <div class="lang-dropdown">
+          <button class="lang-btn" type="button" aria-label="Change language">
+            <img src="../images/icons/world.png" class="flag" alt="ES" />
+            <span></span>
+          </button>
+          <div class="lang-menu">
+            <a href="#" data-lang="es"><img src="../images/icons/es.webp" class="flag" /> Español</a>
+            <a href="#" data-lang="en"><img src="../images/icons/en.webp" class="flag" /> English</a>
+          </div>
+        </div>
+        <button class="nav-toggle" id="navToggle" aria-label="Menú">
+          <span></span><span></span><span></span>
+        </button>
       </div>
     </div>
   </header>
 
-  <!-- Contenido específico de Spots -->
-  <main class="legal-page">
-    <div class="legal-container">
-      <section class="legal-card">
-        <!-- Aquí va el contenido específico usando los componentes del CSS -->
-        <div class="spots-grid">
+  <!-- MOBILE MENU (igual en todas) -->
+  <div class="mobile-overlay" id="mobileOverlay"></div>
+  <div class="mobile-menu" id="mobileMenu">
+    <!-- Contenido igual que en index.html -->
+  </div>
+
+  <!-- HERO SPOTS -->
+  <header class="spots-hero">
+    <div class="hero-media">
+      <img class="hero-image" src="../images/spots/hero-spots.webp" alt="Skater en spot urbano" loading="lazy" />
+    </div>
+    <div class="hero-overlay"></div>
+
+    <div class="spots-hero-inner">
+      <div class="spots-kicker" data-i18n="header.spots">🛹 Callejeando / Spots</div>
+      <h1 class="spots-title" data-i18n="h1.spots">Spots Legendarios</h1>
+      <p class="spots-subtitle" data-i18n="p.spots.hero">Descubre los lugares donde se hizo historia del skate en
+        Centroamérica.</p>
+
+      <!-- Filtros -->
+      <div class="spots-filters">
+        <div class="filter-group">
+          <select class="filter-select" data-i18n-placeholder="filter.city">
+            <option value="" data-i18n="filter.all">Todas las ciudades</option>
+            <option value="guatemala">Guatemala</option>
+            <option value="san-salvador">San Salvador</option>
+            <option value="tegucigalpa">Tegucigalpa</option>
+            <option value="managua">Managua</option>
+            <option value="san-jose">San José</option>
+            <option value="panama">Panamá</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <select class="filter-select" data-i18n-placeholder="filter.type">
+            <option value="" data-i18n="filter.all">Todos los tipos</option>
+            <option value="plaza">Plaza</option>
+            <option value="street">Street</option>
+            <option value="park">Park</option>
+            <option value="diy">DIY Spot</option>
+            <option value="legendario">Legendario</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <select class="filter-select" data-i18n-placeholder="filter.difficulty">
+            <option value="" data-i18n="filter.all">Todas las dificultades</option>
+            <option value="principiante">Principiante</option>
+            <option value="intermedio">Intermedio</option>
+            <option value="avanzado">Avanzado</option>
+            <option value="pro">Pro</option>
+          </select>
+        </div>
+
+        <button class="btn-primary filter-btn" data-i18n="button.filter">Filtrar</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL SPOTS -->
+  <main>
+    <!-- Mapa interactivo -->
+    <section class="spots-map-section">
+      <div class="spots-container">
+        <h2 data-i18n="h2.spots.map">Mapa de Spots</h2>
+        <p data-i18n="p.spots.map">Explora visualmente dónde están ubicados los spots más icónicos.</p>
+        <div class="map-container">
+          <!-- Aquí iría un mapa interactivo (Google Maps/Leaflet) -->
+          <div class="map-placeholder">
+            <i class="fas fa-map-marked-alt"></i>
+            <p data-i18n="p.spots.map.coming">Mapa interactivo próximamente</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Grid de spots -->
+    <section class="spots-grid-section">
+      <div class="spots-container">
+        <div class="section-header">
+          <h2 data-i18n="h2.spots.featured">Spots Destacados</h2>
+          <div class="view-options">
+            <button class="view-btn active" data-view="grid" aria-label="Vista de cuadrícula">
+              <i class="fas fa-th-large"></i>
+            </button>
+            <button class="view-btn" data-view="list" aria-label="Vista de lista">
+              <i class="fas fa-list"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="spots-grid" id="spotsGrid">
+          <!-- Spots cargados dinámicamente -->
           <div class="spot-card">
-            <img src="../images/spots/spot1.jpg" alt="Spot 1" class="spot-image">
+            <div class="spot-image-container">
+              <img src="../images/spots/spot1.webp" alt="Plaza Central" class="spot-image" loading="lazy" />
+              <span class="spot-badge legendario" data-i18n="badge.legendary">Legendario</span>
+            </div>
             <div class="spot-info">
-              <h3>El Banco de la Curva</h3>
-              <p>San José, Costa Rica</p>
-              <div class="spot-tags">
-                <span class="spot-tag">Ledge</span>
-                <span class="spot-tag">Street</span>
+              <div class="spot-header">
+                <h3>Plaza Central</h3>
+                <span class="spot-rating">
+                  <i class="fas fa-star"></i> 4.8
+                </span>
               </div>
-              <a href="#" class="about-cta-btn secondary">Ver Detalles</a>
+              <p class="spot-location">
+                <i class="fas fa-map-marker-alt"></i> Guatemala City, Guatemala
+              </p>
+              <p class="spot-description">La plaza más icónica del skate guatemalteco desde los 90s.</p>
+              <div class="spot-tags">
+                <span class="tag street">Street</span>
+                <span class="tag advanced" data-i18n="tag.advanced">Avanzado</span>
+              </div>
+              <div class="spot-footer">
+                <a href="#" class="btn-secondary spot-detail" data-i18n="button.view.details">Ver Detalles</a>
+                <button class="icon-btn" aria-label="Añadir a favoritos">
+                  <i class="far fa-heart"></i>
+                </button>
+              </div>
             </div>
           </div>
-          <!-- Más spot cards... -->
+
+          <!-- Más spots... -->
         </div>
-        
-        <!-- CTA al final -->
-        <div class="about-cta">
-          <div class="about-cta-text">
-            <h3 data-i18n="spots.cta.title">¿Conocés un spot que no está?</h3>
-            <p data-i18n="spots.cta.subtitle">Ayudá a la comunidad agregándolo al mapa</p>
+
+        <div class="spots-pagination">
+          <button class="pagination-btn prev" disabled data-i18n="button.prev">Anterior</button>
+          <div class="page-numbers">
+            <span class="page-number active">1</span>
+            <span class="page-number">2</span>
+            <span class="page-number">3</span>
+            <span class="page-dots">...</span>
+            <span class="page-number">10</span>
           </div>
-          <div class="about-cta-actions">
-            <a class="about-cta-btn" href="contacto.html?subject=nuevo-spot" data-i18n="spots.cta.button">Reportar Spot</a>
-          </div>
+          <button class="pagination-btn next" data-i18n="button.next">Siguiente</button>
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
+
+    <!-- CTA para añadir spot -->
+    <section class="spots-cta">
+      <div class="spots-container">
+        <div class="cta-content">
+          <h2 data-i18n="h2.spots.add">¿Conoces un spot que no está aquí?</h2>
+          <p data-i18n="p.spots.add">Ayuda a documentar la historia del skate en Centroamérica.</p>
+          <a href="../pages/contacto.html" class="btn-primary" data-i18n="button.add.spot">Añadir un Spot</a>
+        </div>
+      </div>
+    </section>
   </main>
 
-  <!-- Mismo footer que acerca.html (con la corrección del logo) -->
+  <!-- ========== FOOTER (IGUAL AL INDEX) ========== -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <a href="../index.html" class="footer-logo-link">
+          <img src="../images/icons/logo.png" alt="Callejeando" class="footer-logo" />
+        </a>
+        <p data-i18n="footer.description">El archivo colaborativo que documenta y preserva la historia del skate en las
+          calles de Centroamérica.</p>
+        <div class="social-icons">
+          <a href="https://instagram.com/callejeando" target="_blank" aria-label="Instagram">
+            <i class="fab fa-instagram"></i>
+          </a>
+          <a href="https://youtube.com/callejeando" target="_blank" aria-label="YouTube">
+            <i class="fab fa-youtube"></i>
+          </a>
+          <a href="https://facebook.com/callejeando" target="_blank" aria-label="Facebook">
+            <i class="fab fa-facebook-f"></i>
+          </a>
+          <a href="https://tiktok.com/@callejeando" target="_blank" aria-label="TikTok">
+            <i class="fab fa-tiktok"></i>
+          </a>
+        </div>
+      </div>
+
+      <div class="footer-links">
+        <div class="footer-column">
+          <h4 data-i18n="footer.explore">Explorar</h4>
+          <a href="../pages/spots.html" data-i18n="nav.spots">Spots</a>
+          <a href="../pages/eventos.html" data-i18n="nav.events">Eventos</a>
+          <a href="../pages/acerca.html" data-i18n="nav.about">Sobre Nosotros</a>
+          <a href="../pages/faqs.html" data-i18n="nav.faq">FAQS</a>
+        </div>
+
+        <div class="footer-column">
+          <h4 data-i18n="footer.resources">Recursos</h4>
+          <a href="../pages/terminos.html" data-i18n="a.terminos">Términos y Condiciones</a>
+          <a href="../pages/privacidad.html" data-i18n="a.privacidad">Política de Privacidad</a>
+          <a href="../pages/contacto.html" data-i18n="nav.contact">Contáctanos</a>
+          <a href="#" data-i18n="footer.community">Comunidad</a>
+        </div>
+
+        <div class="footer-column">
+          <h4 data-i18n="footer.connect">Conecta</h4>
+          <a href="mailto:hola@callejeando.com"><i class="fas fa-envelope"></i> hola@callejeando.com</a>
+          <a href="tel:+1234567890"><i class="fas fa-phone"></i> +123 456 7890</a>
+          <a href="https://maps.google.com" target="_blank"><i class="fas fa-map-marker-alt"></i> Centroamérica</a>
+          <div class="newsletter">
+            <p data-i18n="footer.newsletter">Suscríbete a nuestro newsletter</p>
+            <form class="newsletter-form">
+              <input type="email" placeholder="Tu correo" data-i18n-placeholder="footer.email" />
+              <button type="submit" aria-label="Subscribe">
+                <i class="fas fa-paper-plane"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p data-i18n="p.footer">© 2026 Callejeando. Todos los derechos reservados. | Skateboarding is not a crime.</p>
+    </div>
+  </footer>
+
+  <script src="../js/main.js"></script>
+  <script src="../js/i18n.js"></script>
 </body>
+
 </html>
