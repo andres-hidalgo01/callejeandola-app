@@ -3,404 +3,285 @@
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Callejeando - Archivo de Skate</title>
-  <link rel="stylesheet" href="styles/styles.css" />
-  <link rel="icon" href="images/icons/pushing.png" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#0b0f17" />
+  <title>Callejeando — Spots, Clips y Eventos</title>
+  <meta name="description" content="Descubre spots y skateparks, mira clips y enterate de eventos. Callejeando." />
+  <link rel="stylesheet" href="styles/global.css" />
 </head>
 
-<body class="home-body">
-  <!-- ================= TOPBAR CON IDIOMAS ================= -->
-  <header class="topbar">
-    <div class="topbar-inner">
-      <a href="index.html" class="topbar-logo" aria-label="Callejeando Home">
-        <img src="images/icons/logo.png" alt="Callejeando" class="logo-wordmark" />
+<body>
+  <!-- Decorative background -->
+  <div class="bg-orb bg-orb--a" aria-hidden="true"></div>
+  <div class="bg-orb bg-orb--b" aria-hidden="true"></div>
+
+  <a class="skip-link" href="#main">Saltar al contenido</a>
+
+  <!-- Top App Bar -->
+  <header class="appbar">
+    <div class="container appbar__inner">
+      <a class="brand" href="#" aria-label="Callejeando">
+        <span class="brand__mark">C</span>
+        <span class="brand__text">
+          <span class="brand__name">Callejeando</span>
+          <span class="brand__tag">spots · clips · events</span>
+        </span>
       </a>
 
-      <!-- Menú desktop -->
-      <nav class="desktop-nav">
-        <ul class="topbar-menu">
-          <li><a href="pages/acerca.html">Acerca</a></li>
-          <li><a href="pages/spots.html">Spots</a></li>
-          <li><a href="pages/eventos.html">Eventos</a></li>
-          <li><a href="#direct-access">Explorar</a></li>
-          <li><a href="pages/contacto.html">Contacto</a></li>
-        </ul>
-      </nav>
-
-      <!-- Busqueda + Idioma -->
-      <div class="topbar-actions">
-        <div class="topbar-search">
-          <div class="topbar-search-inner">
-            <input type="text" placeholder="Buscar spots o eventos..." />
-            <div class="search-icon">
-              <i class="fa-solid fa-magnifying-glass"></i>
-            </div>
-          </div>
-        </div>
-
-        <!-- Selector de Idioma -->
-        <div class="language-selector">
-          <button class="lang-btn" id="langToggle">
-            <span class="lang-flag">
-              <img src="images/icons/es.webp" alt="Español" class="flag" />
-            </span>
-            <span class="lang-code">ES</span>
-            <i class="fa-solid fa-chevron-down"></i>
-          </button>
-          <div class="lang-dropdown" id="langDropdown">
-            <a href="#" data-lang="es" class="lang-option active">
-              <img src="images/icons/es.webp" alt="Español" class="flag" />
-              <span>Español</span>
-            </a>
-            <a href="#" data-lang="en" class="lang-option">
-              <img src="images/icons/en.webp" alt="English" class="flag" />
-              <span>English</span>
-            </a>
-          </div>
-        </div>
-
-        <!-- Hamburger mobile -->
-        <button class="nav-toggle" id="navToggle" aria-label="Menú">
-          <span></span>
-          <span></span>
-          <span></span>
+      <div class="appbar__actions">
+        <button class="icon-btn" id="btnTheme" type="button" aria-label="Cambiar tema">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M21 12.3A8.2 8.2 0 1 1 11.7 3a6.8 6.8 0 0 0 9.3 9.3Z" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" />
+          </svg>
+        </button>
+        <button class="btn btn-primary" id="btnAddSpot" type="button">
+          + Add spot
         </button>
       </div>
     </div>
   </header>
 
-  <!-- ============== MOBILE MENU COMPLETO ============== -->
-  <div class="mobile-overlay" id="mobileOverlay"></div>
-  <nav class="mobile-menu" id="mobileMenu">
-    <div class="mobile-menu-header">
-      <div class="mobile-header-left">
-        <img src="images/icons/logo.png" alt="Callejeando" />
-      </div>
-
-      <!-- Idioma móvil -->
-      <div class="mobile-language">
-        <button class="mobile-lang-btn" id="mobileLangToggle">
-          <img src="images/icons/es.webp" alt="ES" class="flag" />
-          <span>ES</span>
-          <i class="fa-solid fa-chevron-down"></i>
-        </button>
-        <div class="mobile-lang-dropdown" id="mobileLangDropdown">
-          <a href="#" data-lang="es" class="active">
-            <img src="images/icons/es.webp" alt="Español" /> Español
-          </a>
-          <a href="#" data-lang="en">
-            <img src="images/icons/en.webp" alt="English" /> English
-          </a>
-        </div>
-      </div>
-
-      <button id="closeMobileMenu" class="close-btn">&times;</button>
-    </div>
-
-    <!-- Search móvil -->
-    <div class="mobile-search">
-      <input type="text" placeholder="Buscar spots o eventos..." />
-      <button class="mobile-search-btn">
-        <i class="fa-solid fa-magnifying-glass"></i>
-      </button>
-    </div>
-
-    <!-- Navegación principal -->
-    <ul class="mobile-modules">
-      <li class="mobile-module-item">
-        <a href="index.html">
-          <i class="fa-solid fa-house"></i>
-          <span>Inicio</span>
-        </a>
-      </li>
-      <li class="mobile-module-item">
-        <a href="pages/spots.html">
-          <i class="fa-solid fa-map-location-dot"></i>
-          <span>Mapa de Spots</span>
-        </a>
-      </li>
-      <li class="mobile-module-item">
-        <a href="pages/eventos.html">
-          <i class="fa-solid fa-calendar-days"></i>
-          <span>Eventos</span>
-        </a>
-      </li>
-      <li class="mobile-module-item">
-        <a href="pages/acerca.html">
-          <i class="fa-solid fa-circle-info"></i>
-          <span>Acerca del Proyecto</span>
-        </a>
-      </li>
-      <li class="mobile-module-item">
-        <a href="pages/faqs.html">
-          <i class="fa-solid fa-question-circle"></i>
-          <span>Preguntas Frecuentes</span>
-        </a>
-      </li>
-      <li class="mobile-module-item">
-        <a href="pages/contacto.html">
-          <i class="fa-solid fa-envelope"></i>
-          <span>Contacto</span>
-        </a>
-      </li>
-    </ul>
-
-    <!-- Enlaces legales -->
-    <div class="mobile-legal">
-      <a href="pages/terminos.html">Términos</a>
-      <a href="pages/privacidad.html">Privacidad</a>
-    </div>
-  </nav>
-
-  <!-- ================= HERO ================= -->
-  <section class="hero-improved" id="hero">
-    <div class="hero-media">
-      <video class="hero-video" autoplay muted loop playsinline preload="metadata" poster="videos/hero-skate.mp4">
-        <source src="videos/hero-skate.mp4" type="video/mp4" />
-      </video>
-    </div>
-    <div class="hero-overlay"></div>
-
-    <div class="hero-content-improved">
-      <h1 class="hero-title-improved" data-i18n="hero.title">
-        <span>HACIENDO EL SKATEBOARDING</span><br>
-        <span class="hero-title-highlight">HISTÓRICO</span>
-      </h1>
-
-      <p class="hero-subtitle" data-i18n="hero.subtitle">
-        Documenta, explora y comparte la historia de los spots de skate de la ciudad.<br>
-        El archivo colaborativo por y para skaters.
-      </p>
-
-      <div class="hero-cta">
-        <a href="#direct-access" class="cta-primary" data-i18n="hero.cta.explore">
-          COMENZAR A EXPLORAR
-        </a>
-        <a href="pages/acerca.html" class="cta-secondary" data-i18n="hero.cta.learn">
-          CONOCER MÁS
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ========== ACCESOS DIRECTOS ========== -->
-  <section class="direct-access" id="direct-access">
-    <h2 class="access-title" data-i18n="access.title">Cómo Usar Callejeando</h2>
-    <p class="access-subtitle" data-i18n="access.subtitle">Todo lo que necesitas para explorar la escena local</p>
-
-    <div class="access-grid">
-      <div class="access-card">
-        <div class="card-icon">
-          <i class="fa-solid fa-map-location-dot"></i>
-        </div>
-        <h3 class="card-title" data-i18n="access.card1.title">Encontrar Spots</h3>
-        <p class="card-description" data-i18n="access.card1.description">
-          Explora el mapa interactivo con todos los spots de skate de la ciudad. Ve fotos, detalles, obstáculos y
-          reseñas de skaters.
-        </p>
-        <a href="pages/spots.html" class="card-button" data-i18n="access.card1.cta">
-          VER MAPA
-        </a>
-      </div>
-
-      <div class="access-card">
-        <div class="card-icon">
-          <i class="fa-solid fa-calendar-days"></i>
-        </div>
-        <h3 class="card-title" data-i18n="access.card2.title">Unirse a Eventos</h3>
-        <p class="card-description" data-i18n="access.card2.description">
-          Revisa las próximas sesiones, competencias y jams. No te pierdas ningún encuentro de skate en tu área.
-        </p>
-        <a href="pages/eventos.html" class="card-button" data-i18n="access.card2.cta">
-          VER CALENDARIO
-        </a>
-      </div>
-
-      <div class="access-card">
-        <div class="card-icon">
-          <i class="fa-solid fa-pen-to-square"></i>
-        </div>
-        <h3 class="card-title" data-i18n="access.card3.title">Compartir Conocimiento</h3>
-        <p class="card-description" data-i18n="access.card3.description">
-          ¿Conoces un spot que no está listado? Añade fotos, tips o historias para ayudar a construir el archivo
-          comunitario.
-        </p>
-        <a href="pages/contacto.html?subject=contribution" class="card-button" data-i18n="access.card3.cta">
-          CONTRIBUIR
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ========== SPOTS DESTACADOS ========== -->
-  <section class="featured-spots">
-    <div class="featured-header">
-      <h2 data-i18n="spots.featured.title">Spots de Skate Destacados</h2>
-      <p data-i18n="spots.featured.subtitle">Locaciones recién añadidas o legendarias</p>
-    </div>
-
-    <div class="spots-preview-grid">
-      <div class="spot-preview-card">
-        <div class="spot-preview-image" style="background-image: url('images/spots/spot1.jpg');">
-          <span class="spot-badge">Recomendado</span>
-        </div>
-        <div class="spot-preview-info">
-          <h4>El Banco de la Curva</h4>
-          <p class="spot-location"><i class="fa-solid fa-location-dot"></i> Centro Histórico</p>
-          <p class="spot-desc">Ledge histórico de mármol perfecto para slides y grinds.</p>
-          <div class="spot-tags">
-            <span class="spot-tag">Street</span>
-            <span class="spot-tag">Ledge</span>
-            <span class="spot-tag">Abierto</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="spot-preview-card">
-        <div class="spot-preview-image" style="background-image: url('images/spots/spot2.jpg');">
-          <span class="spot-badge park">Skatepark</span>
-        </div>
-        <div class="spot-preview-info">
-          <h4>Parque de los 6</h4>
-          <p class="spot-location"><i class="fa-solid fa-location-dot"></i> Zona Norte</p>
-          <p class="spot-desc">Skatepark completo con bowls, rampas y street section.</p>
-          <div class="spot-tags">
-            <span class="spot-tag">Park</span>
-            <span class="spot-tag">Bowls</span>
-            <span class="spot-tag">Iluminado</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="spot-preview-card">
-        <div class="spot-preview-image" style="background-image: url('images/spots/spot3.jpg');">
-          <span class="spot-badge legendary">Legendario</span>
-        </div>
-        <div class="spot-preview-info">
-          <h4>Escalinatas Centrales</h4>
-          <p class="spot-location"><i class="fa-solid fa-location-dot"></i> Universidad</p>
-          <p class="spot-desc">10 escalones con barandal para trucos técnicos y gaps.</p>
-          <div class="spot-tags">
-            <span class="spot-tag">Street</span>
-            <span class="spot-tag">Stairs</span>
-            <span class="spot-tag">Handrail</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <a href="pages/spots.html" class="view-all-btn" data-i18n="spots.viewAll">
-      Ver Todos los Spots <i class="fa-solid fa-arrow-right"></i>
-    </a>
-  </section>
-
-  <!-- ========== ¿POR QUÉ CALLEJEANDO? ========== -->
-  <section class="why-section">
-    <h2 data-i18n="why.title">¿Por Qué Documentar Spots de Skate?</h2>
-    <p class="why-subtitle" data-i18n="why.subtitle">Manteniendo viva la cultura del skateboarding</p>
-
-    <div class="why-grid">
-      <div class="why-card">
-        <div class="why-icon">
-          <i class="fa-solid fa-history"></i>
-        </div>
-        <h3 data-i18n="why.card1.title">Preservar la Historia</h3>
-        <p data-i18n="why.card1.description">Los spots se demuelen, renuevan o pierden con el tiempo. Nosotros
-          mantenemos su memoria viva.</p>
-      </div>
-
-      <div class="why-card">
-        <div class="why-icon">
-          <i class="fa-solid fa-people-group"></i>
-        </div>
-        <h3 data-i18n="why.card2.title">Construir Comunidad</h3>
-        <p data-i18n="why.card2.description">Conecta skaters locales y comparte conocimiento entre generaciones.</p>
-      </div>
-
-      <div class="why-card">
-        <div class="why-icon">
-          <i class="fa-solid fa-map"></i>
-        </div>
-        <h3 data-i18n="why.card3.title">Descubrir Nuevos Spots</h3>
-        <p data-i18n="why.card3.description">Encuentra gemas ocultas y planea tus sesiones de skate más efectivamente.
-        </p>
-      </div>
-
-      <div class="why-card">
-        <div class="why-icon">
-          <i class="fa-solid fa-camera"></i>
-        </div>
-        <h3 data-i18n="why.card4.title">Documentar Progreso</h3>
-        <p data-i18n="why.card4.description">Registra trucos logrados, sesiones memorables y la evolución de cada spot.
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ========== FOOTER COMPLETO ========== -->
-  <footer class="footer">
-    <div class="footer-main">
-      <div class="footer-inner">
-        <div class="footer-brand">
-          <img src="images/icons/logo.png" alt="Callejeando" class="footer-logo" />
-          <p data-i18n="footer.tagline">El archivo colaborativo de spots de skate.</p>
-          <div class="footer-social">
-            <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-            <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
-            <a href="#" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
-            <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
-          </div>
-        </div>
-
-        <div class="footer-links">
-          <div class="footer-column">
-            <h4 data-i18n="footer.explore">Explorar</h4>
-            <a href="pages/spots.html" data-i18n="footer.spots">Spots</a>
-            <a href="pages/eventos.html" data-i18n="footer.events">Eventos</a>
-            <a href="pages/acerca.html" data-i18n="footer.about">Acerca</a>
-            <a href="#direct-access" data-i18n="footer.howItWorks">Cómo Funciona</a>
-          </div>
-
-          <div class="footer-column">
-            <h4 data-i18n="footer.community">Comunidad</h4>
-            <a href="pages/contacto.html?subject=contribution" data-i18n="footer.contribute">Contribuir</a>
-            <a href="pages/faqs.html" data-i18n="footer.faq">Preguntas Frecuentes</a>
-            <a href="#" data-i18n="footer.guides">Guías</a>
-            <a href="pages/contacto.html" data-i18n="footer.support">Soporte</a>
-          </div>
-
-          <div class="footer-column">
-            <h4 data-i18n="footer.legal">Legal</h4>
-            <a href="pages/terminos.html" data-i18n="footer.terms">Términos</a>
-            <a href="pages/privacidad.html" data-i18n="footer.privacy">Privacidad</a>
-            <a href="#" data-i18n="footer.cookies">Cookies</a>
-            <a href="pages/contacto.html" data-i18n="footer.report">Reportar Problema</a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="footer-bottom">
-      <div class="footer-bottom-inner">
-        <p data-i18n="footer.copyright">© 2026 Callejeando. El skateboarding es cultura.</p>
-        <div class="footer-bottom-links">
-          <a href="pages/contacto.html" data-i18n="footer.contact">Contacto</a>
-          <span class="separator">•</span>
-          <a href="pages/acerca.html" data-i18n="footer.aboutUs">Acerca de Nosotros</a>
-          <span class="separator">•</span>
-          <button class="language-toggle" id="footerLangToggle">
-            <i class="fa-solid fa-globe"></i> <span data-i18n="footer.language">Idioma</span>
+  <main id="main" class="main">
+    <!-- Layout: left content + right map (desktop). On mobile: stacked. -->
+    <section class="container shell">
+      <!-- LEFT: content -->
+      <div class="panel">
+        <!-- Tabs (like app sections) -->
+        <div class="tabs" role="tablist" aria-label="Secciones">
+          <button class="tab is-active" role="tab" aria-selected="true" data-tab="spots">
+            Spots
+          </button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="clips">
+            Clips
+          </button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="events">
+            Events
+          </button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="profile">
+            Profile
           </button>
         </div>
-      </div>
-    </div>
-  </footer>
 
-  <!-- Scripts -->
-  <script src="js/main.js"></script>
-  <script src="js/i18n.js"></script>
+        <!-- SPOTS -->
+        <section class="view is-active" data-view="spots">
+          <div class="view__head">
+            <div>
+              <h1 class="h1">Encuentra spots cerca</h1>
+              <p class="sub">Filtros rápidos, favoritos y detalle por obstáculo.</p>
+            </div>
+
+            <div class="segmented" role="group" aria-label="Modo">
+              <button class="seg is-active" type="button" data-mode="list">List</button>
+              <button class="seg" type="button" data-mode="map">Map</button>
+            </div>
+          </div>
+
+          <div class="toolbar">
+            <div class="search">
+              <label class="sr-only" for="qSpots">Buscar spots</label>
+              <input id="qSpots" type="search" placeholder="Buscar: nombre, zona, obstáculo…" autocomplete="off" />
+            </div>
+
+            <div class="chips" aria-label="Filtros">
+              <button class="chip chip-btn is-active" type="button" data-filter="all">All</button>
+              <button class="chip chip-btn" type="button" data-filter="street">Street</button>
+              <button class="chip chip-btn" type="button" data-filter="park">Park</button>
+              <button class="chip chip-btn" type="button" data-filter="bowl">Bowl</button>
+              <button class="chip chip-btn" type="button" data-filter="stairs">Stairs</button>
+              <button class="chip chip-btn" type="button" data-filter="ledge">Ledge</button>
+            </div>
+          </div>
+
+          <div class="kpis">
+            <div class="kpi">
+              <div class="kpi__num" id="kpiSpots">—</div>
+              <div class="kpi__label">spots visibles</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi__num" id="kpiFavs">—</div>
+              <div class="kpi__label">favoritos</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi__num">⚡</div>
+              <div class="kpi__label">modo “rápido”</div>
+            </div>
+          </div>
+
+          <div class="cards" id="spotsList" aria-label="Listado de spots"></div>
+
+          <div class="empty" id="spotsEmpty" hidden>
+            <div class="empty__icon">🛹</div>
+            <h3>No encontramos spots con ese filtro</h3>
+            <p class="muted">Prueba otro tipo u obstáculo, o agrega el tuyo.</p>
+            <button class="btn btn-primary" type="button" id="btnAddSpot2">+ Add spot</button>
+          </div>
+        </section>
+
+        <!-- CLIPS -->
+        <section class="view" data-view="clips">
+          <div class="view__head">
+            <div>
+              <h1 class="h1">Clips & Highlights</h1>
+              <p class="sub">Feed rápido para inspiración. (Mock listo para conectar a backend.)</p>
+            </div>
+            <button class="btn btn-secondary" id="btnUpload" type="button">Upload clip</button>
+          </div>
+
+          <div class="toolbar">
+            <div class="search">
+              <label class="sr-only" for="qClips">Buscar clips</label>
+              <input id="qClips" type="search" placeholder="Buscar: skater, spot, truco…" autocomplete="off" />
+            </div>
+            <div class="chips">
+              <button class="chip chip-btn is-active" type="button" data-clipfilter="all">All</button>
+              <button class="chip chip-btn" type="button" data-clipfilter="trick">Tricks</button>
+              <button class="chip chip-btn" type="button" data-clipfilter="line">Lines</button>
+              <button class="chip chip-btn" type="button" data-clipfilter="bail">Bails</button>
+            </div>
+          </div>
+
+          <div class="masonry" id="clipsGrid" aria-label="Grid de clips"></div>
+        </section>
+
+        <!-- EVENTS -->
+        <section class="view" data-view="events">
+          <div class="view__head">
+            <div>
+              <h1 class="h1">Eventos</h1>
+              <p class="sub">Calendario claro: ubicación, hora, formato.</p>
+            </div>
+            <button class="btn btn-secondary" id="btnCreateEvent's" type="button">Create event</button>
+          </div>
+
+          <div class="cards" id="eventsList" aria-label="Listado de eventos"></div>
+        </section>
+
+        <!-- PROFILE -->
+        <section class="view" data-view="profile">
+          <div class="profile">
+            <div class="profile__card surface">
+              <div class="profile__top">
+                <div class="avatar" aria-hidden="true">CJ</div>
+                <div>
+                  <h2 class="h2">Tu perfil</h2>
+                  <p class="muted">Guarda spots, comparte clips y arma sesiones.</p>
+                </div>
+              </div>
+
+              <div class="profile__stats">
+                <div class="stat">
+                  <div class="stat__num" id="pFavs">—</div>
+                  <div class="stat__label">favoritos</div>
+                </div>
+                <div class="stat">
+                  <div class="stat__num">12</div>
+                  <div class="stat__label">clips</div>
+                </div>
+                <div class="stat">
+                  <div class="stat__num">4</div>
+                  <div class="stat__label">check-ins</div>
+                </div>
+              </div>
+
+              <div class="profile__actions">
+                <button class="btn btn-primary" type="button" id="btnShare">Share profile</button>
+                <button class="btn btn-ghost" type="button" id="btnSettings">Settings</button>
+              </div>
+            </div>
+
+            <div class="profile__card card">
+              <h3>Favoritos</h3>
+              <p class="muted">Tu lista rápida para salir a session.</p>
+              <div class="mini" id="favoritesList"></div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- RIGHT: Map / Community Card -->
+      <aside class="side">
+        <div class="map surface">
+          <div class="map__head">
+            <div>
+              <h3 class="h3">Mapa</h3>
+              <p class="muted micro">Mock de mapa (pines). Integra tu mapa real después.</p>
+            </div>
+            <button class="icon-btn" id="btnLocate" type="button" aria-label="Centrar en mi ubicación">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 22a10 10 0 1 0-10-10" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                <path d="M12 8v4l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              </svg>
+            </button>
+          </div>
+
+          <div class="map__canvas" id="mapCanvas" aria-label="Mapa (mock)">
+            <div class="pin pin--a" title="Spot"></div>
+            <div class="pin pin--b" title="Spot"></div>
+            <div class="pin pin--c" title="Spot"></div>
+          </div>
+
+          <div class="map__foot">
+            <button class="btn btn-secondary" type="button" id="btnRoute">Route</button>
+            <button class="btn btn-ghost" type="button" id="btnReport">Report</button>
+          </div>
+        </div>
+
+        <div class="community card">
+          <div class="badge-row">
+            <span class="badge">Community</span>
+            <span class="badge badge--soft">Verified</span>
+          </div>
+          <h3>Hecho por skaters</h3>
+          <p class="muted">
+            Reporta spots, guarda favoritos y mantén la data viva con la comunidad.
+          </p>
+          <div class="community__actions">
+            <button class="btn btn-primary" type="button" id="btnJoin">Join</button>
+            <button class="btn btn-secondary" type="button" id="btnRules">Reglas</button>
+          </div>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <!-- Bottom Nav (mobile-first feel) -->
+  <nav class="bottom-nav" aria-label="Navegación inferior">
+    <button class="bn is-active" type="button" data-tab="spots" aria-label="Spots">
+      <span class="bn__icon">📍</span><span class="bn__label">Spots</span>
+    </button>
+    <button class="bn" type="button" data-tab="clips" aria-label="Clips">
+      <span class="bn__icon">🎬</span><span class="bn__label">Clips</span>
+    </button>
+    <button class="bn" type="button" data-tab="events" aria-label="Events">
+      <span class="bn__icon">🏁</span><span class="bn__label">Events</span>
+    </button>
+    <button class="bn" type="button" data-tab="profile" aria-label="Profile">
+      <span class="bn__icon">👤</span><span class="bn__label">Profile</span>
+    </button>
+  </nav>
+
+  <!-- Modal -->
+  <dialog class="modal" id="modal">
+    <form method="dialog" class="modal__card surface">
+      <div class="modal__head">
+        <h3 class="h3" id="modalTitle">Detalle</h3>
+        <button class="icon-btn" value="cancel" aria-label="Cerrar">✕</button>
+      </div>
+      <div class="modal__body" id="modalBody"></div>
+      <div class="modal__foot">
+        <button class="btn btn-secondary" value="cancel">Cerrar</button>
+        <button class="btn btn-primary" id="modalPrimary" value="default">OK</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Toast -->
+  <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true" hidden>
+    <span id="toastMsg">Listo</span>
+  </div>
+
+  <script src="js/app.js"></script>
 </body>
 
 </html>

@@ -1,42 +1,28 @@
-# Callejeandola Skateboarding App — Front-End
+# Callejeando — Static UI v2 (Aprobación)
 
-Front-End de la aplicación **Callejeandola Skateboarding**.
+Esta carpeta contiene una **versión estática (front-end only)** de Callejeando para:
+- aprobar UI/UX
+- validar navegación/flujo
+- y después migrar a backend + API sin rehacer diseño.
 
-Este proyecto corresponde a la parte **visual y pública** de la app y actualmente se despliega como un sitio **estático** en Vercel.
+> Nota: La versión actual del sitio tiene secciones About/Spots/Events/FAQs/Contact. Esta v2 conserva esos anclajes para migración simple. 
 
-------------------------------------------
+---
 
-## 🧱 Stack
-- HTML
-- CSS
-- JavaScript (vanilla)
+## 📦 Estructura
 
-------------------------------------------
+- `index.html`  → layout + secciones + componentes
+- `global.css`  → design system base (tokens, botones, cards, chips, tabs, modal, toast)
+- `app.js`      → interacción: tabs, filtros, búsqueda, favoritos (localStorage), modal, toast
 
-## 📁 Estructura
-Front-End/
-- pages/
-- styles/
-- js/
-- images/
-- videos/
+---
 
----------------------------------------------
+## ▶️ Cómo correrlo (rápido)
 
-## 🚀 Deploy
-- Plataforma: **Vercel**
-- Tipo: Sitio estático
+### Opción A — Abrir directo
+1. Abre `index.html` en tu navegador.
 
-El directorio raíz del deploy es `Front-End/` (o `Front-End/pages/` según configuración).
-
----------------------------------------------
-
-## 🔐 Notas
-- Archivos privados (dashboard, login, registro) no se incluyen en el deploy.
-- No se suben secretos ni configuraciones sensibles.
-- Este Front-End está preparado para consumir una API externa.
-
----------------------------------------------
-
-## 🔌 Backend
-Este Front-End consume datos desde una **API REST** independiente (Node + Express).
+### Opción B — Servidor local (recomendado)
+Con Node:
+```bash
+npx serve .
