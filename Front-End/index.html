@@ -3,7 +3,8 @@
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <!-- Zoom bloqueado para aprobación -->
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
   <meta name="theme-color" content="#0b0f17" />
   <title>Callejeando — Spots, Clips y Eventos</title>
   <meta name="description" content="Descubre spots y skateparks, mira clips y enterate de eventos. Callejeando." />
@@ -20,7 +21,8 @@
   <!-- Top App Bar -->
   <header class="appbar">
     <div class="container appbar__inner">
-      <a class="brand" href="#" aria-label="Callejeando">
+      <!-- IMPORTANTE: el brand apunta al top -->
+      <a class="brand" href="#main" aria-label="Callejeando">
         <span class="brand__mark">C</span>
         <span class="brand__text">
           <span class="brand__name">Callejeando</span>
@@ -35,32 +37,44 @@
               stroke-linecap="round" />
           </svg>
         </button>
-        <button class="btn btn-primary" id="btnAddSpot" type="button">
-          + Add spot
-        </button>
+        <button class="btn btn-primary" id="btnAddSpot" type="button">+ Add spot</button>
       </div>
     </div>
   </header>
 
+  <!-- Sponsors ribbon -->
+  <section class="sponsors" aria-label="Patrocinadores">
+    <div class="container sponsors__inner">
+      <span class="badge sponsors__badge">Sponsors</span>
+      <div class="marquee" role="list" aria-label="Cintillo de marcas">
+        <div class="marquee__track">
+          <span class="sponsor" role="listitem">VANS</span>
+          <span class="sponsor" role="listitem">RED BULL</span>
+          <span class="sponsor" role="listitem">NIKE SB</span>
+          <span class="sponsor" role="listitem">INDEPENDENT</span>
+          <span class="sponsor" role="listitem">SPITFIRE</span>
+          <span class="sponsor" role="listitem">LOCAL SHOP</span>
+
+          <span class="sponsor" role="listitem">VANS</span>
+          <span class="sponsor" role="listitem">RED BULL</span>
+          <span class="sponsor" role="listitem">NIKE SB</span>
+          <span class="sponsor" role="listitem">INDEPENDENT</span>
+          <span class="sponsor" role="listitem">SPITFIRE</span>
+          <span class="sponsor" role="listitem">LOCAL SHOP</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <main id="main" class="main">
-    <!-- Layout: left content + right map (desktop). On mobile: stacked. -->
     <section class="container shell">
-      <!-- LEFT: content -->
+      <!-- LEFT -->
       <div class="panel">
-        <!-- Tabs (like app sections) -->
         <div class="tabs" role="tablist" aria-label="Secciones">
-          <button class="tab is-active" role="tab" aria-selected="true" data-tab="spots">
-            Spots
-          </button>
-          <button class="tab" role="tab" aria-selected="false" data-tab="clips">
-            Clips
-          </button>
-          <button class="tab" role="tab" aria-selected="false" data-tab="events">
-            Events
-          </button>
-          <button class="tab" role="tab" aria-selected="false" data-tab="profile">
-            Profile
-          </button>
+          <button class="tab is-active" role="tab" aria-selected="true" data-tab="spots">Spots</button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="clips">Clips</button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="events">Events</button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="profile">Profile</button>
         </div>
 
         <!-- SPOTS -->
@@ -91,6 +105,10 @@
               <button class="chip chip-btn" type="button" data-filter="stairs">Stairs</button>
               <button class="chip chip-btn" type="button" data-filter="ledge">Ledge</button>
             </div>
+          </div>
+
+          <div class="status-row" aria-live="polite" aria-atomic="true">
+            <span class="status" id="spotsStatus">Mostrando resultados…</span>
           </div>
 
           <div class="kpis">
@@ -151,7 +169,8 @@
               <h1 class="h1">Eventos</h1>
               <p class="sub">Calendario claro: ubicación, hora, formato.</p>
             </div>
-            <button class="btn btn-secondary" id="btnCreateEvent's" type="button">Create event</button>
+            <!-- FIX: id válido -->
+            <button class="btn btn-secondary" id="btnCreateEvent" type="button">Create event</button>
           </div>
 
           <div class="cards" id="eventsList" aria-label="Listado de eventos"></div>
@@ -199,19 +218,17 @@
         </section>
       </div>
 
-      <!-- RIGHT: Map / Community Card -->
+      <!-- RIGHT -->
       <aside class="side">
-        <div class="map surface">
+        <!-- FIX: id="mapCard" para que el toggle funcione -->
+        <div class="map surface" id="mapCard">
           <div class="map__head">
             <div>
               <h3 class="h3">Mapa</h3>
               <p class="muted micro">Mock de mapa (pines). Integra tu mapa real después.</p>
             </div>
             <button class="icon-btn" id="btnLocate" type="button" aria-label="Centrar en mi ubicación">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M12 22a10 10 0 1 0-10-10" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                <path d="M12 8v4l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-              </svg>
+              ◎
             </button>
           </div>
 
@@ -227,6 +244,29 @@
           </div>
         </div>
 
+        <!-- NUEVO: Sponsors card (solo en Events) -->
+        <div class="card" id="sponsorsCard" hidden>
+          <div class="badge-row">
+            <span class="badge">Sponsors</span>
+            <span class="badge badge--soft">Competencias</span>
+          </div>
+          <h3 class="h3">Patrocinadores del circuito</h3>
+          <p class="muted micro">Bloque para sponsors cuando el usuario entra a Events.</p>
+
+          <div class="sponsors-grid">
+            <a class="sponsor-tile" href="#" aria-label="VANS"><span>VANS</span></a>
+            <a class="sponsor-tile" href="#" aria-label="NIKE SB"><span>NIKE SB</span></a>
+            <a class="sponsor-tile" href="#" aria-label="RED BULL"><span>RED BULL</span></a>
+            <a class="sponsor-tile" href="#" aria-label="LOCAL SHOP"><span>LOCAL SHOP</span></a>
+          </div>
+
+          <div class="community__actions" style="margin-top:12px;">
+            <button class="btn btn-primary" type="button" id="btnSponsors">Ver paquetes</button>
+            <button class="btn btn-secondary" type="button" id="btnSponsorContact">Contactar</button>
+          </div>
+        </div>
+
+        <!-- Community card -->
         <div class="community card">
           <div class="badge-row">
             <span class="badge">Community</span>
@@ -243,9 +283,20 @@
         </div>
       </aside>
     </section>
+
+    <!-- Page transition overlay -->
+    <div class="busy" id="busy">
+      <div class="busy__card surface">
+        <div class="spinner" aria-hidden="true"></div>
+        <div>
+          <div class="busy__title" id="busyTitle">Cargando…</div>
+          <div class="busy__sub muted micro" id="busySub">Actualizando contenido</div>
+        </div>
+      </div>
+    </div>
   </main>
 
-  <!-- Bottom Nav (mobile-first feel) -->
+  <!-- Bottom Nav -->
   <nav class="bottom-nav" aria-label="Navegación inferior">
     <button class="bn is-active" type="button" data-tab="spots" aria-label="Spots">
       <span class="bn__icon">📍</span><span class="bn__label">Spots</span>

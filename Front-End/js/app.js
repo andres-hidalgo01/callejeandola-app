@@ -1,6 +1,6 @@
 /* ================================
    Callejeando v2 — Front-end JS
-   Tabs + render mock data + filtros
+   Tabs + render mock data + filtros + UX feedback
    ================================ */
 
 const $ = (q, el = document) => el.querySelector(q);
@@ -35,7 +35,8 @@ let state = {
   clipsQuery: "",
   favorites: new Set(loadFavs()),
   theme: loadTheme(),
-  mode: "list", // list | map (UI only)
+  mode: "list",
+  _hydrated: false,
 };
 
 /* ---------- Init ---------- */
@@ -47,23 +48,54 @@ bindFilters();
 bindSearch();
 bindActions();
 renderAll();
+state._hydrated = true;
+
+/* ---------- Brand -> top + Spots ---------- */
+document.querySelector(".brand")?.addEventListener("click", (e) => {
+  e.preventDefault();
+  document.querySelector("#main")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  setTab("spots");
+  pulseBusy("Home", "Volviendo al inicio");
+});
 
 /* ---------- Tabs ---------- */
 function setTab(tab) {
   state.tab = tab;
 
-  // top tabs
+  // Tabs arriba
   $$(".tab").forEach((b) => {
     const active = b.dataset.tab === tab;
     b.classList.toggle("is-active", active);
     b.setAttribute("aria-selected", String(active));
   });
 
-  // bottom nav
+  // Bottom nav
   $$(".bn").forEach((b) => b.classList.toggle("is-active", b.dataset.tab === tab));
 
-  // views
+  // Views
   $$(".view").forEach((v) => v.classList.toggle("is-active", v.dataset.view === tab));
+
+  // Overlay corto
+  if (state._hydrated) {
+    pulseBusy(
+      tab === "spots" ? "Spots" :
+        tab === "clips" ? "Clips" :
+          tab === "events" ? "Events" : "Profile",
+      "Cambiando sección"
+    );
+  }
+
+  // Sidebar toggle: Events => sponsors card (si existe)
+  const mapCard = $("#mapCard");
+  const sponsorsCard = $("#sponsorsCard");
+  if (mapCard && sponsorsCard) {
+    const inEvents = tab === "events";
+    mapCard.hidden = inEvents;
+    sponsorsCard.hidden = !inEvents;
+  }
+
+  // Móvil: subir al panel para que se note el cambio
+  document.querySelector(".panel")?.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 function bindTabs() {
@@ -76,8 +108,7 @@ function bindBottomNav() {
 
 /* ---------- Theme ---------- */
 function bindTheme() {
-  const btn = $("#btnTheme");
-  btn?.addEventListener("click", () => {
+  $("#btnTheme")?.addEventListener("click", () => {
     state.theme = state.theme === "dark" ? "light" : "dark";
     applyTheme(state.theme);
     saveTheme(state.theme);
@@ -97,27 +128,28 @@ function saveTheme(t) {
 
 /* ---------- Filters / search ---------- */
 function bindFilters() {
-  // spots chips
   $$(".chip-btn[data-filter]").forEach((b) => {
     b.addEventListener("click", () => {
       state.spotsFilter = b.dataset.filter;
       $$(".chip-btn[data-filter]").forEach((x) => x.classList.remove("is-active"));
       b.classList.add("is-active");
+      pulseBusy("Filtrando…", `Spots: ${cap(state.spotsFilter)}`);
       renderSpots();
+      flashResults("#spotsList");
     });
   });
 
-  // clips chips
   $$(".chip-btn[data-clipfilter]").forEach((b) => {
     b.addEventListener("click", () => {
       state.clipsFilter = b.dataset.clipfilter;
       $$(".chip-btn[data-clipfilter]").forEach((x) => x.classList.remove("is-active"));
       b.classList.add("is-active");
+      pulseBusy("Filtrando…", `Clips: ${cap(state.clipsFilter)}`);
       renderClips();
+      flashResults("#clipsGrid");
     });
   });
 
-  // segmented mode (UI only)
   $$(".seg").forEach((b) => {
     b.addEventListener("click", () => {
       state.mode = b.dataset.mode;
@@ -128,16 +160,18 @@ function bindFilters() {
 }
 
 function bindSearch() {
-  const qSpots = $("#qSpots");
-  qSpots?.addEventListener("input", () => {
-    state.spotsQuery = qSpots.value.trim().toLowerCase();
+  $("#qSpots")?.addEventListener("input", (e) => {
+    state.spotsQuery = e.target.value.trim().toLowerCase();
+    pulseBusy("Buscando…", "Actualizando resultados");
     renderSpots();
+    flashResults("#spotsList");
   });
 
-  const qClips = $("#qClips");
-  qClips?.addEventListener("input", () => {
-    state.clipsQuery = qClips.value.trim().toLowerCase();
+  $("#qClips")?.addEventListener("input", (e) => {
+    state.clipsQuery = e.target.value.trim().toLowerCase();
+    pulseBusy("Buscando…", "Actualizando clips");
     renderClips();
+    flashResults("#clipsGrid");
   });
 }
 
@@ -146,15 +180,25 @@ function bindActions() {
   $("#btnAddSpot")?.addEventListener("click", openAddSpot);
   $("#btnAddSpot2")?.addEventListener("click", openAddSpot);
 
-  $("#btnUpload")?.addEventListener("click", () => modalInfo("Upload clip", "Conecta aquí tu flow de subida (S3, Cloudinary, etc.)."));
+  $("#btnUpload")?.addEventListener("click", () =>
+    modalInfo("Upload clip", "Conecta aquí tu flow de subida (S3, Cloudinary, etc.).")
+  );
+
   $("#btnJoin")?.addEventListener("click", () => toast("Te uniste a la comunidad 🤝"));
-  $("#btnRules")?.addEventListener("click", () => modalInfo("Reglas", "Mantén la data limpia: spots reales, ubicación clara, y reportes útiles."));
+  $("#btnRules")?.addEventListener("click", () =>
+    modalInfo("Reglas", "Mantén la data limpia: spots reales, ubicación clara, y reportes útiles.")
+  );
+
   $("#btnLocate")?.addEventListener("click", () => toast("Ubicación: (mock) centrada"));
   $("#btnRoute")?.addEventListener("click", () => toast("Ruta: (mock) abierta"));
-  $("#btnReport")?.addEventListener("click", () => modalInfo("Report", "Agrega reportes: seguridad, obras, vigilancia, piso, etc."));
+  $("#btnReport")?.addEventListener("click", () =>
+    modalInfo("Report", "Agrega reportes: seguridad, obras, vigilancia, piso, etc.")
+  );
 
   $("#btnShare")?.addEventListener("click", () => toast("Link de perfil copiado (mock)"));
-  $("#btnSettings")?.addEventListener("click", () => modalInfo("Settings", "Conecta preferencias: idioma, privacidad, notificaciones."));
+  $("#btnSettings")?.addEventListener("click", () =>
+    modalInfo("Settings", "Conecta preferencias: idioma, privacidad, notificaciones.")
+  );
 }
 
 /* ---------- Render ---------- */
@@ -175,9 +219,7 @@ function renderSpots() {
     .filter((s) => {
       const f = state.spotsFilter;
       if (f === "all") return true;
-      // type filters
       if (["street", "park", "bowl"].includes(f)) return s.type === f;
-      // obstacle filters
       return s.obstacles.includes(f);
     })
     .filter((s) => {
@@ -186,28 +228,40 @@ function renderSpots() {
       return hay.includes(state.spotsQuery);
     });
 
-  // empty state
   const isEmpty = filtered.length === 0;
-  empty.hidden = !isEmpty;
-  list.style.display = isEmpty ? "none" : "grid";
+  if (empty) empty.hidden = !isEmpty;
+  if (list) list.style.display = isEmpty ? "none" : "grid";
 
-  list.innerHTML = filtered.map(spotCard).join("");
+  if (list) list.innerHTML = filtered.map(spotCard).join("");
 
-  // bind card buttons
   filtered.forEach((s) => {
     $(`#open_${s.id}`)?.addEventListener("click", () => openSpot(s));
     $(`#fav_${s.id}`)?.addEventListener("click", () => toggleFav(s.id));
   });
 
-  $("#kpiSpots").textContent = String(filtered.length);
+  $("#kpiSpots") && ($("#kpiSpots").textContent = String(filtered.length));
+
+  const st = $("#spotsStatus");
+  if (st) st.textContent = `Mostrando ${filtered.length} spot(s) · Favoritos: ${state.favorites.size}`;
+
   updateKpis();
   renderFavorites();
+
+  const listEl = $("#spotsList");
+  if (listEl && (state.spotsQuery || state.spotsFilter !== "all")) {
+    const rect = listEl.getBoundingClientRect();
+    if (rect.top > window.innerHeight * 0.55) {
+      listEl.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }
 }
 
 function spotCard(s) {
   const fav = state.favorites.has(s.id);
   const stars = starText(s.rating);
-  const verified = s.verified ? `<span class="badge badge--soft">Verified</span>` : `<span class="badge">Unverified</span>`;
+  const verified = s.verified
+    ? `<span class="badge badge--soft">Verified</span>`
+    : `<span class="badge">Unverified</span>`;
 
   return `
     <article class="card spot">
@@ -238,6 +292,8 @@ function spotCard(s) {
 
 function renderClips() {
   const grid = $("#clipsGrid");
+  if (!grid) return;
+
   const filtered = CLIPS
     .filter((c) => (state.clipsFilter === "all" ? true : c.tag === state.clipsFilter))
     .filter((c) => {
@@ -268,6 +324,8 @@ function renderClips() {
 
 function renderEvents() {
   const list = $("#eventsList");
+  if (!list) return;
+
   list.innerHTML = EVENTS.map((e) => `
     <article class="card event">
       <div class="event__date">
@@ -290,8 +348,8 @@ function renderEvents() {
   `).join("");
 
   $$("[data-event]").forEach((b) => b.addEventListener("click", () => {
-    const e = EVENTS.find(x => x.id === b.dataset.event);
-    modalInfo(e.title, `Hora: ${e.time}<br/>Lugar: ${e.place}<br/>Formato: ${e.format}`);
+    const ev = EVENTS.find(x => x.id === b.dataset.event);
+    modalInfo(ev.title, `Hora: ${ev.time}<br/>Lugar: ${ev.place}<br/>Formato: ${ev.format}`);
   }));
   $$("[data-cal]").forEach((b) => b.addEventListener("click", () => toast("Calendario (mock)")));
 }
@@ -300,10 +358,11 @@ function renderFavorites() {
   const box = $("#favoritesList");
   const favs = SPOTS.filter((s) => state.favorites.has(s.id));
 
-  $("#kpiFavs").textContent = String(favs.length);
-  $("#pFavs").textContent = String(favs.length);
+  $("#kpiFavs") && ($("#kpiFavs").textContent = String(state.favorites.size));
+  $("#pFavs") && ($("#pFavs").textContent = String(state.favorites.size));
 
   if (!box) return;
+
   if (favs.length === 0) {
     box.innerHTML = `<div class="mini-item"><span class="muted">Aún no tienes favoritos</span><span>♡</span></div>`;
     return;
@@ -320,8 +379,8 @@ function renderFavorites() {
 }
 
 function updateKpis() {
-  $("#kpiFavs").textContent = String(state.favorites.size);
-  $("#pFavs").textContent = String(state.favorites.size);
+  $("#kpiFavs") && ($("#kpiFavs").textContent = String(state.favorites.size));
+  $("#pFavs") && ($("#pFavs").textContent = String(state.favorites.size));
 }
 
 /* ---------- Favorites storage ---------- */
@@ -334,7 +393,8 @@ function toggleFav(id) {
     toast("Guardado en favoritos");
   }
   saveFavs([...state.favorites]);
-  renderSpots(); // rerender to update icons
+  renderSpots();
+  flashResults("#spotsList");
 }
 
 function loadFavs() {
@@ -352,10 +412,12 @@ function saveFavs(arr) {
 /* ---------- Modal ---------- */
 function modalInfo(title, html) {
   const dlg = $("#modal");
+  if (!dlg) return;
+
   $("#modalTitle").textContent = title;
   $("#modalBody").innerHTML = html;
   $("#modalPrimary").textContent = "Ok";
-  dlg?.showModal();
+  dlg.showModal();
 }
 
 function openSpot(s) {
@@ -389,10 +451,62 @@ function openAddSpot() {
 let toastTimer = null;
 function toast(msg) {
   const t = $("#toast");
+  if (!t) return;
+
   $("#toastMsg").textContent = msg;
   t.hidden = false;
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => (t.hidden = true), 1600);
+}
+
+/* ---------- Busy overlay (blindado, NO se pega) ---------- */
+function pulseBusy(title, sub) {
+  const b = $("#busy");
+  if (!b) return;
+
+  const t = $("#busyTitle");
+  const s = $("#busySub");
+
+  if (t) t.textContent = title || "Cargando…";
+  if (s) s.textContent = sub || "Actualizando contenido";
+
+  // show
+  b.classList.add("is-open");
+  b.style.display = "grid"; // backup por si CSS raro
+
+  clearTimeout(pulseBusy._timer);
+  clearTimeout(pulseBusy._failsafe);
+
+  // hide normal
+  pulseBusy._timer = setTimeout(() => hideBusy(), 380);
+
+  // failsafe: SIEMPRE oculta aunque algo falle
+  pulseBusy._failsafe = setTimeout(() => hideBusy(), 1200);
+}
+
+function hideBusy() {
+  const b = $("#busy");
+  if (!b) return;
+  b.classList.remove("is-open");
+  b.style.display = "none";
+}
+
+// Si la pestaña cambia, evita overlays pegados
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) hideBusy();
+});
+
+/* ---------- Flash highlight ---------- */
+function flashResults(selector = "#spotsList") {
+  const el = document.querySelector(selector);
+  if (!el) return;
+
+  el.classList.remove("flash");
+  void el.offsetWidth;
+  el.classList.add("flash");
+
+  clearTimeout(flashResults._t);
+  flashResults._t = setTimeout(() => el.classList.remove("flash"), 450);
 }
 
 /* ---------- Helpers ---------- */
@@ -401,7 +515,7 @@ function starText(r) {
   const full = Math.floor(r);
   const half = (r - full) >= 0.5;
   const stars = "★★★★★".split("").map((_, i) => (i < full ? "★" : "☆"));
-  if (half && full < 5) stars[full] = "★"; // simple (no half-star char)
+  if (half && full < 5) stars[full] = "★";
   return stars.join("");
 }
 function escapeHtml(str) {
