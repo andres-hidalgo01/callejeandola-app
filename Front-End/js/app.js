@@ -119,9 +119,11 @@ function bindTheme() {
 function applyTheme(theme) {
   document.documentElement.setAttribute("data-theme", theme === "light" ? "light" : "dark");
 }
+
 function loadTheme() {
   return localStorage.getItem("cj_theme") || "dark";
 }
+
 function saveTheme(t) {
   localStorage.setItem("cj_theme", t);
 }
@@ -405,6 +407,7 @@ function loadFavs() {
     return [];
   }
 }
+
 function saveFavs(arr) {
   localStorage.setItem("cj_favs", JSON.stringify(arr));
 }
@@ -518,8 +521,16 @@ function starText(r) {
   if (half && full < 5) stars[full] = "★";
   return stars.join("");
 }
+
 function escapeHtml(str) {
   return String(str).replace(/[&<>"']/g, (m) => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
   }[m]));
 }
+
+navigator.geolocation.getCurrentPosition(pos => {
+  map.flyTo({
+    center: [pos.coords.longitude, pos.coords.latitude],
+    zoom: 14
+  });
+});
