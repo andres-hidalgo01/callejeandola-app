@@ -1,28 +1,23 @@
-# Callejeando — Static UI v2 (Aprobación)
+# Callejeando — Static Demo v2
 
-Esta carpeta contiene una **versión estática (front-end only)** de Callejeando para:
-- aprobar UI/UX
-- validar navegación/flujo
-- y después migrar a backend + API sin rehacer diseño.
-
-> Nota: La versión actual del sitio tiene secciones About/Spots/Events/FAQs/Contact. Esta v2 conserva esos anclajes para migración simple. 
+Demo estático para UI/UX (Spots / Clips / Events / Profile) listo para:
+- Subir a Vercel como **Static**
+- Conectar API real sin romper el diseño
+- Mantener fallback de mocks si backend falla
 
 ---
 
-## 📦 Estructura
+## Estructura de carpetas
 
-- `index.html`  → layout + secciones + componentes
-- `global.css`  → design system base (tokens, botones, cards, chips, tabs, modal, toast)
-- `app.js`      → interacción: tabs, filtros, búsqueda, favoritos (localStorage), modal, toast
-
----
-
-## ▶️ Cómo correrlo (rápido)
-
-### Opción A — Abrir directo
-1. Abre `index.html` en tu navegador.
-
-### Opción B — Servidor local (recomendado)
-Con Node:
-```bash
-npx serve .
+```txt
+/
+├── index.html
+├── vercel.json
+├── /styles
+│   └── global.css
+├── /js
+│   ├── app.js
+│   └── api.js
+└── /assets
+   ├── favicon.svg
+   └── placeholder-logo.svg

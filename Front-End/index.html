@@ -1,27 +1,26 @@
 <!doctype html>
-<html lang="es">
+<html lang="es" data-theme="dark">
 
 <head>
   <meta charset="UTF-8" />
-  <!-- Zoom bloqueado para aprobación -->
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
   <meta name="theme-color" content="#0b0f17" />
   <title>Callejeando — Spots, Clips y Eventos</title>
-  <meta name="description" content="Descubre spots y skateparks, mira clips y enterate de eventos. Callejeando." />
+  <meta name="description" content="Descubre spots y skateparks, mira clips y entérate de eventos. Callejeando." />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="styles/global.css" />
 </head>
 
 <body>
-  <!-- Decorative background -->
+  <!-- Background decor -->
   <div class="bg-orb bg-orb--a" aria-hidden="true"></div>
   <div class="bg-orb bg-orb--b" aria-hidden="true"></div>
 
   <a class="skip-link" href="#main">Saltar al contenido</a>
 
-  <!-- Top App Bar -->
+  <!-- Top bar -->
   <header class="appbar">
     <div class="container appbar__inner">
-      <!-- IMPORTANTE: el brand apunta al top -->
       <a class="brand" href="#main" aria-label="Callejeando">
         <span class="brand__mark">C</span>
         <span class="brand__text">
@@ -42,26 +41,12 @@
     </div>
   </header>
 
-  <!-- Sponsors ribbon -->
+  <!-- Sponsors ribbon (desde API si existe) -->
   <section class="sponsors" aria-label="Patrocinadores">
     <div class="container sponsors__inner">
       <span class="badge sponsors__badge">Sponsors</span>
-      <div class="marquee" role="list" aria-label="Cintillo de marcas">
-        <div class="marquee__track">
-          <span class="sponsor" role="listitem">VANS</span>
-          <span class="sponsor" role="listitem">RED BULL</span>
-          <span class="sponsor" role="listitem">NIKE SB</span>
-          <span class="sponsor" role="listitem">INDEPENDENT</span>
-          <span class="sponsor" role="listitem">SPITFIRE</span>
-          <span class="sponsor" role="listitem">LOCAL SHOP</span>
-
-          <span class="sponsor" role="listitem">VANS</span>
-          <span class="sponsor" role="listitem">RED BULL</span>
-          <span class="sponsor" role="listitem">NIKE SB</span>
-          <span class="sponsor" role="listitem">INDEPENDENT</span>
-          <span class="sponsor" role="listitem">SPITFIRE</span>
-          <span class="sponsor" role="listitem">LOCAL SHOP</span>
-        </div>
+      <div class="marquee" aria-label="Cintillo de marcas">
+        <div class="marquee__track" id="sponsorsMarquee"></div>
       </div>
     </div>
   </section>
@@ -122,11 +107,11 @@
             </div>
             <div class="kpi">
               <div class="kpi__num">⚡</div>
-              <div class="kpi__label">modo “rápido”</div>
+              <div class="kpi__label">demo listo</div>
             </div>
           </div>
 
-          <div class="cards" id="spotsList" aria-label="Listado de spots"></div>
+          <div class="cards flashable" id="spotsList" aria-label="Listado de spots"></div>
 
           <div class="empty" id="spotsEmpty" hidden>
             <div class="empty__icon">🛹</div>
@@ -159,7 +144,7 @@
             </div>
           </div>
 
-          <div class="masonry" id="clipsGrid" aria-label="Grid de clips"></div>
+          <div class="masonry flashable" id="clipsGrid" aria-label="Grid de clips"></div>
         </section>
 
         <!-- EVENTS -->
@@ -169,11 +154,10 @@
               <h1 class="h1">Eventos</h1>
               <p class="sub">Calendario claro: ubicación, hora, formato.</p>
             </div>
-            <!-- FIX: id válido -->
             <button class="btn btn-secondary" id="btnCreateEvent" type="button">Create event</button>
           </div>
 
-          <div class="cards" id="eventsList" aria-label="Listado de eventos"></div>
+          <div class="cards flashable" id="eventsList" aria-label="Listado de eventos"></div>
         </section>
 
         <!-- PROFILE -->
@@ -194,12 +178,12 @@
                   <div class="stat__label">favoritos</div>
                 </div>
                 <div class="stat">
-                  <div class="stat__num">12</div>
+                  <div class="stat__num" id="pClips">—</div>
                   <div class="stat__label">clips</div>
                 </div>
                 <div class="stat">
-                  <div class="stat__num">4</div>
-                  <div class="stat__label">check-ins</div>
+                  <div class="stat__num" id="pEvents">—</div>
+                  <div class="stat__label">eventos</div>
                 </div>
               </div>
 
@@ -220,16 +204,13 @@
 
       <!-- RIGHT -->
       <aside class="side">
-        <!-- FIX: id="mapCard" para que el toggle funcione -->
         <div class="map surface" id="mapCard">
           <div class="map__head">
             <div>
               <h3 class="h3">Mapa</h3>
-              <p class="muted micro">Mock de mapa (pines). Integra tu mapa real después.</p>
+              <p class="muted micro">Mock de mapa (pines). Integra mapa real después.</p>
             </div>
-            <button class="icon-btn" id="btnLocate" type="button" aria-label="Centrar en mi ubicación">
-              ◎
-            </button>
+            <button class="icon-btn" id="btnLocate" type="button" aria-label="Centrar en mi ubicación">◎</button>
           </div>
 
           <div class="map__canvas" id="mapCanvas" aria-label="Mapa (mock)">
@@ -244,21 +225,15 @@
           </div>
         </div>
 
-        <!-- NUEVO: Sponsors card (solo en Events) -->
         <div class="card" id="sponsorsCard" hidden>
           <div class="badge-row">
             <span class="badge">Sponsors</span>
             <span class="badge badge--soft">Competencias</span>
           </div>
           <h3 class="h3">Patrocinadores del circuito</h3>
-          <p class="muted micro">Bloque para sponsors cuando el usuario entra a Events.</p>
+          <p class="muted micro">Este bloque se muestra cuando entras a Events.</p>
 
-          <div class="sponsors-grid">
-            <a class="sponsor-tile" href="#" aria-label="VANS"><span>VANS</span></a>
-            <a class="sponsor-tile" href="#" aria-label="NIKE SB"><span>NIKE SB</span></a>
-            <a class="sponsor-tile" href="#" aria-label="RED BULL"><span>RED BULL</span></a>
-            <a class="sponsor-tile" href="#" aria-label="LOCAL SHOP"><span>LOCAL SHOP</span></a>
-          </div>
+          <div class="sponsors-grid" id="sponsorsGrid"></div>
 
           <div class="community__actions" style="margin-top:12px;">
             <button class="btn btn-primary" type="button" id="btnSponsors">Ver paquetes</button>
@@ -266,16 +241,13 @@
           </div>
         </div>
 
-        <!-- Community card -->
         <div class="community card">
           <div class="badge-row">
             <span class="badge">Community</span>
             <span class="badge badge--soft">Verified</span>
           </div>
           <h3>Hecho por skaters</h3>
-          <p class="muted">
-            Reporta spots, guarda favoritos y mantén la data viva con la comunidad.
-          </p>
+          <p class="muted">Reporta spots, guarda favoritos y mantén la data viva con la comunidad.</p>
           <div class="community__actions">
             <button class="btn btn-primary" type="button" id="btnJoin">Join</button>
             <button class="btn btn-secondary" type="button" id="btnRules">Reglas</button>
@@ -284,7 +256,7 @@
       </aside>
     </section>
 
-    <!-- Page transition overlay -->
+    <!-- Busy overlay -->
     <div class="busy" id="busy">
       <div class="busy__card surface">
         <div class="spinner" aria-hidden="true"></div>
@@ -296,7 +268,7 @@
     </div>
   </main>
 
-  <!-- Bottom Nav -->
+  <!-- Bottom nav -->
   <nav class="bottom-nav" aria-label="Navegación inferior">
     <button class="bn is-active" type="button" data-tab="spots" aria-label="Spots">
       <span class="bn__icon">📍</span><span class="bn__label">Spots</span>
@@ -332,7 +304,9 @@
     <span id="toastMsg">Listo</span>
   </div>
 
-  <script src="js/app.js"></script>
+  <script type="module" src="js/app.js"></script>
+
+  
 </body>
 
 </html>

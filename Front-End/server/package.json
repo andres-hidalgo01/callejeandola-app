@@ -1,0 +1,12 @@
+{
+  "name": "callejeando-mock-api",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node mock-api.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2"
+  }
+}
