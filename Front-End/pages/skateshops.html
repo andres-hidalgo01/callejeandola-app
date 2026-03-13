@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title data-i18n="title.skateshops">Skateshops | Callejeandola</title>
+
+    <link rel="icon" href="../images/icons/pushing.png" />
+    <link rel="stylesheet" href="../styles/styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+</head>
+
+
+<body class="home-body">
+    <!-- ================= TOPBAR ================= -->
+    <header class="topbar">
+        <div class="topbar-inner">
+            <a href="../index.html" class="topbar-logo" aria-label="Callejeandola Home">
+                <img src="../images/icons/logo.png" alt="Callejeandola" class="logo-wordmark" />
+            </a>
+
+            <ul class="topbar-menu">
+                <li><a href="../pages/acerca.html" data-i18n="nav.about" aria-current="page">About Us</a></li>
+                <li><a href="../pages/skateshops.html" data-i18n="nav.skateshops" aria-current="page">Skateshops</a>
+                </li>
+                <li><a href="../pages/spots.html" data-i18n="nav.spots">Spots</a></li>
+                <li><a href="../pages/eventos.html" data-i18n="nav.events">Events</a></li>
+                <li><a href="../pages/faqs.html" data-i18n="nav.faq">FAQS</a></li>
+                <li><a href="../pages/contacto.html" data-i18n="nav.contact">Contact Us</a></li>
+            </ul>
+
+            <div class="topbar-search">
+                <div class="topbar-search-inner">
+                    <input type="text" placeholder="Spots or Events" data-i18n-placeholder="search.placeholder" />
+                    <div class="search-icon" aria-hidden="true">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="topbar-right">
+                <div class="lang-dropdown">
+                    <button class="lang-btn" type="button" aria-label="Change language">
+                        <img src="../images/icons/world.png" class="flag" alt="ES" />
+                        <span></span>
+                    </button>
+
+                    <div class="lang-menu">
+                        <a href="#" data-lang="es"><img src="../images/icons/es.webp" class="flag" /> Español</a>
+                        <a href="#" data-lang="en"><img src="../images/icons/en.webp" class="flag" /> English</a>
+                    </div>
+                </div>
+
+                <button class="nav-toggle" id="navToggle" aria-label="Menú">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ============== OVERLAY + MOBILE MENU ============== -->
+    <div class="mobile-overlay" id="mobileOverlay"></div>
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu-header">
+            <div class="mobile-header-left">
+                <img src="../images/icons/logo.png" alt="Callejeandola" />
+            </div>
+
+            <div id="mobileUserName" class="mobile-username"></div>
+
+            <div class="mobile-header-actions">
+                <div class="mobile-header-lang">
+                    <button id="mobileLangTrigger" type="button" aria-label="Change language">
+                        <img src="../images/icons/world.png" class="flag" alt="ES" />
+                        <span></span>
+                    </button>
+
+                    <div id="mobileLangDropdown">
+                        <a href="#" data-lang="es"><img src="../images/icons/es.webp" class="flag" /> Español</a>
+                        <a href="#" data-lang="en"><img src="../images/icons/en.webp" class="flag" /> English</a>
+                    </div>
+                </div>
+
+                <button id="closeMobileMenu" class="close-btn" type="button">&times;</button>
+            </div>
+        </div>
+
+        <div class="mobile-search">
+            <input type="text" placeholder="Spots or Events" data-i18n-placeholder="search.placeholder" />
+            <button class="mobile-search-btn" type="button" aria-label="Search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+        </div>
+        <hr />
+
+        <ul class="mobile-modules">
+            <li><a href="../pages/acerca.html" data-i18n="nav.about" aria-current="page">Acerca de</a></li>
+            <li><a href="../pages/skateshops.html" data-i18n="nav.skateshops" aria-current="page">Skateshops</a></li>
+            <li><a href="../pages/spots.html" data-i18n="nav.spots">Spots</a></li>
+            <li><a href="../pages/eventos.html" data-i18n="nav.events">Eventos</a></li>
+            <li><a href="../pages/faqs.html" data-i18n="nav.faq">FAQS</a></li>
+            <li><a href="../pages/contacto.html" data-i18n="nav.contact">Contacto</a></li>
+        </ul>
+
+        <div id="dashboardHeader"></div>
+        <div id="dashboardLinks"></div>
+        <hr />
+    </div>
+
+    <!-- ============== HERO ============== -->
+    <header class="legal-hero">
+        <div class="hero-media">
+            <img class="hero-image" src="../images/homepage/skateshops.webp" alt="Skateboarding en la calle">
+        </div>
+
+        <div class="hero-overlay"></div>
+        <div class="legal-hero-inner">
+            <div class="legal-kicker" data-i18n="about.skateshops">🛹 Callejeandola / Skateshops</div>
+            <h1 class="legal-title" data-i18n="h1.skateshops">Skateshops</h1>
+
+            <div class="about-chips">
+                <span class="about-chip"><i class="fa-solid fa-store"></i>
+                    <span data-i18n="skateshops.shops">Tiendas</span>
+                </span>
+                <span class="about-chip"><i class="fa-solid fa-users"></i>
+                    <span data-i18n="skateshops.community">Comunidad</span>
+                </span>
+                <span class="about-chip"><i class="fa-solid fa-truck"></i>
+                    <span data-i18n="skateshops.Equipment">Equipamiento</span>
+                </span>
+                <span class="about-chip"><i class="fa-solid fa-handshake"></i>
+                    <span data-i18n="skateshops.Support">Apoyo local</span>
+                </span>
+            </div>
+            <div class="detail-actions">
+                <a class="detail-secondary" href="../index.html">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <span data-i18n="cta.return">Volver</span>
+                </a>
+            </div>
+        </div>
+
+    </header>
+
+    <!-- ============== CONTENT ============== -->
+    <main class="legal-page">
+        <div class="legal-container">
+            <section class="legal-card skateshops-card">
+                <header class="skateshops-exec">
+                    <h2 data-i18n="skateshops.h2">Skateshops Locales</h2>
+                    <p class="skateshops-muted" data-i18n="skateshops.p">
+                        Ride&Slide es una tienda especializada en skateboarding y cultura urbana, donde los riders
+                        pueden encontrar tablas, partes, tenis y accesorios para practicar skate. La tienda ofrece
+                        productos de marcas reconocidas y equipamiento tanto para principiantes como para skaters
+                        avanzados.
+                    </p>
+                </header>
+
+                <!-- ============== SKATESHOP 1 ============== -->
+
+                <div class="shop-card">
+                    <div class="shop-image">
+                        <img src="../images/sponsors/sponsor1.jfif" alt="Urban Skate Shop">
+                    </div>
+
+                    <div class="shop-info">
+                        <h2 class="shop-name">
+                            Ride & Slide
+                        </h2>
+                        <p class="shop-description">
+                            Ride&Slide Skate Shop es el único skate shop en Heredia, Costa Rica. Un shop independiente
+                            creado por skaters para skaters, donde podés encontrar tablas, completes, trucks, ruedas,
+                            tenis y accesorios de skate. Más que una tienda, es un punto de encuentro para la escena
+                            local y para quienes viven el skateboarding como estilo de vida.
+                        </p>
+
+                        <div class="shop-socials">
+                            <a href="https://www.instagram.com/rideandslidecr/"><i
+                                    class="fa-brands fa-instagram"></i></a>
+                            <a href="https://www.facebook.com/rideandslidecr/"><i class="fa-brands fa-facebook"></i></a>
+                            <a href="https://www.rideandslide.shop/"><i class="fa-solid fa-globe"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============== SKATESHOP 2 ============== -->
+                <!-- <div class="shop-card">
+                    <div class="shop-image">
+                        <img src="../images/skateshops/shop2.jpg" alt="Concrete Riders">
+                    </div>
+
+                    <div class="shop-info">
+                        <h2 class="shop-name">Concrete Riders</h2>
+                        <p class="shop-description">
+                            Tienda enfocada en cultura street.
+                            Ofrece decks, ruedas, trucks y ropa
+                            de marcas independientes de skate.
+                            También apoya eventos locales
+                            y sesiones comunitarias.
+                        </p>
+
+                        <div class="shop-socials">
+                            <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                            <a href="#"><i class="fa-brands fa-facebook"></i></a>
+                        </div>
+                    </div>
+                </div> -->
+
+                <!-- ============== SKATESHOP 3 ============== -->
+                <!-- <div class="shop-card">
+                    <div class="shop-image">
+                        <img src="../images/skateshops/shop3.jpg" alt="Street Culture Shop">
+                    </div>
+
+                    <div class="shop-info">
+                        <h2 class="shop-name">Street Culture Shop</h2>
+                        <p class="shop-description">
+                            Skateshop enfocada en streetwear
+                            y cultura urbana.
+                            Además de vender equipo,
+                            patrocinan skaters locales
+                            y colaboran con artistas
+                            de la escena.
+                        </p>
+
+                        <div class="shop-socials">
+                            <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                            <a href="#"><i class="fa-brands fa-youtube"></i></a>
+                        </div>
+                    </div>
+                </div> -->
+
+                <section class="shop-cta">
+                    <div class="shop-cta-text">
+                        <h3 data-i18n="skateshop.info">¿Tienes una skateshop?</h3>
+
+                        <p data-i18n="skateshop.detail">
+                            Si tienes una tienda o conoces una que debería estar aquí,
+                            contactanos para agregarla y asi apoyar la escena skate local.
+                        </p>
+                    </div>
+
+                    <div class="shop-cta-actions">
+                        <a class="shop-cta-btn" href="../pages/contacto.html" data-i18n="about.cta.contact">Contáctanos
+                        </a>
+                    </div>
+                </section>
+
+        </div>
+    </main>
+
+    <!-- ========== FOOTER ========== -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <p data-i18n="p.footer">© 2026 Callejeandola. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="../pages/terminos.html" data-i18n="a.terminos">Terms and Conditions</a>
+                <a href="../pages/privacidad.html" data-i18n="a.privacidad">Privacy</a>
+                <a href="../pages/contacto.html" data-i18n="a.contacto">Contact Us</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/i18n.js"></script>
+</body>
+
+</html>

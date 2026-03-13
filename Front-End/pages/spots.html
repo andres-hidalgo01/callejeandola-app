@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Spots | Callejeando</title>
+  <title>Spots | Callejeandola</title>
 
   <link rel="stylesheet" href="../styles/styles.css" />
   <link rel="icon" href="../images/icons/pushing.png" />
@@ -15,35 +15,31 @@
   <!-- ================= TOPBAR ================= -->
   <header class="topbar">
     <div class="topbar-inner">
-      <a href="../index.html" class="topbar-logo" aria-label="Callejeando Home">
-        <img src="../images/icons/logo.png" alt="Callejeando" class="logo-wordmark" />
+      <a href="../index.html" class="topbar-logo" aria-label="Callejeandola Home">
+        <img src="../images/icons/logo.png" alt="Callejeandola" class="logo-wordmark" />
       </a>
 
-      <!-- Menú desktop -->
       <ul class="topbar-menu">
-        <li><a href="../pages/acerca.html" data-i18n="nav.about">About Us</a></li>
+        <li><a href="../pages/acerca.html" data-i18n="nav.about" aria-current="page">About Us</a></li>
+        <li><a href="../pages/skateshops.html" data-i18n="nav.skateshops" aria-current="page">Skateshops</a></li>
         <li><a href="../pages/spots.html" data-i18n="nav.spots">Spots</a></li>
         <li><a href="../pages/eventos.html" data-i18n="nav.events">Events</a></li>
         <li><a href="../pages/faqs.html" data-i18n="nav.faq">FAQS</a></li>
         <li><a href="../pages/contacto.html" data-i18n="nav.contact">Contact Us</a></li>
       </ul>
 
-      <!-- Busqueda -->
       <div class="topbar-search">
         <div class="topbar-search-inner">
           <input type="text" placeholder="Spots or Events" data-i18n-placeholder="search.placeholder" />
-
           <div class="search-icon" aria-hidden="true">
             <i class="fa-solid fa-magnifying-glass"></i>
           </div>
         </div>
       </div>
 
-      <!-- Idioma + Auth -->
       <div class="topbar-right">
-        <!-- Idioma dropdown (SOLO desktop) -->
         <div class="lang-dropdown">
-          <button class="lang-btn">
+          <button class="lang-btn" type="button" aria-label="Change language">
             <img src="../images/icons/world.png" class="flag" alt="ES" />
             <span></span>
           </button>
@@ -54,7 +50,6 @@
           </div>
         </div>
 
-        <!-- Hamburger mobile -->
         <button class="nav-toggle" id="navToggle" aria-label="Menú">
           <span></span><span></span><span></span>
         </button>
@@ -66,21 +61,17 @@
   <div class="mobile-overlay" id="mobileOverlay"></div>
   <div class="mobile-menu" id="mobileMenu">
     <div class="mobile-menu-header">
-      <!-- LOGO -->
       <div class="mobile-header-left">
-        <img src="../images/icons/logo.png" alt="Callejeando" />
+        <img src="../images/icons/logo.png" alt="Callejeandola" />
       </div>
 
       <div id="mobileUserName" class="mobile-username"></div>
 
-      <!-- LOGIN + IDIOMA + CLOSE -->
       <div class="mobile-header-actions">
-        <!-- IDIOMA DROPDOWN -->
         <div class="mobile-header-lang">
-          <button id="mobileLangTrigger">
+          <button id="mobileLangTrigger" type="button" aria-label="Change language">
             <img src="../images/icons/world.png" class="flag" alt="ES" />
             <span></span>
-            <!-- <i class="fa-solid fa-globe"></i> ▾ -->
           </button>
 
           <div id="mobileLangDropdown">
@@ -89,23 +80,21 @@
           </div>
         </div>
 
-        <!-- CERRAR -->
-        <button id="closeMobileMenu" class="close-btn">&times;</button>
+        <button id="closeMobileMenu" class="close-btn" type="button">&times;</button>
       </div>
     </div>
 
-    <!-- Search -->
     <div class="mobile-search">
-      <input type="text" placeholder="Events or Code" />
-      <button class="mobile-search-btn">
+      <input type="text" placeholder="Spots or Events" data-i18n-placeholder="search.placeholder" />
+      <button class="mobile-search-btn" type="button" aria-label="Search">
         <i class="fa-solid fa-magnifying-glass"></i>
       </button>
     </div>
     <hr />
 
-    <!-- Módulos -->
     <ul class="mobile-modules">
-      <li><a href="../pages/acerca.html" data-i18n="nav.about">Acerca de</a></li>
+      <li><a href="../pages/acerca.html" data-i18n="nav.about" aria-current="page">Acerca de</a></li>
+      <li><a href="../pages/skateshops.html" data-i18n="nav.skateshops" aria-current="page">Skateshops</a></li>
       <li><a href="../pages/spots.html" data-i18n="nav.spots">Spots</a></li>
       <li><a href="../pages/eventos.html" data-i18n="nav.events">Eventos</a></li>
       <li><a href="../pages/faqs.html" data-i18n="nav.faq">FAQS</a></li>
@@ -114,7 +103,6 @@
 
     <div id="dashboardHeader"></div>
     <div id="dashboardLinks"></div>
-
     <hr />
   </div>
 
@@ -127,12 +115,17 @@
     <div class="hero-overlay"></div>
 
     <div class="legal-hero-inner">
-      <div class="legal-kicker" data-i18n="div.spots">📍 Callejeando / Spots</div>
+      <div class="legal-kicker" data-i18n="div.spots">📍 Callejeandola / Spots</div>
       <h1 class="legal-title" data-i18n="h2.spots">Street spots & Skateparks</h1>
       <p class="legal-subtitle" data-i18n="p.spots">
-        Encuentra lugares para patinar en Centroamérica. Próximamente: filtros por país,
-        distancia y estado “LIVE”.
+        Encuentra lugares para patinar en Centroamérica.
       </p>
+      <div class="detail-actions">
+        <a class="detail-secondary" href="../index.html">
+          <i class="fa-solid fa-arrow-left"></i>
+          <span data-i18n="cta.return">Volver</span>
+        </a>
+      </div>
     </div>
   </header>
 
@@ -147,13 +140,13 @@
 
           <div class="spotlist-control">
             <i class="fa-solid fa-location-dot"></i>
-            <input type="text" placeholder="Ciudad o país (ej. San José)" />
+            <input type="text" placeholder="Ciudad o País" />
           </div>
 
           <div class="spotlist-control">
             <i class="fa-solid fa-layer-group"></i>
             <select>
-              <option>Todos</option>
+              <option data-i18n="spots.option1">Todos</option>
               <option>Skateparks</option>
               <option>Street</option>
             </select>
@@ -162,14 +155,14 @@
           <div class="spotlist-control">
             <i class="fa-solid fa-shield"></i>
             <select>
-              <option>Estado: cualquiera</option>
-              <option>Activo</option>
-              <option>Dudoso</option>
-              <option>Cerrado</option>
+              <option data-i18n="spots.1">Estado: Cualquiera</option>
+              <option data-i18n="spots.2">Activo</option>
+              <option data-i18n="spots.3">Dudoso</option>
+              <option data-i18n="spots.4">Cerrado</option>
             </select>
           </div>
 
-          <button class="spotlist-search-btn" type="button">Buscar</button>
+          <button class="spotlist-search-btn" type="button" data-i18n="spots.search">Buscar</button>
         </div>
 
         <!-- Results (sin sidebar) -->
@@ -177,16 +170,16 @@
 
           <div class="spotlist-results-head">
             <div>
-              <h3>Resultados</h3>
-              <p>Mostrando 3 spots (demo)</p>
+              <h3 data-i18n="spots.resultados">Resultados</h3>
+              <p data-i18n="spots.shows">Mostrando 3 spots </p>
             </div>
 
             <div class="spotlist-sort">
-              <span>Ordenar:</span>
+              <span data-i18n="spots.sort">Ordenar:</span>
               <select>
-                <option>Relevancia</option>
-                <option>Más recientes</option>
-                <option>Mejor estado</option>
+                <option data-i18n="spots.list1">Relevancia</option>
+                <option data-i18n="spots.list2">Más recientes</option>
+                <option data-i18n="spots.list3">Mejor estado</option>
               </select>
             </div>
           </div>
@@ -302,11 +295,11 @@
   <!-- ========== FOOTER ========== -->
   <footer class="footer">
     <div class="footer-inner">
-      <p data-i18n="p.footer">© 2026 Callejeando. All rights reserved.</p>
+      <p data-i18n="p.footer">© 2026 Callejeandola. All rights reserved.</p>
       <div class="footer-links">
         <a href="../pages/terminos.html" data-i18n="a.terminos">Terms and Conditions</a>
         <a href="../pages/privacidad.html" data-i18n="a.privacidad">Privacy</a>
-        <a href="../pages/contacto.html" data-i18n="a.contacto">ContactUs</a>
+        <a href="../pages/contacto.html" data-i18n="a.contacto">Contact Us</a>
       </div>
     </div>
   </footer>

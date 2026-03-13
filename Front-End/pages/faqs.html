@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FAQs | Callejeando</title>
+  <title>FAQs | Callejeandola</title>
 
   <link rel="stylesheet" href="../styles/styles.css" />
   <link rel="icon" href="../images/icons/pushing.png" />
@@ -15,21 +15,22 @@
   <!-- ================= TOPBAR ================= -->
   <header class="topbar">
     <div class="topbar-inner">
-      <a href="../index.html" class="topbar-logo" aria-label="Callejeando Home">
-        <img src="../images/icons/logo.png" alt="Callejeando" class="logo-wordmark" />
+      <a href="../index.html" class="topbar-logo" aria-label="Callejeandola Home">
+        <img src="../images/icons/logo.png" alt="Callejeandola" class="logo-wordmark" />
       </a>
 
       <ul class="topbar-menu">
-        <li><a href="../pages/acerca.html">Acerca de</a></li>
-        <li><a href="../pages/spots.html">Lugares</a></li>
-        <li><a href="../pages/eventos.html">Eventos</a></li>
-        <li><a href="../pages/faqs.html">FAQs</a></li>
-        <li><a href="../pages/contacto.html">Contacto</a></li>
+        <li><a href="../pages/acerca.html" data-i18n="nav.about" aria-current="page">About Us</a></li>
+        <li><a href="../pages/skateshops.html" data-i18n="nav.skateshops" aria-current="page">Skateshops</a></li>
+        <li><a href="../pages/spots.html" data-i18n="nav.spots">Spots</a></li>
+        <li><a href="../pages/eventos.html" data-i18n="nav.events">Events</a></li>
+        <li><a href="../pages/faqs.html" data-i18n="nav.faq">FAQS</a></li>
+        <li><a href="../pages/contacto.html" data-i18n="nav.contact">Contact Us</a></li>
       </ul>
 
       <div class="topbar-search">
         <div class="topbar-search-inner">
-          <input type="text" placeholder="Spots o Eventos" />
+          <input type="text" placeholder="Spots or Events" data-i18n-placeholder="search.placeholder" />
           <div class="search-icon" aria-hidden="true">
             <i class="fa-solid fa-magnifying-glass"></i>
           </div>
@@ -38,10 +39,11 @@
 
       <div class="topbar-right">
         <div class="lang-dropdown">
-          <button class="lang-btn">
+          <button class="lang-btn" type="button" aria-label="Change language">
             <img src="../images/icons/world.png" class="flag" alt="ES" />
             <span></span>
           </button>
+
           <div class="lang-menu">
             <a href="#" data-lang="es"><img src="../images/icons/es.webp" class="flag" /> Español</a>
             <a href="#" data-lang="en"><img src="../images/icons/en.webp" class="flag" /> English</a>
@@ -60,40 +62,43 @@
   <div class="mobile-menu" id="mobileMenu">
     <div class="mobile-menu-header">
       <div class="mobile-header-left">
-        <img src="../images/icons/logo.png" alt="Callejeando" />
+        <img src="../images/icons/logo.png" alt="Callejeandola" />
       </div>
 
       <div id="mobileUserName" class="mobile-username"></div>
 
       <div class="mobile-header-actions">
         <div class="mobile-header-lang">
-          <button id="mobileLangTrigger">
+          <button id="mobileLangTrigger" type="button" aria-label="Change language">
             <img src="../images/icons/world.png" class="flag" alt="ES" />
             <span></span>
           </button>
+
           <div id="mobileLangDropdown">
             <a href="#" data-lang="es"><img src="../images/icons/es.webp" class="flag" /> Español</a>
             <a href="#" data-lang="en"><img src="../images/icons/en.webp" class="flag" /> English</a>
           </div>
         </div>
-        <button id="closeMobileMenu" class="close-btn">&times;</button>
+
+        <button id="closeMobileMenu" class="close-btn" type="button">&times;</button>
       </div>
     </div>
 
     <div class="mobile-search">
-      <input type="text" placeholder="Spots o Eventos" />
-      <button class="mobile-search-btn">
+      <input type="text" placeholder="Spots or Events" data-i18n-placeholder="search.placeholder" />
+      <button class="mobile-search-btn" type="button" aria-label="Search">
         <i class="fa-solid fa-magnifying-glass"></i>
       </button>
     </div>
     <hr />
 
     <ul class="mobile-modules">
-      <li><a href="../pages/acerca.html">Acerca de</a></li>
-      <li><a href="../pages/spots.html">Lugares</a></li>
-      <li><a href="../pages/eventos.html">Eventos</a></li>
-      <li><a href="../pages/faqs.html">FAQs</a></li>
-      <li><a href="../pages/contacto.html">Contacto</a></li>
+      <li><a href="../pages/acerca.html" data-i18n="nav.about" aria-current="page">Acerca de</a></li>
+      <li><a href="../pages/skateshops.html" data-i18n="nav.skateshops" aria-current="page">Skateshops</a></li>
+      <li><a href="../pages/spots.html" data-i18n="nav.spots">Spots</a></li>
+      <li><a href="../pages/eventos.html" data-i18n="nav.events">Eventos</a></li>
+      <li><a href="../pages/faqs.html" data-i18n="nav.faq">FAQS</a></li>
+      <li><a href="../pages/contacto.html" data-i18n="nav.contact">Contacto</a></li>
     </ul>
 
     <div id="dashboardHeader"></div>
@@ -109,11 +114,17 @@
     <div class="hero-overlay"></div>
 
     <div class="legal-hero-inner">
-      <div class="legal-kicker">CALLEJEANDO / AYUDA.</div>
+      <div class="legal-kicker">Callejeandola / AYUDA.</div>
       <h1 class="legal-title">PREGUNTAS FRECUENTES.</h1>
       <p class="legal-subtitle">
         Respuestas rápidas sobre spots, eventos, reportes y cómo mantener la info real.
       </p>
+
+      <div class="detail-actions">
+        <a class="detail-secondary" href="../index.html">
+          <i class="fa-solid fa-arrow-left"></i> Volver
+        </a>
+      </div>
     </div>
   </header>
 
@@ -129,7 +140,7 @@
         <div class="faq-list">
           <details class="faq-item" open>
             <summary>
-              <span class="faq-q"><i class="fa-solid fa-circle-question"></i> ¿Qué es Callejeando?</span>
+              <span class="faq-q"><i class="fa-solid fa-circle-question"></i> ¿Qué es Callejeandola?</span>
               <span class="faq-arrow"><i class="fa-solid fa-chevron-down"></i></span>
             </summary>
             <div class="faq-a">
@@ -209,7 +220,7 @@
   <!-- ========== FOOTER ========== -->
   <footer class="footer">
     <div class="footer-inner">
-      <p>© 2026 Callejeando. All rights reserved.</p>
+      <p>© 2026 Callejeandola. All rights reserved.</p>
       <div class="footer-links">
         <a href="../pages/terminos.html">Términos</a>
         <a href="../pages/privacidad.html">Privacidad</a>

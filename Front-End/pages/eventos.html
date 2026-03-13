@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Eventos | Callejeando</title>
+  <title>Eventos | Callejeandola</title>
 
   <link rel="stylesheet" href="../styles/styles.css" />
   <link rel="icon" href="../images/icons/pushing.png" />
@@ -15,36 +15,35 @@
   <!-- ================= TOPBAR ================= -->
   <header class="topbar">
     <div class="topbar-inner">
-      <a href="../index.html" class="topbar-logo" aria-label="Callejeando Home">
-        <img src="../images/icons/logo.png" alt="Callejeando" class="logo-wordmark" />
+      <a href="../index.html" class="topbar-logo" aria-label="Callejeandola Home">
+        <img src="../images/icons/logo.png" alt="Callejeandola" class="logo-wordmark" />
       </a>
 
-      <!-- Menú desktop -->
       <ul class="topbar-menu">
-        <li><a href="../pages/acerca.html" data-i18n="nav.about">Acerca de</a></li>
-        <li><a href="../pages/spots.html" data-i18n="nav.spots">Lugares</a></li>
-        <li><a href="../pages/eventos.html" data-i18n="nav.events">Eventos</a></li>
-        <li><a href="../pages/faqs.html" data-i18n="nav.faq">FAQs</a></li>
-        <li><a href="../pages/contacto.html" data-i18n="nav.contact">Contacto</a></li>
+        <li><a href="../pages/acerca.html" data-i18n="nav.about" aria-current="page">About Us</a></li>
+        <li><a href="../pages/skateshops.html" data-i18n="nav.skateshops" aria-current="page">Skateshops</a></li>
+        <li><a href="../pages/spots.html" data-i18n="nav.spots">Spots</a></li>
+        <li><a href="../pages/eventos.html" data-i18n="nav.events">Events</a></li>
+        <li><a href="../pages/faqs.html" data-i18n="nav.faq">FAQS</a></li>
+        <li><a href="../pages/contacto.html" data-i18n="nav.contact">Contact Us</a></li>
       </ul>
 
-      <!-- Busqueda -->
       <div class="topbar-search">
         <div class="topbar-search-inner">
-          <input type="text" placeholder="Spots o Eventos" data-i18n-placeholder="search.placeholder" />
+          <input type="text" placeholder="Spots or Events" data-i18n-placeholder="search.placeholder" />
           <div class="search-icon" aria-hidden="true">
             <i class="fa-solid fa-magnifying-glass"></i>
           </div>
         </div>
       </div>
 
-      <!-- Idioma + Auth -->
       <div class="topbar-right">
         <div class="lang-dropdown">
-          <button class="lang-btn">
+          <button class="lang-btn" type="button" aria-label="Change language">
             <img src="../images/icons/world.png" class="flag" alt="ES" />
             <span></span>
           </button>
+
           <div class="lang-menu">
             <a href="#" data-lang="es"><img src="../images/icons/es.webp" class="flag" /> Español</a>
             <a href="#" data-lang="en"><img src="../images/icons/en.webp" class="flag" /> English</a>
@@ -63,39 +62,42 @@
   <div class="mobile-menu" id="mobileMenu">
     <div class="mobile-menu-header">
       <div class="mobile-header-left">
-        <img src="../images/icons/logo.png" alt="Callejeando" />
+        <img src="../images/icons/logo.png" alt="Callejeandola" />
       </div>
 
       <div id="mobileUserName" class="mobile-username"></div>
 
       <div class="mobile-header-actions">
         <div class="mobile-header-lang">
-          <button id="mobileLangTrigger">
+          <button id="mobileLangTrigger" type="button" aria-label="Change language">
             <img src="../images/icons/world.png" class="flag" alt="ES" />
             <span></span>
           </button>
+
           <div id="mobileLangDropdown">
             <a href="#" data-lang="es"><img src="../images/icons/es.webp" class="flag" /> Español</a>
             <a href="#" data-lang="en"><img src="../images/icons/en.webp" class="flag" /> English</a>
           </div>
         </div>
-        <button id="closeMobileMenu" class="close-btn">&times;</button>
+
+        <button id="closeMobileMenu" class="close-btn" type="button">&times;</button>
       </div>
     </div>
 
     <div class="mobile-search">
-      <input type="text" placeholder="Spots o Eventos" />
-      <button class="mobile-search-btn">
+      <input type="text" placeholder="Spots or Events" data-i18n-placeholder="search.placeholder" />
+      <button class="mobile-search-btn" type="button" aria-label="Search">
         <i class="fa-solid fa-magnifying-glass"></i>
       </button>
     </div>
     <hr />
 
     <ul class="mobile-modules">
-      <li><a href="../pages/acerca.html" data-i18n="nav.about">Acerca de</a></li>
-      <li><a href="../pages/spots.html" data-i18n="nav.spots">Lugares</a></li>
+      <li><a href="../pages/acerca.html" data-i18n="nav.about" aria-current="page">Acerca de</a></li>
+      <li><a href="../pages/skateshops.html" data-i18n="nav.skateshops" aria-current="page">Skateshops</a></li>
+      <li><a href="../pages/spots.html" data-i18n="nav.spots">Spots</a></li>
       <li><a href="../pages/eventos.html" data-i18n="nav.events">Eventos</a></li>
-      <li><a href="../pages/faqs.html" data-i18n="nav.faq">FAQs</a></li>
+      <li><a href="../pages/faqs.html" data-i18n="nav.faq">FAQS</a></li>
       <li><a href="../pages/contacto.html" data-i18n="nav.contact">Contacto</a></li>
     </ul>
 
@@ -112,13 +114,20 @@
     <div class="hero-overlay"></div>
 
     <div class="legal-hero-inner">
-      <div class="legal-kicker">CALLEJEANDO / EVENTOS.</div>
-      <h1 class="legal-title">EVENTOS & COMPETENCIAS.</h1>
-      <p class="legal-subtitle">
-        Calendario simple y confiable: fecha, sede y estado del evento. Si algo cambia, repórtalo para mantener la info
-        real.
+      <div class="legal-kicker" data-i18n="events.header">Callejeandola / EVENTOS.</div>
+      <h1 class="legal-title" data-i18n="events.h1">EVENTOS & COMPETENCIAS.</h1>
+      <p class="legal-subtitle" data-i18n="events.p">
+        Calendario simple y confiable: fecha, sede y estado del evento.
       </p>
-    </div>
+
+      <div class="detail-actions">
+        <a class="detail-secondary" href="../index.html">
+          <i class="fa-solid fa-arrow-left"></i>
+          <span data-i18n="cta.return">Volver</span>
+        </a>
+      </div>
+
+
   </header>
 
   <!-- ============== CONTENT ============== -->
@@ -179,9 +188,9 @@
         <div class="list">
           <!-- Item 1 -->
           <article class="list-item">
-            <img class="list-thumb" src="../images/homepage/events.webp" alt="Callejeando Open" />
+            <img class="list-thumb" src="../images/homepage/events.webp" alt="Callejeandola Open" />
             <div class="list-body">
-              <div class="list-title">Callejeando Open</div>
+              <div class="list-title">Callejeandola Open</div>
 
               <div class="detail-chips">
                 <span class="chip"><i class="fa-solid fa-location-dot"></i> San José</span>
@@ -278,7 +287,7 @@
   <!-- ========== FOOTER ========== -->
   <footer class="footer">
     <div class="footer-inner">
-      <p>© 2026 Callejeando. All rights reserved.</p>
+      <p>© 2026 Callejeandola. All rights reserved.</p>
       <div class="footer-links">
         <a href="../pages/terminos.html">Términos</a>
         <a href="../pages/privacidad.html">Privacidad</a>

@@ -1,5 +1,5 @@
 /* ==========================================================
-  CALLEJEANDO — styles.css (REFactor)
+  Callejeandola — styles.css (REFactor)
   - Ordenado por secciones
   - Sin duplicados
   - Mantiene: topbar glass, mobile menu, hero video, flechas, sponsor marquee, legal pages
@@ -1576,6 +1576,10 @@ section[id] {
   --bg: url("../images/homepage/about.webp");
 }
 
+.section-skateshops {
+  --bg: url("../images/homepage/skateshops.webp");
+}
+
 .section-spots {
   --bg: url("../images/homepage/spots.webp");
 }
@@ -2045,7 +2049,6 @@ section[id] {
   }
 }
 
-
 /* Responsive */
 @media (max-width: 900px) {
 
@@ -2066,6 +2069,132 @@ section[id] {
 
   .about-cta-btn {
     width: 100%;
+  }
+}
+
+/* ================================
+   SKATESHOPS
+================================ */
+
+.shop-card {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  padding: 20px;
+  background: rgba(0, 0, 0, .18);
+  border: 1px solid rgba(255, 255, 255, .10);
+  border-radius: 16px;
+  margin-bottom: 18px;
+  transition: all .25s ease;
+}
+
+.shop-card:hover {
+  border-color: var(--lime);
+  transform: translateY(-2px);
+}
+
+.shop-cta {
+  margin-top: 18px;
+  border-radius: 18px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+
+  background: linear-gradient(135deg, rgba(198, 255, 0, 0.12), rgba(255, 255, 255, 0.05));
+  border: 1px solid rgba(198, 255, 0, 0.22);
+}
+
+.shop-cta h3 {
+  margin: 0 0 4px;
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.96);
+}
+
+.shop-cta p {
+  margin: 0;
+  font-size: 13.5px;
+  color: rgba(233, 233, 238, 0.84);
+}
+
+.shop-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 20px;
+  margin: 6px 0;
+
+  border-radius: 999px;
+  font-weight: 900;
+  font-size: 13px;
+  color: #0b0b0f;
+  background: var(--lime);
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  text-decoration: none;
+}
+
+.shop-cta-btn:hover {
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+
+.shop-image {
+  width: 220px;
+  flex-shrink: 0;
+}
+
+.shop-image img {
+  width: 100%;
+  /* height: 150px; */
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.shop-info {
+  flex: 1;
+}
+
+.shop-name {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.shop-description {
+  margin-top: 8px;
+  color: rgba(255, 255, 255, .75);
+  line-height: 1.6;
+}
+
+.shop-socials {
+  display: flex;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.shop-socials a {
+  color: rgba(255, 255, 255, .7);
+  font-size: 18px;
+  transition: .2s;
+}
+
+.shop-socials a:hover {
+  color: var(--lime);
+}
+
+@media (max-width:700px) {
+
+  .shop-card {
+    flex-direction: column;
+  }
+
+  .shop-image {
+    width: 100%;
+  }
+
+  .shop-image img {
+    height: auto;
   }
 }
 
@@ -3138,7 +3267,7 @@ section[id] {
   }
 }
 
-/* ===== SELECT DARK (Callejeando Style) ===== */
+/* ===== SELECT DARK (Callejeandola Style) ===== */
 
 select {
   background: #111317;
