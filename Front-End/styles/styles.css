@@ -1,5 +1,5 @@
 /* ==========================================================
-  CALLEJEANDO — styles.css (REFactor)
+  Callejeandola — styles.css (REFactor)
   - Ordenado por secciones
   - Sin duplicados
   - Mantiene: topbar glass, mobile menu, hero video, flechas, sponsor marquee, legal pages
@@ -3138,7 +3138,7 @@ section[id] {
   }
 }
 
-/* ===== SELECT DARK (Callejeando Style) ===== */
+/* ===== SELECT DARK (Callejeandola Style) ===== */
 
 select {
   background: #111317;
