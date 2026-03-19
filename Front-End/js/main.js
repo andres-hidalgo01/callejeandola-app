@@ -1,8 +1,8 @@
-// main.js - Callejeando Core Functionality
+// main.js - Callejeandola Core Functionality
 // Version completa con menú responsive, idiomas y funcionalidades
 
 document.addEventListener('DOMContentLoaded', function () {
-  console.log('🎯 Callejeando inicializado - Skate Archive');
+  console.log('🎯 Callejeandola inicializado - Skate Archive');
 
   // ================= TOPBAR SCROLL EFFECT =================
   const topbar = document.querySelector('.topbar');
@@ -422,7 +422,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // ================= INICIALIZACIÓN COMPLETA =================
-  console.log('✅ Callejeando completamente inicializado');
+  console.log('✅ Callejeandola completamente inicializado');
   console.log('🌍 Idiomas: Español (default), English');
   console.log('📱 Menú responsive activado');
   console.log('🔍 Búsqueda funcional');

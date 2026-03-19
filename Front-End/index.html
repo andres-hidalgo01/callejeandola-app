@@ -4,7 +4,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Callejeando - Archivo de Skate</title>
+  <title data-i18n="site.title">Callejeandola - Archivo de Skate</title>
+
+
   <link rel="stylesheet" href="styles/styles.css" />
   <link rel="icon" href="images/icons/pushing.png" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
@@ -14,18 +16,18 @@
   <!-- ================= TOPBAR CON IDIOMAS ================= -->
   <header class="topbar">
     <div class="topbar-inner">
-      <a href="index.html" class="topbar-logo" aria-label="Callejeando Home">
-        <img src="images/icons/logo.png" alt="Callejeando" class="logo-wordmark" />
+      <a href="index.html" class="topbar-logo" aria-label="Callejeandola Home">
+        <img src="images/icons/logo.png" alt="Callejeandola" class="logo-wordmark" />
       </a>
 
       <!-- Menú desktop -->
       <nav class="desktop-nav">
         <ul class="topbar-menu">
-          <li><a href="pages/acerca.html">Acerca</a></li>
-          <li><a href="pages/spots.html">Spots</a></li>
-          <li><a href="pages/eventos.html">Eventos</a></li>
-          <li><a href="#direct-access">Explorar</a></li>
-          <li><a href="pages/contacto.html">Contacto</a></li>
+          <li><a href="pages/acerca.html" data-i18n="nav.about">Acerca</a></li>
+          <li><a href="pages/spots.html" data-i18n="nav.spots">Spots</a></li>
+          <li><a href="pages/eventos.html" data-i18n="nav.events">Eventos</a></li>
+          <li><a href="#direct-access" data-i18n="nav.explore">Explorar</a></li>
+          <li><a href="pages/contacto.html" data-i18n="nav.contact">Contacto</a></li>
         </ul>
       </nav>
 
@@ -33,7 +35,7 @@
       <div class="topbar-actions">
         <div class="topbar-search">
           <div class="topbar-search-inner">
-            <input type="text" placeholder="Buscar spots o eventos..." />
+            <input type="text" placeholder="Buscar spots o eventos..." data-i18n-placeholder="search.placeholder" />
             <div class="search-icon">
               <i class="fa-solid fa-magnifying-glass"></i>
             </div>
@@ -62,7 +64,7 @@
         </div>
 
         <!-- Hamburger mobile -->
-        <button class="nav-toggle" id="navToggle" aria-label="Menú">
+        <button class="nav-toggle" id="navToggle" aria-label="Menú" data-i18n-aria-label="nav.menu">
           <span></span>
           <span></span>
           <span></span>
@@ -76,7 +78,7 @@
   <nav class="mobile-menu" id="mobileMenu">
     <div class="mobile-menu-header">
       <div class="mobile-header-left">
-        <img src="images/icons/logo.png" alt="Callejeando" />
+        <img src="images/icons/logo.png" alt="Callejeandola" />
       </div>
 
       <!-- Idioma móvil -->
@@ -101,7 +103,7 @@
 
     <!-- Search móvil -->
     <div class="mobile-search">
-      <input type="text" placeholder="Buscar spots o eventos..." />
+      <input type="text" placeholder="Buscar spots o eventos..." data-i18n-placeholder="search.placeholder" />
       <button class="mobile-search-btn">
         <i class="fa-solid fa-magnifying-glass"></i>
       </button>
@@ -112,45 +114,45 @@
       <li class="mobile-module-item">
         <a href="index.html">
           <i class="fa-solid fa-house"></i>
-          <span>Inicio</span>
+          <span data-i18n="nav.home">Inicio</span>
         </a>
       </li>
       <li class="mobile-module-item">
         <a href="pages/spots.html">
           <i class="fa-solid fa-map-location-dot"></i>
-          <span>Mapa de Spots</span>
+          <span data-i18n="nav.spots">Mapa de Spots</span>
         </a>
       </li>
       <li class="mobile-module-item">
         <a href="pages/eventos.html">
           <i class="fa-solid fa-calendar-days"></i>
-          <span>Eventos</span>
+          <span data-i18n="nav.events">Eventos</span>
         </a>
       </li>
       <li class="mobile-module-item">
         <a href="pages/acerca.html">
           <i class="fa-solid fa-circle-info"></i>
-          <span>Acerca del Proyecto</span>
+          <span data-i18n="nav.projectAbout">Acerca del Proyecto</span>
         </a>
       </li>
       <li class="mobile-module-item">
         <a href="pages/faqs.html">
           <i class="fa-solid fa-question-circle"></i>
-          <span>Preguntas Frecuentes</span>
+          <span data-i18n="nav.faq">Preguntas Frecuentes</span>
         </a>
       </li>
       <li class="mobile-module-item">
         <a href="pages/contacto.html">
           <i class="fa-solid fa-envelope"></i>
-          <span>Contacto</span>
+          <span data-i18n="nav.contact">Contacto</span>
         </a>
       </li>
     </ul>
 
     <!-- Enlaces legales -->
     <div class="mobile-legal">
-      <a href="pages/terminos.html">Términos</a>
-      <a href="pages/privacidad.html">Privacidad</a>
+      <a href="pages/terminos.html" data-i18n="nav.terms">Términos</a>
+      <a href="pages/privacidad.html" data-i18n="nav.privacy">Privacidad</a>
     </div>
   </nav>
 
@@ -187,7 +189,7 @@
 
   <!-- ========== ACCESOS DIRECTOS ========== -->
   <section class="direct-access" id="direct-access">
-    <h2 class="access-title" data-i18n="access.title">Cómo Usar Callejeando</h2>
+    <h2 class="access-title" data-i18n="access.title">Cómo Usar Callejeandola</h2>
     <p class="access-subtitle" data-i18n="access.subtitle">Todo lo que necesitas para explorar la escena local</p>
 
     <div class="access-grid">
@@ -244,16 +246,17 @@
     <div class="spots-preview-grid">
       <div class="spot-preview-card">
         <div class="spot-preview-image" style="background-image: url('images/spots/spot1.jpg');">
-          <span class="spot-badge">Recomendado</span>
+          <span class="spot-badge" data-i18n="spots.card1.badge">Recomendado</span>
         </div>
         <div class="spot-preview-info">
-          <h4>El Banco de la Curva</h4>
-          <p class="spot-location"><i class="fa-solid fa-location-dot"></i> Centro Histórico</p>
-          <p class="spot-desc">Ledge histórico de mármol perfecto para slides y grinds.</p>
+          <h4 data-i18n="spots.card1.name">El Banco de la Curva</h4>
+          <p class="spot-location"><i class="fa-solid fa-location-dot"></i> <span
+              data-i18n="spots.card1.location">Centro Histórico</span></p>
+          <p class="spot-desc" data-i18n="spots.card1.desc">Ledge histórico de mármol perfecto para slides y grinds.</p>
           <div class="spot-tags">
-            <span class="spot-tag">Street</span>
-            <span class="spot-tag">Ledge</span>
-            <span class="spot-tag">Abierto</span>
+            <span class="spot-tag" data-i18n="spots.card1.tag1">Street</span>
+            <span class="spot-tag" data-i18n="spots.card1.tag2">Ledge</span>
+            <span class="spot-tag" data-i18n="spots.card1.tag3">Abierto</span>
           </div>
         </div>
       </div>
@@ -296,7 +299,7 @@
     </a>
   </section>
 
-  <!-- ========== ¿POR QUÉ CALLEJEANDO? ========== -->
+  <!-- ========== ¿POR QUÉ Callejeandola? ========== -->
   <section class="why-section">
     <h2 data-i18n="why.title">¿Por Qué Documentar Spots de Skate?</h2>
     <p class="why-subtitle" data-i18n="why.subtitle">Manteniendo viva la cultura del skateboarding</p>
@@ -344,7 +347,7 @@
     <div class="footer-main">
       <div class="footer-inner">
         <div class="footer-brand">
-          <img src="images/icons/logo.png" alt="Callejeando" class="footer-logo" />
+          <img src="images/icons/logo.png" alt="Callejeandola" class="footer-logo" />
           <p data-i18n="footer.tagline">El archivo colaborativo de spots de skate.</p>
           <div class="footer-social">
             <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
@@ -384,7 +387,7 @@
 
     <div class="footer-bottom">
       <div class="footer-bottom-inner">
-        <p data-i18n="footer.copyright">© 2026 Callejeando. El skateboarding es cultura.</p>
+        <p data-i18n="footer.copyright">© 2026 Callejeandola. El skateboarding es cultura.</p>
         <div class="footer-bottom-links">
           <a href="pages/contacto.html" data-i18n="footer.contact">Contacto</a>
           <span class="separator">•</span>

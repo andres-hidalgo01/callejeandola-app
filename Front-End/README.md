@@ -1,6 +1,6 @@
-# Callejeandola Skateboarding App — Front-End
+# Callejeandolala Skateboarding App — Front-End
 
-Front-End de la aplicación **Callejeandola Skateboarding**.
+Front-End de la aplicación **Callejeandolala Skateboarding**.
 
 Este proyecto corresponde a la parte **visual y pública** de la app y actualmente se despliega como un sitio **estático** en Vercel.
 
