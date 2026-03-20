@@ -1,8 +1,24 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Prisma (opcional pero recomendado)
+.prisma/
+
+# Build / output
+dist/
+build/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
 # OS
 .DS_Store
 
 # Editor
 .vscode/
 
-# Env (si luego agregas)
+# Env
 .env*
