@@ -94,10 +94,14 @@ const I18N = {
 
 
     // ========= Events & Competitions. =========
+<<<<<<< HEAD
     "events.header": "Callejeandola / EVENTOS",
     "events.h1": "Eventos & Competencias",
     "events.p": "Calendario simple y confiable: fecha, sede y estado del evento.",
 
+=======
+    "h2.events": "Eventos & Competencias",
+>>>>>>> main_v1.1
     "div.eventos": "🏆 Callejeandola / Eventos",
     "p.descriptionevent": "Explora eventos por país, inscríbete como competidor o postúlate como juez. El dashboard habilita funciones según rol.",
     "h2.eventfirstitle": " 1. Próximos eventos",
@@ -265,11 +269,15 @@ const I18N = {
     "spots.list3": "Best condition",
 
     // ========= Events & Competitions. =========
+<<<<<<< HEAD
     "events.header": "Street Exploring / EVENTS",
     "events.h1": "Events & Competitions",
     "events.p": "Simple and reliable calendar: date, venue and event status.",
     
     
+=======
+    "h2.events": "Events & Competitions.",
+>>>>>>> main_v1.1
     "div.eventos": "🏆 Callejeandola / Events",
     "p.descriptionevent": "Explore events by country, register as a competitor, or apply to be a judge. The dashboard enables features based on your role.",
     "h2.eventfirstitle": " 1. Upcoming events",
