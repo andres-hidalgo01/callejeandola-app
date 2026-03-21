@@ -269,19 +269,16 @@ const I18N = {
     "spots.list3": "Best condition",
 
     // ========= Events & Competitions. =========
-<<<<<<< HEAD
     "events.header": "Street Exploring / EVENTS",
     "events.h1": "Events & Competitions",
     "events.p": "Simple and reliable calendar: date, venue and event status.",
-    
-    
-=======
+
+
     "h2.events": "Events & Competitions.",
->>>>>>> main_v1.1
-    "div.eventos": "🏆 Callejeandola / Events",
+    "div.eventos": "📍 Callejeandola / Events",
     "p.descriptionevent": "Explore events by country, register as a competitor, or apply to be a judge. The dashboard enables features based on your role.",
-    "h2.eventfirstitle": " 1. Upcoming events",
-    "li.firstevent": "Children's Street Cup: Metropolitan Park · 21 Sept",
+    "h2.eventslisttitle": "1. Upcoming events",
+    "li.firstevent": "Children's Street Cup: Metropolitan Park - 21 Sept",
     "li.secondevent": "Best Trick Session: Escaleras 9 · 30 Sept",
     "li.thirdevent": "Bowl Jam Tsunami: Tsunami Street Spot · 5",
     "h2.eventsecondtitle": "2. Registrations by role",
