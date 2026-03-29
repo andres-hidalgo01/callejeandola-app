@@ -132,152 +132,56 @@
   <!-- ========== MAIN ========== -->
   <main class="legal-page">
     <div class="spotlist-wrap">
-
       <section class="spotlist-shell">
-
-        <!-- Top controls (iconos + selects) -->
         <div class="spotlist-controls spotlist-controls--full">
-
           <div class="spotlist-control">
             <i class="fa-solid fa-location-dot"></i>
-            <input type="text" placeholder="Ciudad o País" />
+            <input id="spotSearchCity" type="text" placeholder="Ciudad o País" />
           </div>
 
           <div class="spotlist-control">
             <i class="fa-solid fa-layer-group"></i>
-            <select>
-              <option data-i18n="spots.option1">Todos</option>
-              <option>Skateparks</option>
-              <option>Street</option>
+            <select id="spotTypeFilter">
+              <option value="">Todos</option>
+              <option value="skatepark">Skateparks</option>
+              <option value="street">Street</option>
             </select>
           </div>
 
           <div class="spotlist-control">
             <i class="fa-solid fa-shield"></i>
             <select>
-              <option data-i18n="spots.1">Estado: Cualquiera</option>
-              <option data-i18n="spots.2">Activo</option>
-              <option data-i18n="spots.3">Dudoso</option>
-              <option data-i18n="spots.4">Cerrado</option>
+              <option>Estado: Cualquiera</option>
+              <option>Activo</option>
+              <option>Dudoso</option>
+              <option>Cerrado</option>
             </select>
           </div>
 
-          <button class="spotlist-search-btn" type="button" data-i18n="spots.search">Buscar</button>
+          <button id="spotSearchBtn" class="spotlist-search-btn" type="button">
+            Buscar
+          </button>
         </div>
 
-        <!-- Results (sin sidebar) -->
         <section class="spotlist-results spotlist-results--solo">
-
           <div class="spotlist-results-head">
             <div>
-              <h3 data-i18n="spots.resultados">Resultados</h3>
-              <p data-i18n="spots.shows">Mostrando 3 spots </p>
+              <h3>Resultados</h3>
+              <p id="spotsCount">Mostrando 0 spots</p>
             </div>
 
             <div class="spotlist-sort">
-              <span data-i18n="spots.sort">Ordenar:</span>
+              <span>Ordenar:</span>
               <select>
-                <option data-i18n="spots.list1">Relevancia</option>
-                <option data-i18n="spots.list2">Más recientes</option>
-                <option data-i18n="spots.list3">Mejor estado</option>
+                <option>Relevancia</option>
+                <option>Más recientes</option>
+                <option>Mejor estado</option>
               </select>
             </div>
           </div>
 
-          <!-- Item 1 -->
-          <article class="spotitem">
-            <div class="spotitem-media">
-              <img src="../images/homepage/about.webp" alt="Downtown Set" loading="lazy" />
-            </div>
+          <div id="spotsList"></div>
 
-            <div class="spotitem-body">
-              <div class="spotitem-top">
-                <h4>Downtown Set</h4>
-                <span class="spotitem-badge street">Street</span>
-              </div>
-
-              <div class="spotitem-loc">
-                <i class="fa-solid fa-location-dot"></i> San José
-              </div>
-
-              <p class="spotitem-desc">
-                Escaleras con baranda y buen piso. Ideal para líneas cortas. Recomendado en la tarde.
-              </p>
-
-              <div class="spotitem-meta">
-                <span class="spotitem-pill active"><i class="fa-solid fa-circle-check"></i> Activo</span>
-                <span class="spotitem-muted">Actualizado: 2026-02-01</span>
-              </div>
-            </div>
-
-            <div class="spotitem-actions">
-              <a class="spotitem-btn" href="../pages/spot-detalle.html">Ver detalles</a>
-            </div>
-          </article>
-
-          <!-- Item 2 -->
-          <article class="spotitem">
-            <div class="spotitem-media">
-              <img src="../images/homepage/about.webp" alt="Skatepark Norte" loading="lazy" />
-            </div>
-
-            <div class="spotitem-body">
-              <div class="spotitem-top">
-                <h4>Skatepark Norte</h4>
-                <span class="spotitem-badge park">Skatepark</span>
-              </div>
-
-              <div class="spotitem-loc">
-                <i class="fa-solid fa-location-dot"></i> Heredia
-              </div>
-
-              <p class="spotitem-desc">
-                Bowl y zona street. Espacio abierto ideal para sesiones largas y aprender transiciones.
-              </p>
-
-              <div class="spotitem-meta">
-                <span class="spotitem-pill active"><i class="fa-solid fa-circle-check"></i> Activo</span>
-                <span class="spotitem-muted">Actualizado: 2026-01-20</span>
-              </div>
-            </div>
-
-            <div class="spotitem-actions">
-              <a class="spotitem-btn" href="../pages/spot-detalle.html">Ver detalles</a>
-            </div>
-          </article>
-
-          <!-- Item 3 -->
-          <article class="spotitem">
-            <div class="spotitem-media">
-              <img src="../images/homepage/about.webp" alt="Old DIY Ledge" loading="lazy" />
-            </div>
-
-            <div class="spotitem-body">
-              <div class="spotitem-top">
-                <h4>Old DIY Ledge</h4>
-                <span class="spotitem-badge street">Street</span>
-              </div>
-
-              <div class="spotitem-loc">
-                <i class="fa-solid fa-location-dot"></i> Alajuela
-              </div>
-
-              <p class="spotitem-desc">
-                Spot reportado como removido / no patinable. Útil como referencia histórica de la escena.
-              </p>
-
-              <div class="spotitem-meta">
-                <span class="spotitem-pill closed"><i class="fa-solid fa-triangle-exclamation"></i> Cerrado</span>
-                <span class="spotitem-muted">Actualizado: 2025-12-10</span>
-              </div>
-            </div>
-
-            <div class="spotitem-actions">
-              <a class="spotitem-btn" href="../pages/spot-detalle.html">Ver detalles</a>
-            </div>
-          </article>
-
-          <!-- CTA -->
           <section class="spotlist-cta">
             <div>
               <h3>¿Quieres agregar o actualizar un spot?</h3>
@@ -285,13 +189,10 @@
             </div>
             <a class="about-cta-btn" href="../pages/contacto.html">Ir a Contacto</a>
           </section>
-
         </section>
-
       </section>
     </div>
   </main>
-
   <!-- ========== FOOTER ========== -->
   <footer class="footer">
     <div class="footer-inner">
@@ -306,6 +207,8 @@
 
   <script src="../js/main.js"></script>
   <script src="../js/i18n.js"></script>
+  <script type="module" src="../js/spots.js"> </script>
+
 
 </body>
 

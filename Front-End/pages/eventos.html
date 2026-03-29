@@ -140,15 +140,14 @@
       <section class="legal-card events-card">
         <h2 style="margin: 0; color: var(--lime);">Eventos</h2>
         <p style="margin: 8px 0 0; color: rgba(255,255,255,.72);">
-          Próximos, confirmados y actualizaciones por la comunidad. (Demo)
+          Próximos, confirmados y actualizaciones por la comunidad.
         </p>
 
-        <!-- Finder -->
         <div class="finder">
           <div class="finder-row">
             <div class="finder-field">
               <i class="fa-solid fa-location-dot"></i>
-              <input type="text" placeholder="Ciudad o país (ej. San José)" />
+              <input id="eventSearchCity" type="text" placeholder="Ciudad o país (ej. San José)" />
             </div>
 
             <div class="finder-field">
@@ -171,13 +170,14 @@
               </select>
             </div>
 
-            <button class="finder-btn">Buscar</button>
+            <button id="eventSearchBtn" class="finder-btn" type="button">
+              Buscar
+            </button>
           </div>
         </div>
 
-        <!-- Results head -->
         <div class="results-head">
-          <div class="results-meta">Mostrando 3 eventos (demo)</div>
+          <div id="eventsCount" class="results-meta">Mostrando 0 eventos</div>
           <div class="order-row">
             <span>Ordenar:</span>
             <select>
@@ -188,95 +188,8 @@
           </div>
         </div>
 
-        <!-- Results list -->
-        <div class="list">
-          <!-- Item 1 -->
-          <article class="list-item">
-            <img class="list-thumb" src="../images/homepage/events.webp" alt="Callejeandola Open" />
-            <div class="list-body">
-              <div class="list-title">Callejeandola Open</div>
+        <div id="eventsList" class="list"></div>
 
-              <div class="detail-chips">
-                <span class="chip"><i class="fa-solid fa-location-dot"></i> San José</span>
-                <span class="chip"><i class="fa-solid fa-calendar-days"></i> 2026-03-10</span>
-                <span class="chip"><i class="fa-solid fa-clock"></i> 2:00 PM</span>
-                <span class="chip"><i class="fa-solid fa-trophy"></i> Competencia</span>
-                <span class="chip chip-status status-active"><i class="fa-solid fa-circle-check"></i> Próximo</span>
-              </div>
-
-              <p class="list-desc">
-                Evento principal para la escena local: formato street + jam. Info clara, horarios, reglas y cambios
-                reportables.
-              </p>
-
-              <div class="detail-actions">
-                <a class="btn-primary" href="../pages/evento-detalle.html"><i class="fa-solid fa-eye"></i> Ver
-                  detalles</a>
-                <a class="btn-secondary" href="../pages/contacto.html"><i class="fa-solid fa-flag"></i> Reportar
-                  cambio</a>
-              </div>
-            </div>
-          </article>
-
-          <!-- Item 2 -->
-          <article class="list-item">
-            <img class="list-thumb" src="../images/homepage/events.webp" alt="Best Trick Session" />
-            <div class="list-body">
-              <div class="list-title">Best Trick Session</div>
-
-              <div class="detail-chips">
-                <span class="chip"><i class="fa-solid fa-location-dot"></i> Heredia</span>
-                <span class="chip"><i class="fa-solid fa-calendar-days"></i> 2026-04-02</span>
-                <span class="chip"><i class="fa-solid fa-clock"></i> 5:30 PM</span>
-                <span class="chip"><i class="fa-solid fa-bolt"></i> Jam</span>
-                <span class="chip chip-status status-active"><i class="fa-solid fa-circle-check"></i> Confirmado</span>
-              </div>
-
-              <p class="list-desc">
-                Sesión abierta con formato best trick. Ideal para crews, filmers y skate shops. Premios por sponsor
-                (demo).
-              </p>
-
-              <div class="detail-actions">
-                <a class="btn-primary" href="../pages/evento-detalle.html"><i class="fa-solid fa-eye"></i> Ver
-                  detalles</a>
-                <a class="btn-secondary" href="../pages/contacto.html"><i class="fa-solid fa-flag"></i> Reportar
-                  cambio</a>
-              </div>
-            </div>
-          </article>
-
-          <!-- Item 3 -->
-          <article class="list-item">
-            <img class="list-thumb" src="../images/homepage/events.webp" alt="Demo & Community" />
-            <div class="list-body">
-              <div class="list-title">Demo & Community</div>
-
-              <div class="detail-chips">
-                <span class="chip"><i class="fa-solid fa-location-dot"></i> Alajuela</span>
-                <span class="chip"><i class="fa-solid fa-calendar-days"></i> 2026-02-18</span>
-                <span class="chip"><i class="fa-solid fa-clock"></i> 1:00 PM</span>
-                <span class="chip"><i class="fa-solid fa-users"></i> Demo</span>
-                <span class="chip chip-status status-closed"><i class="fa-solid fa-triangle-exclamation"></i>
-                  Cancelado</span>
-              </div>
-
-              <p class="list-desc">
-                Actividad comunitaria con demo y talleres. Reportado como cancelado (demo). Mantener como referencia
-                histórica.
-              </p>
-
-              <div class="detail-actions">
-                <a class="btn-primary" href="../pages/evento-detalle.html"><i class="fa-solid fa-eye"></i> Ver
-                  detalles</a>
-                <a class="btn-secondary" href="../pages/contacto.html"><i class="fa-solid fa-flag"></i> Reportar
-                  cambio</a>
-              </div>
-            </div>
-          </article>
-        </div>
-
-        <!-- CTA -->
         <div class="cta-bar">
           <div class="cta-text">
             <strong>¿Quieres publicar un evento o reportar un cambio?</strong><br />
@@ -302,6 +215,9 @@
 
   <script src="../js/main.js"></script>
   <script src="../js/i18n.js"></script>
+  <script type="module" src="../js/events.js"></script>
+
+
 </body>
 
 </html>

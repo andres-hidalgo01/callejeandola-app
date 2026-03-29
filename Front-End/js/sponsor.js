@@ -1,19 +1,55 @@
+// import { getSponsors } from "./api.js";
+
+// async function loadSponsors() {
+//   const sponsors = await getSponsors();
+
+//   const track = document.querySelector(".sponsor-track");
+
+//   track.innerHTML = sponsors
+//     .map(
+//       (sponsor) => `
+//       <a href="#" class="img-link">
+//         <img src="${sponsor.logo}" alt="${sponsor.name}">
+//       </a>
+//     `
+//     )
+//     .join("");
+// }
+
+// loadSponsors();
+
 import { getSponsors } from "./api.js";
 
 async function loadSponsors() {
-  const sponsors = await getSponsors();
+  const track = document.getElementById("sponsorTrack");
+  if (!track) return;
 
-  const track = document.querySelector(".sponsor-track");
+  try {
+    const sponsors = await getSponsors();
 
-  track.innerHTML = sponsors
-    .map(
-      (sponsor) => `
-      <a href="#" class="img-link">
+    if (!Array.isArray(sponsors) || sponsors.length === 0) {
+      track.innerHTML = "<p style='color:white;'>No sponsors available.</p>";
+      return;
+    }
+
+    track.innerHTML = sponsors.map((sponsor) => `
+      <a class="img-link" href="${sponsor.website || "#"}" target="_blank" rel="noopener">
         <img src="${sponsor.logo}" alt="${sponsor.name}">
       </a>
-    `
-    )
-    .join("");
+    `).join("");
+
+    // Duplicar dinámicamente para marquee infinito
+    const originalHTML = track.innerHTML;
+    track.innerHTML += originalHTML;
+
+    // Calcular distancia real para animación suave
+    const distance = track.scrollWidth / 2;
+    track.style.setProperty("--marquee-distance", `${distance}px`);
+
+  } catch (error) {
+    console.error("Error loading sponsors:", error);
+    track.innerHTML = "<p style='color:white;'>Error loading sponsors.</p>";
+  }
 }
 
-loadSponsors();
+document.addEventListener("DOMContentLoaded", loadSponsors);
