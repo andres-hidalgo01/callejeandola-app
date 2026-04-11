@@ -586,6 +586,7 @@ body.menu-open .topbar {
   overflow: hidden;
 }
 
+
 .hero-media {
   position: absolute;
   inset: 0;
@@ -596,7 +597,7 @@ body.menu-open .topbar {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center;
+  object-position: center center;
   transition: transform 0.6s ease;
 }
 
@@ -645,6 +646,12 @@ body.menu-open .topbar {
   font-size: clamp(14px, 2.2vw, 18px);
   margin: 0 0 30px;
   color: var(--muted-on-dark);
+}
+
+@media (max-width: 900px) {
+  .hero-video {
+    object-position: center center;
+  }
 }
 
 /* ==========================================================
@@ -708,31 +715,28 @@ body.menu-open .topbar {
 .section>.section-inner>h2 {
   position: sticky;
   top: 0;
-  height: 100svh;
+  /* height: 100svh; */
+  min-height: 100svh;
   display: grid;
   place-items: center;
   margin: 0;
-
-  /* en vez de empujar el scroll, empujamos el contenido */
   padding: calc(var(--topbar-h) + 8px) 16px 0;
-
   background: transparent;
 }
 
-
-
-/* Título tipo pantalla */
 .section h2 {
   margin: 0;
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: -0.02em;
-  font-size: clamp(34px, 6vw, 84px);
+  /* font-size: clamp(34px, 6vw, 84px); */
+  font-size: clamp(34px, 5vw, 72px);
   line-height: 1.05;
   text-shadow: 0 12px 35px rgba(0, 0, 0, 0.55);
+  color: var(--lime);
+
 }
 
-/* Si usás subtítulos */
 .section-subtitle {
   font-size: 14px;
   color: rgba(255, 255, 255, 0.82);
@@ -1531,10 +1535,34 @@ section[id] {
     object-position: center 30%;
   }
 
-  .section-about {
-    background-position: center 40%;
-    /* prueba 35%-55% */
-    min-height: 100svh;
+  @media (max-width: 900px) {
+    .section {
+      min-height: 100svh;
+    }
+
+    .section>.section-inner>h2 {
+      min-height: 100svh;
+      padding-top: calc(var(--topbar-h) + 8px);
+    }
+
+    .section h2 {
+      font-size: clamp(28px, 8vw, 42px);
+    }
+  }
+
+  @media (min-width: 901px) {
+    .section {
+      min-height: 100vh;
+    }
+
+    .section>.section-inner>h2 {
+      min-height: 100vh;
+      padding-top: calc(var(--topbar-h) + 12px);
+    }
+
+    .section h2 {
+      font-size: clamp(40px, 5vw, 72px);
+    }
   }
 
   .footer-inner {
@@ -1597,26 +1625,35 @@ section[id] {
 /* ===== VERSION A: Cinematic Night Skate ===== */
 .section-about {
   --bg: url("../images/homepage/about.webp");
+  --bg-pos: center 42%;
 }
 
 .section-skateshops {
   --bg: url("../images/homepage/skateshops.webp");
+  --bg-pos: center 35%;
 }
 
 .section-spots {
   --bg: url("../images/homepage/spots.webp");
+  --bg-pos: center 40%;
+
 }
 
 .section-events {
   --bg: url("../images/homepage/events.webp");
+  --bg-pos: center 38%;
 }
 
 .section-faq {
   --bg: url("../images/homepage/faq.webp");
+  --bg-pos: center center;
+
 }
 
 .section-contact {
   --bg: url("../images/homepage/contact.webp");
+  --bg-pos: center center;
+
 }
 
 /* ===== VERSION B: Central America (más cálido) ===== */
@@ -1630,26 +1667,6 @@ section[id] {
   background-position: 50%;
   background-attachment: scroll;
 }
-
-/* .section-about {
-  --bg: url("../images/homepage/about.webp");
-}
-
-.section-spots {
-  --bg: url("../images/homepage/spots.jpg");
-}
-
-.section-events {
-  --bg: url("../images/homepage/events.png");
-}
-
-.section-faq {
-  --bg: url("../images/homepage/faq.jpg");
-}
-
-.section-contact {
-  --bg: url("../images/homepage/contact.jpg");
-} */
 
 /* ===== VERSION C: Editorial B/W + lime ===== */
 

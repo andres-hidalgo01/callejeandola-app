@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Spot | Callejeandola</title>
+    <title>Detalle Spot | Callejeandola</title>
 
     <link rel="stylesheet" href="../styles/styles.css" />
     <link rel="icon" href="../images/icons/pushing.png" />
@@ -20,16 +20,15 @@
                 <img src="../images/icons/logo.png" alt="Callejeandola" class="logo-wordmark" />
             </a>
 
-            <!-- Menú desktop -->
             <ul class="topbar-menu">
                 <li><a href="../pages/acerca.html" data-i18n="nav.about">About Us</a></li>
+                <li><a href="../pages/skateshops.html" data-i18n="nav.skateshops">Skateshops</a></li>
                 <li><a href="../pages/spots.html" data-i18n="nav.spots">Spots</a></li>
                 <li><a href="../pages/eventos.html" data-i18n="nav.events">Events</a></li>
                 <li><a href="../pages/faqs.html" data-i18n="nav.faq">FAQS</a></li>
                 <li><a href="../pages/contacto.html" data-i18n="nav.contact">Contact Us</a></li>
             </ul>
 
-            <!-- Busqueda -->
             <div class="topbar-search">
                 <div class="topbar-search-inner">
                     <input type="text" placeholder="Spots or Events" data-i18n-placeholder="search.placeholder" />
@@ -40,9 +39,7 @@
                 </div>
             </div>
 
-            <!-- Idioma + Auth -->
             <div class="topbar-right">
-                <!-- Idioma dropdown (SOLO desktop) -->
                 <div class="lang-dropdown">
                     <button class="lang-btn">
                         <img src="../images/icons/world.png" class="flag" alt="ES" />
@@ -55,7 +52,6 @@
                     </div>
                 </div>
 
-                <!-- Hamburger mobile -->
                 <button class="nav-toggle" id="navToggle" aria-label="Menú">
                     <span></span><span></span><span></span>
                 </button>
@@ -113,7 +109,6 @@
     <!-- ================= HERO / COVER ================= -->
     <header class="legal-hero">
         <div class="hero-media">
-            <!-- usa la foto del spot o una cover -->
             <img class="hero-image" src="../images/homepage/spots.webp" alt="Spot Downtown Set" />
         </div>
 
@@ -124,17 +119,14 @@
                 Callejeandola / LUGARES.
             </div>
 
-            <!-- título: el spot -->
             <h1 class="legal-title">Downtown Set</h1>
 
-            <!-- chips: tipo / ubicación / estado -->
             <p class="legal-subtitle" style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;">
                 <span class="spot-chip"><i class="fa-solid fa-road"></i> Street</span>
                 <span class="spot-chip"><i class="fa-solid fa-location-dot"></i> San José</span>
                 <span class="spot-chip status active"><i class="fa-solid fa-circle-check"></i> Activo</span>
             </p>
 
-            <!-- botones -->
             <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:18px;">
                 <a class="spot-primary-btn" href="../pages/contacto.html">
                     <i class="fa-solid fa-flag"></i> Reportar cambio
@@ -145,6 +137,18 @@
                 </a>
             </div>
         </div>
+
+        <!-- <div class="legal-hero-inner">
+            <div class="legal-kicker">📍 CALLEJEANDOLA / SPOT DETAIL</div>
+            <h1 id="spotHeroTitle" class="legal-title">DETALLE DEL SPOT</h1>
+            <p id="spotHeroSubtitle" class="legal-subtitle">Información detallada del lugar para patinar.</p>
+            <div id="spotHeroChips" class="detail-chips" style="margin-top:16px;"></div>
+            <a href="../pages/spots.html" class="back-btn">
+                <i class="fa-solid fa-arrow-left"></i> Volver
+            </a>
+        </div> -->
+
+
     </header>
 
     <!-- ========= CONTENT ================= -->
@@ -152,7 +156,6 @@
         <div class="legal-container">
             <section class="legal-card spot-detail-card">
 
-                <!-- Resumen -->
                 <section class="spot-section">
                     <h2>Resumen</h2>
                     <p class="spot-muted">
@@ -163,7 +166,6 @@
 
                 <hr class="about-divider" />
 
-                <!-- Info rápida -->
                 <section class="spot-section">
                     <h2>Info rápida</h2>
 
@@ -204,7 +206,6 @@
 
                 <hr class="about-divider" />
 
-                <!-- Galería -->
                 <section class="spot-section">
                     <h2>Fotos</h2>
                     <div class="spot-gallery">
@@ -212,54 +213,11 @@
                         <img src="../images/homepage/about.webp" alt="Foto del spot 2" loading="lazy" />
                         <img src="../images/homepage/about.webp" alt="Foto del spot 3" loading="lazy" />
                     </div>
-                    <p class="spot-hint">
-                        Tip: cuando tengas fotos reales, esta sección hace que la página se sienta “definitiva”.
-                    </p>
                 </section>
 
                 <hr class="about-divider" />
 
-                <!-- Reseña corta -->
                 <section class="spot-section">
-                    <h2>Reseña</h2>
-                    <div class="spot-review-card">
-                        <p>
-                            Spot rápido y directo. La baranda permite trucos constantes y hay espacio para entrar y
-                            salir.
-                            Si hay gente, respetar el paso y evitar bloquear áreas.
-                        </p>
-
-                        <div class="spot-review-tags">
-                            <span class="spot-tag">Rails</span>
-                            <span class="spot-tag">Stairs</span>
-                            <span class="spot-tag">Tech</span>
-                        </div>
-                    </div>
-                </section>
-
-                <hr class="about-divider" />
-
-                <!-- Estado + actualización -->
-                <section class="spot-section">
-                    <h2>Estado y actualización</h2>
-
-                    <div class="spot-status-row">
-                        <div class="spot-status-box">
-                            <h4>Estado actual</h4>
-                            <p><span class="spot-status-pill active">Activo</span></p>
-                        </div>
-
-                        <div class="spot-status-box">
-                            <h4>Última actualización</h4>
-                            <p>2026-02-01</p>
-                        </div>
-
-                        <div class="spot-status-box">
-                            <h4>¿Cambió algo?</h4>
-                            <p>Repórtalo para mantener la info real.</p>
-                        </div>
-                    </div>
-
                     <div class="spot-footer-cta">
                         <div>
                             <h3>¿Este spot cambió o ya no existe?</h3>
@@ -272,6 +230,14 @@
             </section>
         </div>
     </main>
+
+    <!-- <main class="legal-page">
+        <div class="legal-container">
+            <section class="legal-card" id="spotDetailCard">
+                <p>Cargando spot...</p>
+            </section>
+        </div>
+    </main> -->
 
     <!-- ========== FOOTER ========== -->
     <footer class="footer">
@@ -287,6 +253,7 @@
 
     <script src="../js/main.js"></script>
     <script src="../js/i18n.js"></script>
+    <script type="module" src="../js/spot-detail.js"></script>
 
 </body>
 

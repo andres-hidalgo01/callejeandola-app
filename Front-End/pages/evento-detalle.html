@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Evento | Callejeandola</title>
+    <title>Detalle Evento | Callejeandola</title>
 
     <link rel="stylesheet" href="../styles/styles.css" />
     <link rel="icon" href="../images/icons/pushing.png" />
@@ -22,6 +22,7 @@
 
             <ul class="topbar-menu">
                 <li><a href="../pages/acerca.html">Acerca de</a></li>
+                <li><a href="../pages/skateshops.html" data-i18n="nav.skateshops">Skateshops</a></li>
                 <li><a href="../pages/spots.html">Lugares</a></li>
                 <li><a href="../pages/eventos.html" class="is-active">Eventos</a></li>
                 <li><a href="../pages/faqs.html">FAQs</a></li>
@@ -45,7 +46,6 @@
         </div>
     </header>
 
-    <!-- HERO (mismo enfoque que spot-detalle, estilo C) -->
     <header class="legal-hero">
         <div class="hero-media">
             <img class="hero-image" src="../images/homepage/spots.webp" alt="Downtown Set" />
@@ -65,9 +65,6 @@
             </div>
 
             <div class="detail-actions">
-                <a class="detail-primary" href="../pages/contacto.html">
-                    <i class="fa-solid fa-flag"></i> Reportar cambio
-                </a>
                 <a class="detail-secondary" href="../pages/spots.html">
                     <i class="fa-solid fa-arrow-left"></i> Volver
                 </a>
@@ -75,13 +72,11 @@
         </div>
     </header>
 
-
     <!-- ========== MAIN ========== -->
     <main class="legal-page">
         <div class="legal-container">
             <section class="legal-card event-card">
 
-                <!-- Resumen -->
                 <h2>Resumen</h2>
                 <p>
                     Evento principal para la escena local: formato street + jam, categorías por nivel, música y
@@ -91,7 +86,6 @@
 
                 <div class="event-divider"></div>
 
-                <!-- Info rápida -->
                 <h2>Info rápida</h2>
                 <div class="event-quick">
                     <div class="event-quick-item">
@@ -129,7 +123,6 @@
 
                 <div class="event-divider"></div>
 
-                <!-- Agenda -->
                 <h2>Agenda</h2>
                 <div class="event-agenda">
                     <div class="event-agenda-row">
@@ -167,7 +160,6 @@
 
                 <div class="event-divider"></div>
 
-                <!-- Ubicación -->
                 <h2>Ubicación</h2>
                 <p class="event-muted">
                     Dirección exacta y link a mapa se agregan cuando el evento queda confirmado (demo).
@@ -199,7 +191,6 @@
 
                 <div class="event-divider"></div>
 
-                <!-- Requisitos -->
                 <h2>Requisitos</h2>
                 <ul class="event-list">
                     <li><strong>Casco recomendado</strong> (según spot / organización).</li>
@@ -209,7 +200,6 @@
 
                 <div class="event-divider"></div>
 
-                <!-- Fotos -->
                 <h2>Fotos</h2>
                 <div class="event-gallery">
                     <img src="../images/homepage/about.webp" alt="Foto 1" />
@@ -217,12 +207,6 @@
                     <img src="../images/homepage/about.webp" alt="Foto 3" />
                 </div>
 
-                <!-- <p class="event-muted" style="margin-top:10px;">
-                    Tip: cuando tengas fotos reales (spot, flyer, mapa), esta sección hace que la página se sienta
-                    “definitiva”.
-                </p> -->
-
-                <!-- CTA final -->
                 <section class="spotlist-cta" style="margin-top:18px;">
                     <div>
                         <h3>¿Quieres publicar o actualizar un evento?</h3>
@@ -234,6 +218,14 @@
             </section>
         </div>
     </main>
+
+    <!-- <main class="legal-page">
+        <div class="legal-container">
+            <section class="legal-card" id="eventDetailCard">
+                <p>Cargando evento...</p>
+            </section>
+        </div>
+    </main> -->
 
     <!-- ========== FOOTER ========== -->
     <footer class="footer">
