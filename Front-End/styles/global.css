@@ -1105,3 +1105,80 @@ img {
     box-shadow: 0 0 0 0 rgba(34, 211, 238, .0);
   }
 }
+
+/* ========================================
+   NAV RESPONSIVE FINAL 
+======================================== */
+
+/* ===== DEFAULT (DESKTOP FIRST) ===== */
+.tabs {
+  display: flex;
+}
+
+.bottom-nav {
+  display: none;
+}
+
+/* ===== MOBILE ===== */
+@media screen and (max-width: 768px) {
+
+  /* Oculta tabs completamente */
+  .tabs {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+  }
+
+  /* Bottom nav correcta */
+  .bottom-nav {
+    display: flex !important;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    width: 100%;
+    transform: none;
+
+    border-radius: 0;
+    padding: 6px 4px;
+
+    z-index: 999;
+  }
+
+  .bn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 11px;
+    gap: 4px;
+    min-height: 58px;
+  }
+
+  .main {
+    padding-bottom: 90px !important;
+  }
+}
+
+/* ===== DESKTOP ===== */
+@media screen and (min-width: 769px) {
+
+  .tabs {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    height: auto !important;
+  }
+
+  .bottom-nav {
+    display: none !important;
+  }
+}
