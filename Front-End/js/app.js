@@ -58,6 +58,7 @@ let state = {
 /* ---------- Init (NO bloquea UI) ---------- */
 document.addEventListener("DOMContentLoaded", () => {
   applyTheme(state.theme);
+  initLanguageMenu();
 
   bindTabs();
   bindBottomNav();
@@ -139,8 +140,8 @@ function setTab(tab) {
   if (state.hydrated) {
     pulseBusy(
       tab === "spots" ? "Spots" :
-      tab === "clips" ? "Clips" :
-      tab === "events" ? "Events" : "Profile",
+        tab === "clips" ? "Clips" :
+          tab === "events" ? "Events" : "Profile",
       "Cambiando sección"
     );
   }
@@ -180,6 +181,7 @@ function setTab(tab) {
 function bindTabs() {
   $$(".tab").forEach((b) => b.addEventListener("click", () => setTab(b.dataset.tab)));
 }
+
 function bindBottomNav() {
   $$(".bn").forEach((b) => b.addEventListener("click", () => setTab(b.dataset.tab)));
 }
@@ -193,11 +195,18 @@ function bindTheme() {
     toast(`Tema: ${state.theme}`);
   });
 }
+
 function applyTheme(theme) {
   document.documentElement.setAttribute("data-theme", theme === "light" ? "light" : "dark");
 }
-function loadTheme() { return localStorage.getItem("cj_theme") || "dark"; }
-function saveTheme(t) { localStorage.setItem("cj_theme", t); }
+
+function loadTheme() {
+  return localStorage.getItem("cj_theme") || "dark";
+}
+
+function saveTheme(t) {
+  localStorage.setItem("cj_theme", t);
+}
 
 /* ---------- Filters / search ---------- */
 function bindFilters() {
@@ -495,6 +504,7 @@ function renderFavorites() {
 function updateKpis() {
   $("#kpiFavs") && ($("#kpiFavs").textContent = String(state.favorites.size));
 }
+
 function updateProfileCounts() {
   $("#pClips") && ($("#pClips").textContent = String((state.data.clips || []).length));
   $("#pEvents") && ($("#pEvents").textContent = String((state.data.events || []).length));
@@ -720,6 +730,7 @@ document.addEventListener("visibilitychange", () => {
 
 /* ---------- Helpers ---------- */
 function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : ""; }
+
 function starText(r) {
   const full = Math.floor(r);
   const half = (r - full) >= 0.5;
@@ -727,6 +738,7 @@ function starText(r) {
   if (half && full < 5) stars[full] = "★";
   return stars.join("");
 }
+
 function escapeHtml(str) {
   return String(str).replace(/[&<>"']/g, (m) => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
@@ -742,4 +754,39 @@ function flash(sel) {
   el.classList.add("flash");
   clearTimeout(flash._t);
   flash._t = setTimeout(() => el.classList.remove("flash"), 450);
+}
+
+function initLanguageMenu() {
+  const btnLanguage = document.getElementById("btnLanguage");
+  const langMenu = document.getElementById("langMenu");
+
+  if (!btnLanguage || !langMenu) return;
+
+  btnLanguage.addEventListener("click", function (e) {
+    e.stopPropagation();
+
+    const isHidden = langMenu.hasAttribute("hidden");
+
+    if (isHidden) {
+      langMenu.removeAttribute("hidden");
+      btnLanguage.setAttribute("aria-expanded", "true");
+    } else {
+      langMenu.setAttribute("hidden", "");
+      btnLanguage.setAttribute("aria-expanded", "false");
+    }
+  });
+
+  document.addEventListener("click", function (e) {
+    if (!langMenu.contains(e.target) && !btnLanguage.contains(e.target)) {
+      langMenu.setAttribute("hidden", "");
+      btnLanguage.setAttribute("aria-expanded", "false");
+    }
+  });
+
+  langMenu.querySelectorAll("[data-lang]").forEach(function (button) {
+    button.addEventListener("click", function () {
+      langMenu.setAttribute("hidden", "");
+      btnLanguage.setAttribute("aria-expanded", "false");
+    });
+  });
 }
