@@ -1,4 +1,4 @@
-# Callejeando — Static Demo v2
+# Callejeandola — Static Demo v2
 
 Demo estático para UI/UX (Spots / Clips / Events / Profile) listo para:
 - Subir a Vercel como **Static**

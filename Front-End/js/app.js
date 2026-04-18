@@ -1,5 +1,5 @@
 /* ================================
-   Callejeando v2 — Front-end JS
+   Callejeandola v2 — Front-end JS
    (Mantiene tu base original + FIX API + sponsors + no freeze)
    ================================ */
 
@@ -16,16 +16,15 @@ const SPOTS_MOCK = [
   { id: "s4", name: "Stairs 6 + Hubba", zone: "Sur", type: "street", obstacles: ["stairs", "ledge"], time: "30–50 min", rating: 4.1, verified: false },
 ];
 
-const CLIPS_MOCK = [
-  { id: "c1", title: "Switch flip en el banco", skater: "Dani", tag: "trick", spot: "Banco del Centro", likes: 128 },
-  { id: "c2", title: "Line rápida (3 trucos)", skater: "Vale", tag: "line", spot: "Skatepark Norte", likes: 312 },
-  { id: "c3", title: "Bowl bail (por poco)", skater: "Santi", tag: "bail", spot: "Bowl Viejo", likes: 96 },
-  { id: "c4", title: "Nollie frontside en hubba", skater: "CJ", tag: "trick", spot: "Stairs 6 + Hubba", likes: 204 },
-];
-
 const EVENTS_MOCK = [
   { id: "e1", month: "MAR", day: "22", title: "Street Jam — Centro", time: "2:00 PM", place: "Punto por confirmar", format: "Best trick + líneas" },
   { id: "e2", month: "APR", day: "06", title: "Park Contest — Clasificatorio", time: "10:00 AM", place: "Skatepark", format: "Rondas + cupos" },
+];
+
+const SHOPS_MOCK = [
+  { id: "sh1", name: "Local Shop", city: "San José", verified: true, category: "Boards", promo: true },
+  { id: "sh2", name: "Skate House", city: "Heredia", verified: false, category: "Parts", promo: false },
+  { id: "sh3", name: "Concrete Supply", city: "Cartago", verified: true, category: "Shoes", promo: true },
 ];
 
 const SPONSORS_MOCK = [
@@ -40,8 +39,10 @@ let state = {
   tab: "spots",
   spotsFilter: "all",
   spotsQuery: "",
-  clipsFilter: "all",
-  clipsQuery: "",
+  eventsFilter: "all",
+  eventsQuery: "",
+  shopsFilter: "all",
+  shopsQuery: "",
   favorites: new Set(loadFavs()),
   theme: loadTheme(),
   mode: "list",
@@ -49,11 +50,12 @@ let state = {
 
   data: {
     spots: SPOTS_MOCK,
-    clips: CLIPS_MOCK,
     events: EVENTS_MOCK,
+    shops: SHOPS_MOCK,
     sponsors: SPONSORS_MOCK,
   },
 };
+
 
 /* ---------- Init (NO bloquea UI) ---------- */
 document.addEventListener("DOMContentLoaded", () => {
@@ -79,31 +81,25 @@ async function loadDataFromApi() {
   pulseBusy("Conectando API…", "Actualizando datos (sin bloquear)");
 
   try {
-    const [spots, clips, events, sponsors] = await Promise.all([
+    const [spots, events, shops, sponsors] = await Promise.all([
       api.getSpots(),
-      api.getClips(),
       api.getEvents(),
+      api.getShops(),
       api.getSponsors(),
     ]);
 
-    // spots
     if (Array.isArray(spots)) state.data.spots = spots;
-    // clips
-    if (Array.isArray(clips)) state.data.clips = clips;
-    // events
     if (Array.isArray(events)) state.data.events = events;
-    // sponsors
+    if (Array.isArray(shops)) state.data.shops = shops;
     if (Array.isArray(sponsors)) state.data.sponsors = sponsors;
 
   } catch (e) {
-    // Si falla, nos quedamos con mocks (no rompemos)
     console.warn("API fallback:", e);
   } finally {
     hideBusy();
-    // Re-render con data real (si llegó)
     renderSpots();
-    renderClips();
     renderEvents();
+    renderShops();
     renderSponsors();
     renderFavorites();
     updateKpis();
@@ -134,14 +130,15 @@ function setTab(tab) {
   $$(".bn").forEach((b) => b.classList.toggle("is-active", b.dataset.tab === tab));
 
   // views
-  $$(".view").forEach((v) => v.classList.toggle("is-active", v.dataset.view === tab));
+  $$(".view").forEach((v) => {
+    v.classList.toggle("is-active", v.dataset.view === tab);
+  });
 
-  // busy + map header copy (tu UX)
   if (state.hydrated) {
     pulseBusy(
       tab === "spots" ? "Spots" :
-        tab === "clips" ? "Clips" :
-          tab === "events" ? "Events" : "Profile",
+        tab === "events" ? "Events" :
+          tab === "shops" ? "Shops" : "Profile",
       "Cambiando sección"
     );
   }
@@ -153,29 +150,31 @@ function setTab(tab) {
     if (tab === "spots") {
       mapTitle.textContent = "Mapa";
       mapSub.textContent = "Mock de mapa (pines). Luego integras mapa real.";
-    } else if (tab === "clips") {
-      mapTitle.textContent = "Clips cerca";
-      mapSub.textContent = "Sugerencia: filtra por spot y mira highlights.";
     } else if (tab === "events") {
-      mapTitle.textContent = "Competencias";
-      mapSub.textContent = "Sponsors + ubicación clara = conversión.";
+      mapTitle.textContent = "Eventos cerca";
+      mapSub.textContent = "Sponsors, ubicación y registro rápido.";
+    } else if (tab === "shops") {
+      mapTitle.textContent = "Shops cercanas";
+      mapSub.textContent = "Tiendas locales, promos y aliados de la escena.";
     } else {
       mapTitle.textContent = "Tu actividad";
-      mapSub.textContent = "Favoritos, check-ins y clips guardados.";
+      mapSub.textContent = "Favoritos, eventos guardados y actividad reciente.";
     }
   }
 
-  // En Events: oculta mapa y muestra sponsors card (si existe)
   const mapCard = document.getElementById("mapCard");
   const sponsorsCard = document.getElementById("sponsorsCard");
+
   if (mapCard && sponsorsCard) {
-    const inEvents = tab === "events";
-    mapCard.hidden = inEvents;
-    sponsorsCard.hidden = !inEvents;
+    const showSponsors = tab === "events" || tab === "shops";
+    mapCard.hidden = false;
+    sponsorsCard.hidden = !showSponsors;
   }
 
-  // Mantener experiencia: vuelve al panel arriba
-  document.querySelector(".panel")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  document.querySelector(".panel")?.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
 }
 
 function bindTabs() {
@@ -221,18 +220,29 @@ function bindFilters() {
     });
   });
 
-  // clips chips
-  $$(".chip-btn[data-clipfilter]").forEach((b) => {
+  // events chips
+  $$(".chip-btn[data-eventfilter]").forEach((b) => {
     b.addEventListener("click", () => {
-      state.clipsFilter = b.dataset.clipfilter;
-      $$(".chip-btn[data-clipfilter]").forEach((x) => x.classList.remove("is-active"));
+      state.eventsFilter = b.dataset.eventfilter;
+      $$(".chip-btn[data-eventfilter]").forEach((x) => x.classList.remove("is-active"));
       b.classList.add("is-active");
-      renderClips();
-      flash("#clipsGrid");
+      renderEvents();
+      flash("#eventsList");
     });
   });
 
-  // segmented mode (UI only)
+  // shops chips
+  $$(".chip-btn[data-shopfilter]").forEach((b) => {
+    b.addEventListener("click", () => {
+      state.shopsFilter = b.dataset.shopfilter;
+      $$(".chip-btn[data-shopfilter]").forEach((x) => x.classList.remove("is-active"));
+      b.classList.add("is-active");
+      renderShops();
+      flash("#shopsList");
+    });
+  });
+
+  // segmented mode
   $$(".seg").forEach((b) => {
     b.addEventListener("click", () => {
       state.mode = b.dataset.mode;
@@ -250,11 +260,18 @@ function bindSearch() {
     flash("#spotsList");
   });
 
-  $("#qClips")?.addEventListener("input", (e) => {
-    state.clipsQuery = e.target.value.trim().toLowerCase();
-    pulseBusy("Buscando…", "Actualizando clips");
-    renderClips();
-    flash("#clipsGrid");
+  $("#qEvents")?.addEventListener("input", (e) => {
+    state.eventsQuery = e.target.value.trim().toLowerCase();
+    pulseBusy("Buscando…", "Actualizando eventos");
+    renderEvents();
+    flash("#eventsList");
+  });
+
+  $("#qShops")?.addEventListener("input", (e) => {
+    state.shopsQuery = e.target.value.trim().toLowerCase();
+    pulseBusy("Buscando…", "Actualizando shops");
+    renderShops();
+    flash("#shopsList");
   });
 }
 
@@ -263,12 +280,12 @@ function bindActions() {
   $("#btnAddSpot")?.addEventListener("click", openAddSpot);
   $("#btnAddSpot2")?.addEventListener("click", openAddSpot);
 
-  $("#btnUpload")?.addEventListener("click", () =>
-    modalInfo("Upload clip", "Conecta aquí tu flow de subida (S3 / Cloudinary).")
-  );
-
   $("#btnCreateEvent")?.addEventListener("click", () =>
     modalInfo("Create event", "Conecta aquí el form real (POST /events).")
+  );
+
+  $("#btnAddShop")?.addEventListener("click", () =>
+    modalInfo("Add shop", "Conecta aquí el form real (POST /shops).")
   );
 
   $("#btnJoin")?.addEventListener("click", () => toast("Te uniste a la comunidad 🤝"));
@@ -288,15 +305,17 @@ function bindActions() {
   );
 
   $("#btnShare")?.addEventListener("click", shareProfile);
-  $("#btnSettings")?.addEventListener("click", () => modalInfo("Settings", "Preferencias, privacidad, notificaciones."));
+  $("#btnSettings")?.addEventListener("click", () =>
+    modalInfo("Settings", "Preferencias, privacidad, notificaciones.")
+  );
 }
 
 /* ---------- Render ---------- */
 function renderAll() {
   setTab(state.tab);
   renderSpots();
-  renderClips();
   renderEvents();
+  renderShops();
   renderSponsors();
   renderFavorites();
   updateKpis();
@@ -311,9 +330,13 @@ function renderSpots() {
   const filtered = spots
     .filter((s) => {
       const f = state.spotsFilter;
+
       if (f === "all") return true;
       if (["street", "park", "bowl"].includes(f)) return s.type === f;
-      return (s.obstacles || []).includes(f);
+      if (f === "verified") return !!s.verified;
+      if (f === "safe") return String(s.safety || "").toLowerCase() === "safe";
+
+      return (s.obstacles || []).map(x => String(x).toLowerCase()).includes(f);
     })
     .filter((s) => {
       if (!state.spotsQuery) return true;
@@ -384,39 +407,6 @@ function spotCard(s) {
   `;
 }
 
-function renderClips() {
-  const grid = $("#clipsGrid");
-  if (!grid) return;
-
-  const clips = state.data.clips || [];
-
-  const filtered = clips
-    .filter((c) => (state.clipsFilter === "all" ? true : c.tag === state.clipsFilter))
-    .filter((c) => {
-      if (!state.clipsQuery) return true;
-      const hay = `${c.title} ${c.skater} ${c.spot} ${c.tag}`.toLowerCase();
-      return hay.includes(state.clipsQuery);
-    });
-
-  grid.innerHTML = filtered.map((c) => `
-    <article class="card clip">
-      <div class="clip__thumb" role="img" aria-label="Preview clip"></div>
-      <h3 class="clip__title">${escapeHtml(c.title)}</h3>
-      <div class="clip__meta">
-        <span>👤 ${escapeHtml(c.skater)}</span>
-        <span>📍 ${escapeHtml(c.spot)}</span>
-        <span>❤️ ${Number(c.likes || 0)}</span>
-      </div>
-      <div style="display:flex; gap:10px; margin-top:10px; flex-wrap:wrap;">
-        <button class="btn btn-primary" type="button" data-play="${c.id}">Play</button>
-        <button class="btn btn-ghost" type="button" data-like="${c.id}">Like</button>
-      </div>
-    </article>
-  `).join("");
-
-  $$("[data-play]").forEach((b) => b.addEventListener("click", () => toast("Play (mock)")));
-  $$("[data-like]").forEach((b) => b.addEventListener("click", () => likeClip(String(b.dataset.like))));
-}
 
 function renderEvents() {
   const list = $("#eventsList");
@@ -424,7 +414,39 @@ function renderEvents() {
 
   const events = state.data.events || [];
 
-  list.innerHTML = events.map((e) => `
+  const filtered = events.filter((e) => {
+    const hay = `${e.title} ${e.place} ${e.format}`.toLowerCase();
+    const matchesQuery = !state.eventsQuery || hay.includes(state.eventsQuery);
+
+    const format = String(e.format || "").toLowerCase();
+    const title = String(e.title || "").toLowerCase();
+
+    let matchesFilter = true;
+
+    switch (state.eventsFilter) {
+      case "all":
+        matchesFilter = true;
+        break;
+      case "upcoming":
+        matchesFilter = true; // mock: todos son próximos
+        break;
+      case "contest":
+        matchesFilter = format.includes("cupos") || title.includes("contest") || title.includes("clasificatorio");
+        break;
+      case "jam":
+        matchesFilter = title.includes("jam");
+        break;
+      case "free":
+        matchesFilter = !format.includes("pago") && !format.includes("fee");
+        break;
+      default:
+        matchesFilter = true;
+    }
+
+    return matchesQuery && matchesFilter;
+  });
+
+  list.innerHTML = filtered.map((e) => `
     <article class="card event">
       <div class="event__date">
         <div class="event__month">${escapeHtml(e.month)}</div>
@@ -445,13 +467,95 @@ function renderEvents() {
     </article>
   `).join("");
 
-  $$("[data-event]").forEach((b) => b.addEventListener("click", () => {
-    const ev = events.find(x => x.id === b.dataset.event);
-    if (!ev) return;
-    modalInfo(ev.title, `Hora: ${escapeHtml(ev.time)}<br/>Lugar: ${escapeHtml(ev.place)}<br/>Formato: ${escapeHtml(ev.format)}`);
-  }));
+  $$("[data-event]").forEach((b) =>
+    b.addEventListener("click", () => {
+      const ev = filtered.find((x) => x.id === b.dataset.event);
+      if (!ev) return;
+      modalInfo(
+        ev.title,
+        `Hora: ${escapeHtml(ev.time)}<br/>Lugar: ${escapeHtml(ev.place)}<br/>Formato: ${escapeHtml(ev.format)}`
+      );
+    })
+  );
 
-  $$("[data-cal]").forEach((b) => b.addEventListener("click", () => toast("Calendario (mock)")));
+  $$("[data-cal]").forEach((b) =>
+    b.addEventListener("click", () => toast("Calendario (mock)"))
+  );
+
+  $("#kpiEvents") && ($("#kpiEvents").textContent = String(filtered.length));
+  $("#kpiUpcoming") && ($("#kpiUpcoming").textContent = String(filtered.length));
+  $("#kpiRegistrations") && ($("#kpiRegistrations").textContent = "—");
+}
+
+function renderShops() {
+  const list = $("#shopsList");
+  if (!list) return;
+
+  const shops = state.data.shops || [];
+
+  const filtered = shops.filter((shop) => {
+    const hay = `${shop.name} ${shop.city} ${shop.category}`.toLowerCase();
+    const matchesQuery = !state.shopsQuery || hay.includes(state.shopsQuery);
+
+    const category = String(shop.category || "").toLowerCase();
+
+    let matchesFilter = true;
+
+    switch (state.shopsFilter) {
+      case "all":
+        matchesFilter = true;
+        break;
+      case "verified":
+        matchesFilter = !!shop.verified;
+        break;
+      case "promo":
+        matchesFilter = !!shop.promo;
+        break;
+      case "parts":
+        matchesFilter = category.includes("parts");
+        break;
+      case "boards":
+        matchesFilter = category.includes("boards");
+        break;
+      default:
+        matchesFilter = true;
+    }
+
+    return matchesQuery && matchesFilter;
+  });
+
+  list.innerHTML = filtered.map((shop) => `
+    <article class="card shop">
+      <div class="badge-row">
+        <span class="badge">${escapeHtml(shop.category)}</span>
+        ${shop.verified ? `<span class="badge badge--soft">Verified</span>` : ""}
+      </div>
+      <h3 class="h3">${escapeHtml(shop.name)}</h3>
+      <p class="muted">${escapeHtml(shop.city)}</p>
+      <div style="display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;">
+        <button class="btn btn-primary" type="button" data-shop="${shop.id}">Ver shop</button>
+        <button class="btn btn-secondary" type="button">Cómo llegar</button>
+      </div>
+    </article>
+  `).join("");
+
+  $$("[data-shop]").forEach((b) =>
+    b.addEventListener("click", () => {
+      const shop = filtered.find((x) => x.id === b.dataset.shop);
+      if (!shop) return;
+      modalInfo(
+        shop.name,
+        `Ciudad: ${escapeHtml(shop.city)}<br/>Categoría: ${escapeHtml(shop.category)}<br/>Verificada: ${shop.verified ? "Sí" : "No"}`
+      );
+    })
+  );
+
+  const verifiedCount = filtered.filter((s) => s.verified).length;
+  const promoCount = filtered.filter((s) => s.promo).length;
+
+  $("#kpiShops") && ($("#kpiShops").textContent = String(filtered.length));
+  $("#kpiVerifiedShops") && ($("#kpiVerifiedShops").textContent = String(verifiedCount));
+  $("#kpiPromos") && ($("#kpiPromos").textContent = String(promoCount));
 }
 
 function renderSponsors() {
@@ -503,11 +607,16 @@ function renderFavorites() {
 
 function updateKpis() {
   $("#kpiFavs") && ($("#kpiFavs").textContent = String(state.favorites.size));
+
+  $("#kpiVerified") &&
+    ($("#kpiVerified").textContent = String(
+      (state.data.spots || []).filter((s) => s.verified).length
+    ));
 }
 
 function updateProfileCounts() {
-  $("#pClips") && ($("#pClips").textContent = String((state.data.clips || []).length));
   $("#pEvents") && ($("#pEvents").textContent = String((state.data.events || []).length));
+  $("#pShops") && ($("#pShops").textContent = String((state.data.shops || []).length));
 }
 
 /* ---------- Favorites storage ---------- */
@@ -532,6 +641,7 @@ function loadFavs() {
     return [];
   }
 }
+
 function saveFavs(arr) {
   localStorage.setItem("cj_favs", JSON.stringify(arr));
 }
@@ -643,15 +753,6 @@ async function submitReport(type) {
   }
 }
 
-async function likeClip(clipId) {
-  try {
-    const r = await api.likeClip(clipId);
-    if (r && r.ok === false) toast("Like (demo)");
-    else toast("Like ✅");
-  } catch {
-    toast("Error like");
-  }
-}
 
 /* ---------- Geolocalización ---------- */
 function locateMe() {
@@ -677,7 +778,7 @@ async function shareProfile() {
   const url = location.href.split("#")[0];
   try {
     if (navigator.share) {
-      await navigator.share({ title: "Callejeando", text: "Mira mi perfil en Callejeando", url });
+      await navigator.share({ title: "Callejeandola", text: "Mira mi perfil en Callejeandola", url });
       toast("Compartido ✅");
     } else {
       await navigator.clipboard.writeText(url);

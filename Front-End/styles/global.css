@@ -1,5 +1,5 @@
 /* ================================
-   Callejeando v2 — Global UI Kit
+   Callejeandola v2 — Global UI Kit
    Base para TODO tu front-end
    ================================ */
 
@@ -335,35 +335,35 @@ img {
 .brand {
   display: flex;
   align-items: center;
-  gap: 12px;
+  text-decoration: none;
 }
 
-.brand__mark {
-  width: 40px;
-  height: 40px;
-  display: grid;
-  place-items: center;
-  border-radius: 14px;
-  background: linear-gradient(135deg, rgba(124, 58, 237, .95), rgba(34, 211, 238, .9));
-  color: color-mix(in srgb, var(--bg2) 80%, #000);
-  font-weight: 950;
-  box-shadow: 0 10px 22px rgba(0, 0, 0, .35);
+.brand__logo {
+  /* height: 60px; */
+  height: clamp(50px, 6vw, 90px);
+
+  width: auto;
+  display: block;
 }
 
-.brand__text {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.05;
+@media (min-width: 320px) {
+  .brand__logo {
+    /* height: 0px; */
+    width: 150px;
+  }
 }
 
-.brand__name {
-  font-weight: 900;
-  letter-spacing: -0.02em;
+
+@media (min-width: 768px) {
+  .brand__logo {
+    height: 70px;
+  }
 }
 
-.brand__tag {
-  font-size: .82rem;
-  color: var(--muted);
+@media (min-width: 1200px) {
+  .brand__logo {
+    height: auto;
+  }
 }
 
 .appbar__actions {

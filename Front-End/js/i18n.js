@@ -1,4 +1,4 @@
-// i18n.js - Sistema de traducción para Callejeando
+// i18n.js - Sistema de traducción para Callejeandola
 // Español (default) y English
 
 const i18n = {
@@ -13,7 +13,7 @@ const i18n = {
       'hero.cta.learn': 'CONOCER MÁS',
       
       // Acceso
-      'access.title': 'Cómo Usar Callejeando',
+      'access.title': 'Cómo Usar Callejeandola',
       'access.subtitle': 'Todo lo que necesitas para explorar la escena local',
       'access.card1.title': 'Encontrar Spots',
       'access.card1.description': 'Explora el mapa interactivo con todos los spots de skate de la ciudad. Ve fotos, detalles, obstáculos y reseñas de skaters.',
@@ -59,7 +59,7 @@ const i18n = {
       'footer.privacy': 'Privacidad',
       'footer.cookies': 'Cookies',
       'footer.report': 'Reportar Problema',
-      'footer.copyright': '© 2026 Callejeando. El skateboarding es cultura.',
+      'footer.copyright': '© 2026 Callejeandola. El skateboarding es cultura.',
       'footer.contact': 'Contacto',
       'footer.aboutUs': 'Acerca de Nosotros',
       'footer.language': 'Idioma',
@@ -73,7 +73,7 @@ const i18n = {
       'hero.cta.learn': 'LEARN MORE',
       
       // Access
-      'access.title': 'How to Use Callejeando',
+      'access.title': 'How to Use Callejeandola',
       'access.subtitle': 'Everything you need to explore the local scene',
       'access.card1.title': 'Find Spots',
       'access.card1.description': 'Explore the interactive map with all skate spots in the city. See photos, details, obstacles, and skater reviews.',
@@ -119,7 +119,7 @@ const i18n = {
       'footer.privacy': 'Privacy',
       'footer.cookies': 'Cookies',
       'footer.report': 'Report Issue',
-      'footer.copyright': '© 2026 Callejeando. Skateboarding is culture.',
+      'footer.copyright': '© 2026 Callejeandola. Skateboarding is culture.',
       'footer.contact': 'Contact',
       'footer.aboutUs': 'About Us',
       'footer.language': 'Language',
@@ -153,7 +153,7 @@ const i18n = {
     });
     
     // Guardar preferencia
-    localStorage.setItem('callejeando-lang', lang);
+    localStorage.setItem('Callejeandola-lang', lang);
     
     // Disparar evento personalizado
     document.dispatchEvent(new CustomEvent('languageChanged', { detail: { lang } }));
@@ -164,7 +164,7 @@ const i18n = {
   // Inicializar
   init() {
     // Obtener idioma guardado o detectar navegador
-    const savedLang = localStorage.getItem('callejeando-lang');
+    const savedLang = localStorage.getItem('Callejeandola-lang');
     const browserLang = navigator.language.split('-')[0]; // 'es' o 'en'
     const defaultLang = savedLang || (browserLang === 'es' ? 'es' : 'en');
     
