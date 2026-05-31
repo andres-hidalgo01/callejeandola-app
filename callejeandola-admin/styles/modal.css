@@ -1,0 +1,32 @@
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .7);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal {
+    width: 520px;
+    background: #0f172a;
+    border-radius: 18px;
+    padding: 24px;
+}
+
+.modal form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.modal input,
+.modal textarea {
+    width: 100%;
+    padding: 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, .08);
+    background: #111827;
+    color: white;
+}

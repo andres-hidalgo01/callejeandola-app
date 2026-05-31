@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Callejeandola Admin</title>
+    <link rel="stylesheet" href="./styles/admin.css" />
+</head>
+
+<body>
+    <div class="admin-app">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand__mark">CJ</div>
+                <div>
+                    <strong>Callejeandola</strong>
+                    <span>Admin</span>
+                </div>
+            </div>
+
+            <nav class="nav">
+                <button class="nav__item is-active" data-view="dashboard">Dashboard</button>
+                <button class="nav__item" data-view="spots">Spots</button>
+                <button class="nav__item" data-view="events">Events</button>
+                <button class="nav__item" data-view="shops">Shops</button>
+                <button class="nav__item" data-view="sponsors">Sponsors</button>
+                <button class="nav__item" data-view="users">Users</button>
+            </nav>
+        </aside>
+
+        <main class="main">
+            <header class="topbar">
+                <div>
+                    <h1 id="pageTitle">Dashboard</h1>
+                    <p class="muted">Administra la data pública de Callejeandola.</p>
+                </div>
+
+                <div class="session">
+                    <span class="badge">GLOBAL_ADMIN</span>
+                    <button class="btn btn-secondary" id="btnRefresh">Refresh</button>
+                </div>
+            </header>
+
+            <section class="view is-active" data-view-panel="dashboard">
+                <div class="kpis">
+                    <div class="kpi"><strong id="kpiSpots">0</strong><span>Spots</span></div>
+                    <div class="kpi"><strong id="kpiEvents">0</strong><span>Events</span></div>
+                    <div class="kpi"><strong id="kpiShops">0</strong><span>Shops</span></div>
+                    <div class="kpi"><strong id="kpiSponsors">0</strong><span>Sponsors</span></div>
+                </div>
+
+                <div class="card">
+                    <h2>Resumen</h2>
+                    <p class="muted">
+                        Este dashboard es un POC para administrar registros desde la API.
+                    </p>
+                </div>
+            </section>
+
+            <section class="view" data-view-panel="spots">
+                <div class="module-head">
+                    <h2>Spots</h2>
+                    <button class="btn btn-primary" data-open-form="spot">Crear spot</button>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Ciudad</th>
+                                <th>Tipo</th>
+                                <th>Imagen</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="spotsTable"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="view" data-view-panel="events">
+                <div class="module-head">
+                    <h2>Events</h2>
+                    <button class="btn btn-primary" data-open-form="event">Crear evento</button>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Título</th>
+                                <th>Ubicación</th>
+                                <th>Fecha</th>
+                                <th>Imagen</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="eventsTable"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="view" data-view-panel="shops">
+                <div class="module-head">
+                    <h2>Shops</h2>
+                    <button class="btn btn-primary" data-open-form="shop">Crear shop</button>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Ciudad</th>
+                                <th>Categoría</th>
+                                <th>Imagen</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="shopsTable"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="view" data-view-panel="sponsors">
+                <div class="module-head">
+                    <h2>Sponsors</h2>
+                    <button class="btn btn-primary" data-open-form="sponsor">Crear sponsor</button>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Logo</th>
+                                <th>URL</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sponsorsTable"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="view" data-view-panel="users">
+                <div class="module-head">
+                    <h2>Users</h2>
+                </div>
+                <div class="card">
+                    <p class="muted">
+                        Users queda como módulo futuro. Aquí luego se manejarán roles: USER, SKATER, JUDGE, SHOP_OWNER,
+                        LOCAL_ADMIN y GLOBAL_ADMIN.
+                    </p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- <dialog id="entityModal" class="modal">
+        <form method="dialog" class="modal__card" id="entityForm" novalidate>
+            <div class="modal__head">
+                <h2 id="modalTitle">Crear</h2>
+                <button class="icon-btn" type="button" id="btnCloseModal">×</button>
+            </div>
+
+            <div id="formFields" class="form-grid"></div>
+
+            <div class="modal__actions">
+                <button class="btn btn-secondary" type="button" id="btnCancel">Cancelar</button>
+                <button class="btn btn-primary" type="submit">Guardar</button>
+            </div>
+        </form>
+    </dialog> -->
+
+    <dialog id="entityModal" class="modal">
+        <form class="modal__card" id="entityForm" novalidate onsubmit="return false;">
+            <div class="modal__head">
+                <h2 id="modalTitle">Crear</h2>
+                <button class="icon-btn" type="button" id="btnCloseModal">×</button>
+            </div>
+
+            <div id="formFields" class="form-grid"></div>
+
+            <div class="modal__actions">
+                <button class="btn btn-secondary" type="button" id="btnCancel">Cancelar</button>
+                <button class="btn btn-primary" type="button" id="btnSubmitEntity">Guardar</button>
+            </div>
+        </form>
+    </dialog>
+
+    <div id="toast" class="toast" hidden></div>
+
+    <script type="module" src="./js/admin.js"></script>
+</body>
+
+</html>

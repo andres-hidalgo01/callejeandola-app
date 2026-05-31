@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <meta name="theme-color" content="#0b0f17" />
+  <title>Callejeandola</title>
+  <meta name="description" content="Descubre spots y skateparks y entérate de eventos. Callejeandola." />
+  <link rel="icon" href="assets/icons/pushing.png" type="image/svg+xml" />
+  <link rel="stylesheet" href="styles/global.css" />
+</head>
+
+<body>
+  <div class="bg-orb bg-orb--a" aria-hidden="true"></div>
+  <div class="bg-orb bg-orb--b" aria-hidden="true"></div>
+
+  <a class="skip-link" href="#main">Saltar al contenido</a>
+
+  <header class="appbar">
+    <div class="container appbar__inner">
+      <a class="brand" href="#main" aria-label="Callejeandola">
+        <img src="assets/icons/logo.png" alt="Callejeandola logo" class="brand__logo">
+      </a>
+
+      <div class="appbar__actions">
+        <div class="lang-wrap">
+          <button class="icon-btn" id="btnLanguage" type="button" aria-label="Cambiar idioma" aria-expanded="false">
+            🌐
+          </button>
+
+          <div class="lang-menu-global" id="langMenu" hidden>
+            <button class="lang-option" type="button" data-lang="es">🇨🇷 Español</button>
+            <button class="lang-option" type="button" data-lang="en">🇺🇸 English</button>
+          </div>
+        </div>
+
+        <button class="icon-btn" id="btnTheme" type="button" aria-label="Cambiar tema">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M21 12.3A8.2 8.2 0 1 1 11.7 3a6.8 6.8 0 0 0 9.3 9.3Z" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" />
+          </svg>
+        </button>
+
+      </div>
+
+    </div>
+  </header>
+
+  <section class="sponsors" aria-label="Patrocinadores">
+    <div class="container sponsors__inner">
+      <span class="badge sponsors__badge">Sponsors</span>
+      <div class="marquee" aria-label="Cintillo de marcas">
+        <div class="marquee__track" id="sponsorsMarquee"></div>
+      </div>
+    </div>
+  </section>
+
+  <main id="main" class="main">
+    <section class="container shell">
+
+      <div class="panel">
+
+        <div class="tabs" role="tablist" aria-label="Secciones">
+          <button class="tab is-active" role="tab" aria-selected="true" data-tab="spots">Spots</button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="events">Events</button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="shops">Shops</button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="profile">Profile</button>
+        </div>
+
+        <section class="view is-active" data-view="spots">
+          <div class="view__head">
+            <div>
+              <h1 class="h1">Encuentra spots cerca</h1>
+              <p class="sub">Mapa, filtros rápidos y spots útiles para patinar hoy.</p>
+            </div>
+
+            <!-- <div class="segmented" role="group" aria-label="Modo">
+              <button class="seg is-active" type="button" data-mode="list">List</button>
+              <button class="seg js-open-map" type="button">Map</button>
+            </div> -->
+          </div>
+
+          <div class="toolbar">
+            <div class="search">
+              <label class="sr-only" for="qSpots">Buscar spots</label>
+              <!-- <button class="seg js-open-map" type="button">Map</button> -->
+              <input id="qSpots" type="search" placeholder="Buscar: nombre, zona, obstáculo…" autocomplete="off" />
+            </div>
+
+            <div class="mobile-filters">
+              <select id="spotsFilterMobile" class="filter-select">
+                <option value="all">Todos</option>
+                <option value="street">Street</option>
+                <option value="park">Park</option>
+                <option value="bowl">Bowl</option>
+                <option value="verified">Verified</option>
+                <option value="safe">Safe</option>
+              </select>
+            </div>
+
+            <div class="chips" aria-label="Filtros de spots">
+              <button class="chip chip-btn is-active" type="button" data-filter="all">All</button>
+              <button class="chip chip-btn" type="button" data-filter="street">Street</button>
+              <button class="chip chip-btn" type="button" data-filter="park">Park</button>
+              <button class="chip chip-btn" type="button" data-filter="bowl">Bowl</button>
+              <button class="chip chip-btn" type="button" data-filter="verified">Verified</button>
+              <button class="chip chip-btn" type="button" data-filter="safe">Safe</button>
+            </div>
+
+          </div>
+
+          <div class="status-row" aria-live="polite" aria-atomic="true">
+            <span class="status" id="spotsStatus">Mostrando spots…</span>
+          </div>
+
+          <div class="kpis">
+            <div class="kpi">
+              <div class="kpi__num" id="kpiSpots">—</div>
+              <div class="kpi__label">spots visibles</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi__num" id="kpiFavs">—</div>
+              <div class="kpi__label">favoritos</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi__num" id="kpiVerified">—</div>
+              <div class="kpi__label">verificados</div>
+            </div>
+          </div>
+
+          <div class="cards flashable" id="spotsList" aria-label="Listado de spots"></div>
+
+          <div class="empty" id="spotsEmpty" hidden>
+            <div class="empty__icon">🛹</div>
+            <h3>No encontramos spots con ese filtro</h3>
+            <p class="muted">Prueba otro filtro o agrega un nuevo spot.</p>
+          </div>
+        </section>
+
+        <section class="view" data-view="events">
+          <div class="view__head">
+            <div>
+              <h1 class="h1">Eventos</h1>
+              <p class="sub">Calendario claro: ubicación, hora, formato.</p>
+
+            </div>
+            <button class="seg js-open-map" type="button">Map</button>
+          </div>
+
+          <div class="toolbar">
+            <div class="search">
+              <label class="sr-only" for="qEvents">Buscar eventos</label>
+              <input id="qEvents" type="search" placeholder="Buscar: evento, ciudad, organizer…" autocomplete="off" />
+            </div>
+
+            <div class="mobile-filters">
+              <select id="eventsFilterMobile" class="filter-select">
+                <option value="all">Todos</option>
+                <option value="upcoming">Upcoming</option>
+                <option value="contest">Contest</option>
+                <option value="jam">Jam</option>
+                <option value="free">Free</option>
+              </select>
+            </div>
+
+            <div class="chips" aria-label="Filtros de eventos">
+              <button class="chip chip-btn is-active" type="button" data-eventfilter="all">All</button>
+              <button class="chip chip-btn" type="button" data-eventfilter="upcoming">Upcoming</button>
+              <button class="chip chip-btn" type="button" data-eventfilter="contest">Contest</button>
+              <button class="chip chip-btn" type="button" data-eventfilter="jam">Jam</button>
+              <button class="chip chip-btn" type="button" data-eventfilter="free">Free</button>
+            </div>
+          </div>
+
+          <div class="kpis">
+            <div class="kpi">
+              <div class="kpi__num" id="kpiEvents">—</div>
+              <div class="kpi__label">eventos visibles</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi__num" id="kpiUpcoming">—</div>
+              <div class="kpi__label">próximos</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi__num" id="kpiRegistrations">—</div>
+              <div class="kpi__label">inscritos</div>
+            </div>
+          </div>
+
+          <div class="cards flashable" id="eventsList" aria-label="Listado de eventos"></div>
+
+          <div class="empty" id="eventsEmpty" hidden>
+            <div class="empty__icon">🏁</div>
+            <h3>No hay eventos disponibles</h3>
+            <p class="muted">Pronto aparecerán sesiones, competencias y jams.</p>
+          </div>
+
+        </section>
+
+        <section class="view" data-view="shops">
+          <div class="view__head">
+            <div>
+              <h1 class="h1">Skateshops</h1>
+              <p class="sub">Tiendas locales, marcas, promos y puntos clave de la escena.</p>
+            </div>
+          </div>
+
+          <div class="toolbar">
+            <div class="search">
+              <label class="sr-only" for="qShops">Buscar shops</label>
+              <input id="qShops" type="search" placeholder="Buscar: shop, ciudad, marca…" autocomplete="off" />
+            </div>
+
+            <div class="mobile-filters">
+              <select id="shopsFilterMobile" class="filter-select">
+                <option value="all">Todas</option>
+                <option value="verified">Verified</option>
+                <option value="promo">Promo</option>
+                <option value="parts">Parts</option>
+                <option value="boards">Boards</option>
+              </select>
+            </div>
+
+
+            <div class="chips" aria-label="Filtros de shops">
+              <button class="chip chip-btn is-active" type="button" data-shopfilter="all">All</button>
+              <button class="chip chip-btn" type="button" data-shopfilter="verified">Verified</button>
+              <button class="chip chip-btn" type="button" data-shopfilter="promo">Promo</button>
+              <button class="chip chip-btn" type="button" data-shopfilter="parts">Parts</button>
+              <button class="chip chip-btn" type="button" data-shopfilter="boards">Boards</button>
+            </div>
+          </div>
+
+          <div class="kpis">
+            <div class="kpi">
+              <div class="kpi__num" id="kpiShops">—</div>
+              <div class="kpi__label">shops visibles</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi__num" id="kpiVerifiedShops">—</div>
+              <div class="kpi__label">verificadas</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi__num" id="kpiPromos">—</div>
+              <div class="kpi__label">promos activas</div>
+            </div>
+          </div>
+
+          <div class="cards flashable" id="shopsList" aria-label="Listado de shops"></div>
+
+          <div class="empty" id="shopsEmpty" hidden>
+            <div class="empty__icon">🛹</div>
+            <h3>No hay shops disponibles</h3>
+            <p class="muted">Pronto verás tiendas locales, promos y aliados de la escena.</p>
+          </div>
+
+        </section>
+
+        <section class="view" data-view="profile">
+          <div id="profileLocked" class="profile-gate" hidden>
+            <div class="card profile-gate__card">
+              <div class="avatar">CJ</div>
+              <h2 class="h2">Inicia sesión para ver tu perfil</h2>
+              <p class="muted">
+                Accede a favoritos, eventos guardados y actividad personalizada.
+              </p>
+              <div class="profile-gate__actions">
+                <button class="btn btn-primary" type="button" id="btnLoginMock">Iniciar sesión</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="profilePrivate">
+            <div class="profile">
+              <div class="profile__card surface">
+                <div class="profile__top">
+                  <div class="avatar" aria-hidden="true">CJ</div>
+                  <div>
+                    <h2 class="h2">Tu perfil</h2>
+                    <p class="muted">Favoritos, eventos guardados y actividad local.</p>
+                  </div>
+                </div>
+
+                <div class="profile__stats">
+                  <div class="stat">
+                    <div class="stat__num" id="pFavs">0</div>
+                    <div class="stat__label">Favoritos</div>
+                  </div>
+                  <div class="stat">
+                    <div class="stat__num" id="pEvents">0</div>
+                    <div class="stat__label">Eventos guardados</div>
+                  </div>
+                  <div class="stat">
+                    <div class="stat__num" id="pShops">0</div>
+                    <div class="stat__label">shops seguidas</div>
+                  </div>
+                </div>
+
+                <div class="profile__actions">
+                  <button class="btn btn-primary" type="button" id="btnShare">Share profile</button>
+                  <button class="btn btn-ghost" type="button" id="btnSettings">Settings</button>
+                  <button class="btn btn-secondary" type="button" id="btnLogoutMock">Cerrar sesión</button>
+                </div>
+              </div>
+
+              <div class="profile__card card">
+                <h3>Favoritos</h3>
+                <p class="muted">Tus spots guardados para session rápida.</p>
+                <div class="mini" id="favoritesList"></div>
+              </div>
+
+              <div class="profile__card card">
+                <h3>Eventos</h3>
+                <p class="muted">Tus próximos eventos o registros.</p>
+                <div class="mini" id="profileEventsList"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <aside class="side">
+        <div class="map surface" id="mapCard">
+          <div class="map__head">
+            <div>
+              <h3 class="h3">Mapa</h3>
+              <p class="muted micro">Spots, shops y eventos cerca de ti.</p>
+            </div>
+            <div style="display:flex; gap:8px;">
+              <button class="icon-btn" id="btnLocate" type="button">◎</button>
+              <button class="icon-btn map-close" id="btnCloseMap" type="button">✕</button>
+            </div>
+            <!-- <button class="icon-btn" id="btnLocate" type="button" aria-label="Centrar en mi ubicación">◎</button> -->
+          </div>
+
+          <div class="map__canvas" id="mapCanvas" aria-label="Mapa (mock)">
+            <div class="pin pin--a" title="Spot"></div>
+            <div class="pin pin--b" title="Shop"></div>
+            <div class="pin pin--c" title="Event"></div>
+          </div>
+
+          <div class="map__foot">
+            <button class="btn btn-secondary" type="button" id="btnRoute">Route</button>
+            <button class="btn btn-ghost" type="button" id="btnReport">Report</button>
+          </div>
+        </div>
+
+        <div class="card" id="sponsorsCard">
+          <div class="badge-row">
+            <span class="badge">Sponsors</span>
+            <span class="badge badge--soft">Local scene</span>
+          </div>
+          <h3 class="h3">Patrocinadores y aliados</h3>
+          <p class="muted micro">Brands, shops y eventos activos.</p>
+          <div class="sponsors-grid" id="sponsorsGrid"></div>
+        </div>
+
+        <div class="community card">
+          <div class="badge-row">
+            <span class="badge">Community</span>
+            <span class="badge badge--soft">Verified</span>
+          </div>
+          <h3>Hecho por skaters</h3>
+          <p class="muted">Agrega spots, sigue eventos y apoya shops locales.</p>
+          <div class="community__actions">
+            <button class="btn btn-primary" type="button" id="btnJoin">Join</button>
+            <button class="btn btn-secondary" type="button" id="btnRules">Rules</button>
+          </div>
+        </div>
+      </aside>
+
+    </section>
+
+    <div class="busy" id="busy" hidden>
+      <div class="busy__card surface">
+        <div class="spinner" aria-hidden="true"></div>
+        <div>
+          <div class="busy__title" id="busyTitle">Cargando…</div>
+          <div class="busy__sub muted micro" id="busySub">Actualizando contenido</div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <nav class="bottom-nav" aria-label="Navegación inferior">
+    <button class="bn is-active" type="button" data-tab="spots" aria-label="Spots">
+      <span class="bn__icon">📍</span><span class="bn__label">Spots</span>
+    </button>
+    <button class="bn" type="button" data-tab="events" aria-label="Events">
+      <span class="bn__icon">🏁</span><span class="bn__label">Events</span>
+    </button>
+    <button class="bn" type="button" data-tab="shops" aria-label="Shops">
+      <span class="bn__icon">🛹</span><span class="bn__label">Shops</span>
+    </button>
+    <button class="bn" type="button" data-tab="profile" aria-label="Profile">
+      <span class="bn__icon">👤</span><span class="bn__label">Profile</span>
+    </button>
+  </nav>
+
+  <dialog class="modal" id="modal">
+    <form method="dialog" class="modal__card surface">
+      <div class="modal__head">
+        <h3 class="h3" id="modalTitle">Detalle</h3>
+        <button class="icon-btn" value="cancel" aria-label="Cerrar">✕</button>
+      </div>
+      <div class="modal__body" id="modalBody"></div>
+      <div class="modal__foot">
+        <button class="btn btn-secondary" value="cancel">Cerrar</button>
+        <button class="btn btn-primary" id="modalPrimary" value="default">OK</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true" hidden>
+    <span id="toastMsg">Listo</span>
+  </div>
+
+  <script type="module" src="./js/app.js"></script>
+  <script src="js/i18n.js"></script>
+</body>
+
+</html>

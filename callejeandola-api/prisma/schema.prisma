@@ -1,0 +1,76 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      String   @default("USER")
+  country   String?
+  createdAt DateTime @default(now())
+}
+
+model Spot {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  country     String
+  city        String
+  lat         Float
+  lng         Float
+  type        String
+
+  image       String?
+
+  createdAt   DateTime @default(now())
+
+  events Event[]
+}
+
+model Event {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  date        DateTime
+  location    String
+  country     String
+  image       String?
+  spotId      Int?
+  spot        Spot?    @relation(fields: [spotId], references: [id])
+  createdAt   DateTime @default(now())
+}
+
+model Sponsor {
+  id      Int     @id @default(autoincrement())
+  name    String
+  logo    String
+  website String?
+  active  Boolean @default(true)
+
+  createdAt DateTime @default(now())
+}
+
+model Shop {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  city        String
+  country     String   @default("Costa Rica")
+  image       String?
+  category    String
+  verified    Boolean  @default(false)
+  promo       Boolean  @default(false)
+  website     String?
+  instagram   String?
+  address     String?
+  lat         Float?
+  lng         Float?
+  createdAt   DateTime @default(now())
+}
