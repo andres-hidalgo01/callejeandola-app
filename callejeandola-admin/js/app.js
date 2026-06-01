@@ -10,7 +10,7 @@ import { $, $$ } from "./utils/dom.js";
 
 export async function loadSpots() {
 
-    try {
+    try { 
 
         state.spots = await getSpots();
 

@@ -311,11 +311,28 @@ td img {
     display: flex;
     align-items: center;
     gap: 10px;
+    min-height: 44px;
+    padding: 10px 12px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .form-check input {
     width: 18px;
     height: 18px;
+}
+
+.form-check input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #22d3ee;
+    cursor: pointer;
+}
+
+.form-check span {
+    font-size: 13px;
+    color: var(--muted, #9ca3af);
 }
 
 .field {

@@ -1,35 +1,3 @@
-// import { initNavigation } from "./services/navigation.service.js";
-// import { loadDashboard } from "./views/dashboard.view.js";
-// import { loadSpotsView } from "./views/spots.view.js";
-// import { loadEventsView } from "./views/events.view.js";
-// import { loadShopsView } from "./views/shops.view.js";
-// import { loadSponsorsView } from "./views/sponsors.view.js";
-
-// async function loadAll() {
-//     await loadDashboard();
-//     await loadSpotsView();
-//     await loadEventsView();
-//     await loadShopsView();
-//     await loadSponsorsView();
-// }
-
-// async function initAdmin() {
-//     initNavigation();
-
-//     await loadAll();
-
-//     const btnRefresh = document.getElementById("btnRefresh");
-
-//     if (btnRefresh) {
-//         btnRefresh.addEventListener("click", async () => {
-//             await loadAll();
-//         });
-//     }
-// }
-
-// initAdmin();
-
-
 const API_BASE_URL = "http://localhost:4000/api";
 
 const state = {
@@ -50,8 +18,8 @@ async function initAdmin() {
   bindModalBaseActions();
 
   await loadAllData();
-  renderAll();
-  restoreActiveView();
+  await renderAll();
+  await restoreActiveView();
 }
 
 /* =========================
@@ -82,6 +50,49 @@ async function apiRequest(endpoint, options = {}) {
 
   return result;
 }
+
+// async function apiRequest(endpoint, options = {}) {
+//   const url = `${API_BASE_URL}${endpoint}`;
+
+//   const response = await fetch(url, {
+//     headers: {
+//       "Content-Type": "application/json",
+//       ...(options.headers || {}),
+//     },
+//     ...options,
+//   });
+
+//   const rawResponse = await response.text();
+
+//   let result = null;
+
+//   if (rawResponse) {
+//     try {
+//       result = JSON.parse(rawResponse);
+//     } catch (error) {
+//       console.error("Respuesta no JSON desde API:", {
+//         url,
+//         status: response.status,
+//         rawResponse,
+//       });
+
+//       result = {
+//         message: rawResponse,
+//       };
+//     }
+//   }
+
+//   if (!response.ok) {
+//     const message =
+//       result?.error ||
+//       result?.message ||
+//       `API Error ${response.status}`;
+
+//     throw new Error(message);
+//   }
+
+//   return result;
+// }
 
 async function apiGet(endpoint) {
   const result = await apiRequest(endpoint);
@@ -119,6 +130,104 @@ async function deleteSpot(id) {
     method: "DELETE",
   });
 }
+
+/* =========================
+   API: SHOPS CRUD
+========================= */
+
+async function getShops() {
+  return apiGet("/shops");
+}
+
+async function createShop(payload) {
+  return apiRequest("/shops", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+async function updateShop(id, payload) {
+  return apiRequest(`/shops/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(payload),
+  });
+}
+
+async function deleteShop(id) {
+  return apiRequest(`/shops/${id}`, {
+    method: "DELETE",
+  });
+}
+
+/* =========================
+   API: SPONSORS CRUD
+========================= */
+
+async function getSponsors() {
+  return apiGet("/sponsors");
+}
+
+async function createSponsor(payload) {
+  return apiRequest("/sponsors", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+async function updateSponsor(id, payload) {
+  return apiRequest(`/sponsors/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(payload),
+  });
+}
+
+async function deleteSponsor(id) {
+  return apiRequest(`/sponsors/${id}`, {
+    method: "DELETE",
+  });
+}
+
+/* =========================
+   API: EVENTS CRUD
+========================= */
+
+async function getEvents() {
+  return apiGet("/events");
+}
+
+function getEventPayloadFromForm() {
+  const rawDate = getValue("eventDate");
+
+  return {
+    title: getValue("eventTitle"),
+    description: getValue("eventDescription"),
+    date: rawDate ? new Date(rawDate).toISOString() : new Date().toISOString(),
+    location: getValue("eventLocation"),
+    country: getValue("eventCountry") || "Costa Rica",
+    image: getValue("eventImage"),
+  };
+}
+
+async function createEvent(payload) {
+  return apiRequest("/events", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+async function updateEvent(id, payload) {
+  return apiRequest(`/events/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(payload),
+  });
+}
+
+async function deleteEvent(id) {
+  return apiRequest(`/events/${id}`, {
+    method: "DELETE",
+  });
+}
+
 
 /* =========================
    LOAD DATA
@@ -205,9 +314,6 @@ function bindNavigation() {
   });
 }
 
-
-
-
 function bindRefresh() {
   const btnRefresh = document.getElementById("btnRefresh");
 
@@ -236,8 +342,12 @@ function renderAll() {
   renderEventsTable();
   renderShopsTable();
   renderSponsorsTable();
+
   bindCreateButtons();
   bindSpotTableActions();
+  bindShopTableActions();
+  bindSponsorTableActions();
+  bindEventTableActions();
 }
 
 /* =========================
@@ -338,6 +448,102 @@ function bindSpotTableActions() {
   });
 }
 
+function bindShopTableActions() {
+  document.querySelectorAll("[data-edit-shop]").forEach((button) => {
+    button.onclick = () => {
+      const id = Number(button.dataset.editShop);
+
+      const shop = state.shops.find((item) => Number(item.id) === id);
+
+      if (!shop) {
+        showToast("Shop no encontrado");
+        return;
+      }
+
+      openShopFormModal("edit", shop);
+    };
+  });
+
+  document.querySelectorAll("[data-delete-shop]").forEach((button) => {
+    button.onclick = () => {
+      const id = Number(button.dataset.deleteShop);
+
+      const shop = state.shops.find((item) => Number(item.id) === id);
+
+      if (!shop) {
+        showToast("Shop no encontrado");
+        return;
+      }
+
+      openDeleteShopModal(shop);
+    };
+  });
+}
+
+function bindSponsorTableActions() {
+  document.querySelectorAll("[data-edit-sponsor]").forEach((button) => {
+    button.onclick = () => {
+      const id = Number(button.dataset.editSponsor);
+
+      const sponsor = state.sponsors.find((item) => Number(item.id) === id);
+
+      if (!sponsor) {
+        showToast("Sponsor no encontrado");
+        return;
+      }
+
+      openSponsorFormModal("edit", sponsor);
+    };
+  });
+
+  document.querySelectorAll("[data-delete-sponsor]").forEach((button) => {
+    button.onclick = () => {
+      const id = Number(button.dataset.deleteSponsor);
+
+      const sponsor = state.sponsors.find((item) => Number(item.id) === id);
+
+      if (!sponsor) {
+        showToast("Sponsor no encontrado");
+        return;
+      }
+
+      openDeleteSponsorModal(sponsor);
+    };
+  });
+}
+
+function bindEventTableActions() {
+  document.querySelectorAll("[data-edit-event]").forEach((button) => {
+    button.onclick = () => {
+      const id = Number(button.dataset.editEvent);
+
+      const event = state.events.find((item) => Number(item.id) === id);
+
+      if (!event) {
+        showToast("Evento no encontrado");
+        return;
+      }
+
+      openEventFormModal("edit", event);
+    };
+  });
+
+  document.querySelectorAll("[data-delete-event]").forEach((button) => {
+    button.onclick = () => {
+      const id = Number(button.dataset.deleteEvent);
+
+      const event = state.events.find((item) => Number(item.id) === id);
+
+      if (!event) {
+        showToast("Evento no encontrado");
+        return;
+      }
+
+      openDeleteEventModal(event);
+    };
+  });
+}
+
 /* =========================
    EVENTS TABLE READ ONLY
 ========================= */
@@ -360,12 +566,32 @@ function renderEventsTable() {
     .map((event) => {
       return `
         <tr>
-          <td>${escapeHtml(event.title || "—")}</td>
-          <td>${escapeHtml(event.location || "—")}</td>
-          <td>${formatDate(event.date)}</td>
-          <td>${renderImage(event.image, event.title)}</td>
           <td>
-            <span class="muted">Pendiente V1.1</span>
+            <strong>${escapeHtml(event.title || "—")}</strong>
+          </td>
+
+          <td>${escapeHtml(event.location || "—")}</td>
+
+          <td>${formatDate(event.date)}</td>
+
+          <td>${renderImage(event.image, event.title)}</td>
+
+          <td>
+            <div class="table-actions">
+              <button
+                class="btn btn-secondary"
+                type="button"
+                data-edit-event="${event.id}">
+                Editar
+              </button>
+
+              <button
+                class="btn btn-danger"
+                type="button"
+                data-delete-event="${event.id}">
+                Eliminar
+              </button>
+            </div>
           </td>
         </tr>
       `;
@@ -376,6 +602,37 @@ function renderEventsTable() {
 /* =========================
    SHOPS TABLE READ ONLY
 ========================= */
+
+// function renderShopsTable() {
+//   const table = document.getElementById("shopsTable");
+
+//   if (!table) return;
+
+//   if (!state.shops.length) {
+//     table.innerHTML = `
+//       <tr>
+//         <td colspan="5">No hay shops registrados.</td>
+//       </tr>
+//     `;
+//     return;
+//   }
+
+//   table.innerHTML = state.shops
+//     .map((shop) => {
+//       return `
+//         <tr>
+//           <td>${escapeHtml(shop.name || "—")}</td>
+//           <td>${escapeHtml(shop.city || "—")}</td>
+//           <td>${escapeHtml(shop.category || "—")}</td>
+//           <td>${renderImage(shop.image, shop.name)}</td>
+//           <td>
+//             <span class="muted">Pendiente V1.1</span>
+//           </td>
+//         </tr>
+//       `;
+//     })
+//     .join("");
+// }
 
 function renderShopsTable() {
   const table = document.getElementById("shopsTable");
@@ -395,12 +652,36 @@ function renderShopsTable() {
     .map((shop) => {
       return `
         <tr>
-          <td>${escapeHtml(shop.name || "—")}</td>
-          <td>${escapeHtml(shop.city || "—")}</td>
-          <td>${escapeHtml(shop.category || "—")}</td>
-          <td>${renderImage(shop.image, shop.name)}</td>
           <td>
-            <span class="muted">Pendiente V1.1</span>
+            <strong>${escapeHtml(shop.name || "—")}</strong>
+            ${shop.verified ? `<span class="badge">Verified</span>` : ""}
+            ${shop.promo ? `<span class="badge">Promo</span>` : ""}
+          </td>
+
+          <td>${escapeHtml(shop.city || "—")}</td>
+
+          <td>
+            <span class="badge">${escapeHtml(shop.category || "—")}</span>
+          </td>
+
+          <td>${renderImage(shop.image, shop.name)}</td>
+
+          <td>
+            <div class="table-actions">
+              <button
+                class="btn btn-secondary"
+                type="button"
+                data-edit-shop="${shop.id}">
+                Editar
+              </button>
+
+              <button
+                class="btn btn-danger"
+                type="button"
+                data-delete-shop="${shop.id}">
+                Eliminar
+              </button>
+            </div>
           </td>
         </tr>
       `;
@@ -411,6 +692,41 @@ function renderShopsTable() {
 /* =========================
    SPONSORS TABLE READ ONLY
 ========================= */
+
+// function renderSponsorsTable() {
+//   const table = document.getElementById("sponsorsTable");
+
+//   if (!table) return;
+
+//   if (!state.sponsors.length) {
+//     table.innerHTML = `
+//       <tr>
+//         <td colspan="4">No hay sponsors registrados.</td>
+//       </tr>
+//     `;
+//     return;
+//   }
+
+//   table.innerHTML = state.sponsors
+//     .map((sponsor) => {
+//       return `
+//         <tr>
+//           <td>${escapeHtml(sponsor.name || "—")}</td>
+//           <td>${renderImage(sponsor.logo, sponsor.name)}</td>
+//           <td>
+//             ${sponsor.website
+//           ? `<a href="${escapeAttr(sponsor.website)}" target="_blank" rel="noopener">Website</a>`
+//           : "—"
+//         }
+//           </td>
+//           <td>
+//             <span class="muted">Pendiente V1.1</span>
+//           </td>
+//         </tr>
+//       `;
+//     })
+//     .join("");
+// }
 
 function renderSponsorsTable() {
   const table = document.getElementById("sponsorsTable");
@@ -430,16 +746,36 @@ function renderSponsorsTable() {
     .map((sponsor) => {
       return `
         <tr>
-          <td>${escapeHtml(sponsor.name || "—")}</td>
+          <td>
+            <strong>${escapeHtml(sponsor.name || "—")}</strong>
+            ${sponsor.active === false ? `<span class="badge">Inactive</span>` : `<span class="badge">Active</span>`}
+          </td>
+
           <td>${renderImage(sponsor.logo, sponsor.name)}</td>
+
           <td>
             ${sponsor.website
           ? `<a href="${escapeAttr(sponsor.website)}" target="_blank" rel="noopener">Website</a>`
           : "—"
         }
           </td>
+
           <td>
-            <span class="muted">Pendiente V1.1</span>
+            <div class="table-actions">
+              <button
+                class="btn btn-secondary"
+                type="button"
+                data-edit-sponsor="${sponsor.id}">
+                Editar
+              </button>
+
+              <button
+                class="btn btn-danger"
+                type="button"
+                data-delete-sponsor="${sponsor.id}">
+                Eliminar
+              </button>
+            </div>
           </td>
         </tr>
       `;
@@ -461,17 +797,32 @@ function bindCreateButtons() {
     };
   }
 
-  document.querySelector('[data-open-form="event"]')?.addEventListener("click", () => {
-    showToast("CRUD Events entra después de validar Spots");
-  });
+  const btnCreateShop = document.querySelector('[data-open-form="shop"]');
 
-  document.querySelector('[data-open-form="shop"]')?.addEventListener("click", () => {
-    showToast("CRUD Shops entra después de validar Spots");
-  });
+  if (btnCreateShop) {
+    btnCreateShop.onclick = () => {
+      localStorage.setItem("cj_admin_active_view", "shops");
+      openShopFormModal("create");
+    };
+  }
 
-  document.querySelector('[data-open-form="sponsor"]')?.addEventListener("click", () => {
-    showToast("CRUD Sponsors entra después de validar Spots");
-  });
+  const btnCreateSponsor = document.querySelector('[data-open-form="sponsor"]');
+
+  if (btnCreateSponsor) {
+    btnCreateSponsor.onclick = () => {
+      localStorage.setItem("cj_admin_active_view", "sponsors");
+      openSponsorFormModal("create");
+    };
+  }
+
+  const btnCreateEvent = document.querySelector('[data-open-form="event"]');
+
+  if (btnCreateEvent) {
+    btnCreateEvent.onclick = () => {
+      localStorage.setItem("cj_admin_active_view", "events");
+      openEventFormModal("create");
+    };
+  }
 }
 
 /* =========================
@@ -510,25 +861,61 @@ function bindModalBaseActions() {
 }
 
 // async function handleEntitySubmit() {
-//     if (state.modalEntity === "spot" && state.modalMode === "create") {
-//         await handleCreateSpot();
-//         return;
-//     }
+//   console.log("CLICK GUARDAR", state.modalEntity, state.modalMode);
 
-//     if (state.modalEntity === "spot" && state.modalMode === "edit") {
-//         await handleUpdateSpot();
-//         return;
-//     }
+//   if (state.modalEntity === "spot" && state.modalMode === "create") {
+//     await handleCreateSpot();
+//     return;
+//   }
 
-//     if (state.modalEntity === "spot" && state.modalMode === "delete") {
-//         await handleDeleteSpot();
-//         return;
-//     }
+//   if (state.modalEntity === "spot" && state.modalMode === "edit") {
+//     await handleUpdateSpot();
+//     return;
+//   }
+
+//   if (state.modalEntity === "spot" && state.modalMode === "delete") {
+//     await handleDeleteSpot();
+//     return;
+//   }
+
+//   showToast("Acción no configurada");
+// }
+
+// async function handleEntitySubmit() {
+//   if (state.modalEntity === "spot" && state.modalMode === "create") {
+//     await handleCreateSpot();
+//     return;
+//   }
+
+//   if (state.modalEntity === "spot" && state.modalMode === "edit") {
+//     await handleUpdateSpot();
+//     return;
+//   }
+
+//   if (state.modalEntity === "spot" && state.modalMode === "delete") {
+//     await handleDeleteSpot();
+//     return;
+//   }
+
+//   if (state.modalEntity === "shop" && state.modalMode === "create") {
+//     await handleCreateShop();
+//     return;
+//   }
+
+//   if (state.modalEntity === "shop" && state.modalMode === "edit") {
+//     await handleUpdateShop();
+//     return;
+//   }
+
+//   if (state.modalEntity === "shop" && state.modalMode === "delete") {
+//     await handleDeleteShop();
+//     return;
+//   }
+
+//   showToast("Acción no configurada");
 // }
 
 async function handleEntitySubmit() {
-  console.log("CLICK GUARDAR", state.modalEntity, state.modalMode);
-
   if (state.modalEntity === "spot" && state.modalMode === "create") {
     await handleCreateSpot();
     return;
@@ -541,6 +928,51 @@ async function handleEntitySubmit() {
 
   if (state.modalEntity === "spot" && state.modalMode === "delete") {
     await handleDeleteSpot();
+    return;
+  }
+
+  if (state.modalEntity === "shop" && state.modalMode === "create") {
+    await handleCreateShop();
+    return;
+  }
+
+  if (state.modalEntity === "shop" && state.modalMode === "edit") {
+    await handleUpdateShop();
+    return;
+  }
+
+  if (state.modalEntity === "shop" && state.modalMode === "delete") {
+    await handleDeleteShop();
+    return;
+  }
+
+  if (state.modalEntity === "sponsor" && state.modalMode === "create") {
+    await handleCreateSponsor();
+    return;
+  }
+
+  if (state.modalEntity === "sponsor" && state.modalMode === "edit") {
+    await handleUpdateSponsor();
+    return;
+  }
+
+  if (state.modalEntity === "sponsor" && state.modalMode === "delete") {
+    await handleDeleteSponsor();
+    return;
+  }
+
+  if (state.modalEntity === "event" && state.modalMode === "create") {
+    await handleCreateEvent();
+    return;
+  }
+
+  if (state.modalEntity === "event" && state.modalMode === "edit") {
+    await handleUpdateEvent();
+    return;
+  }
+
+  if (state.modalEntity === "event" && state.modalMode === "delete") {
+    await handleDeleteEvent();
     return;
   }
 
@@ -725,10 +1157,274 @@ function openDeleteSpotModal(spot) {
 }
 
 /* =========================
-   SPOT CRUD HANDLERS
+   SHOP MODALS
 ========================= */
 
+function openShopFormModal(mode, shop = {}) {
+  const isEdit = mode === "edit";
 
+  openEntityModal({
+    title: isEdit ? "Editar Shop" : "Crear Shop",
+    submitText: isEdit ? "Actualizar" : "Guardar",
+    mode,
+    entity: "shop",
+    itemId: shop.id || null,
+    html: `
+      <div class="form-field">
+        <label for="shopName">Nombre *</label>
+        <input
+          id="shopName"
+          name="name"
+          type="text"
+          required
+          value="${escapeAttr(shop.name || "")}"
+          placeholder="Ej: Ride and Slide"
+        >
+      </div>
+
+      <div class="form-field">
+        <label for="shopDescription">Descripción</label>
+        <textarea
+          id="shopDescription"
+          name="description"
+          rows="4"
+          placeholder="Descripción breve del shop">${escapeHtml(shop.description || "")}</textarea>
+      </div>
+
+      <div class="form-grid-2">
+        <div class="form-field">
+          <label for="shopCountry">País</label>
+          <input
+            id="shopCountry"
+            name="country"
+            type="text"
+            value="${escapeAttr(shop.country || "Costa Rica")}"
+          >
+        </div>
+
+        <div class="form-field">
+          <label for="shopCity">Ciudad/Zona *</label>
+          <input
+            id="shopCity"
+            name="city"
+            type="text"
+            required
+            value="${escapeAttr(shop.city || "")}"
+            placeholder="Ej: Heredia"
+          >
+        </div>
+      </div>
+
+      <div class="form-grid-2">
+        <div class="form-field">
+          <label for="shopCategory">Categoría</label>
+          <input
+            id="shopCategory"
+            name="category"
+            type="text"
+            value="${escapeAttr(shop.category || "Skateshop")}"
+            placeholder="Skateshop, Brand, Local shop"
+          >
+        </div>
+
+        <div class="form-field">
+          <label for="shopImage">Imagen Cloudinary URL</label>
+          <input
+            id="shopImage"
+            name="image"
+            type="url"
+            value="${escapeAttr(shop.image || "")}"
+            placeholder="https://res.cloudinary.com/..."
+          >
+        </div>
+      </div>
+
+      <div class="form-grid-2">
+        <div class="form-field">
+          <label for="shopWebsite">Website</label>
+          <input
+            id="shopWebsite"
+            name="website"
+            type="url"
+            value="${escapeAttr(shop.website || "")}"
+            placeholder="https://..."
+          >
+        </div>
+
+        <div class="form-field">
+          <label for="shopInstagram">Instagram</label>
+          <input
+            id="shopInstagram"
+            name="instagram"
+            type="url"
+            value="${escapeAttr(shop.instagram || "")}"
+            placeholder="https://instagram.com/..."
+          >
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label for="shopAddress">Dirección</label>
+        <input
+          id="shopAddress"
+          name="address"
+          type="text"
+          value="${escapeAttr(shop.address || "")}"
+          placeholder="Dirección física o referencia"
+        >
+      </div>
+
+      <div class="form-grid-2">
+        <div class="form-field">
+          <label for="shopLat">Latitud</label>
+          <input
+            id="shopLat"
+            name="lat"
+            type="number"
+            step="any"
+            value="${shop.lat ?? 0}"
+          >
+        </div>
+
+        <div class="form-field">
+          <label for="shopLng">Longitud</label>
+          <input
+            id="shopLng"
+            name="lng"
+            type="number"
+            step="any"
+            value="${shop.lng ?? 0}"
+          >
+        </div>
+      </div>
+
+      <div class="form-grid-2">
+        <label class="form-check">
+          <input
+            id="shopVerified"
+            name="verified"
+            type="checkbox"
+            ${shop.verified ? "checked" : ""}
+          >
+          <span>Shop verificado</span>
+        </label>
+
+        <label class="form-check">
+          <input
+            id="shopPromo"
+            name="promo"
+            type="checkbox"
+            ${shop.promo ? "checked" : ""}
+          >
+          <span>Promoción activa</span>
+        </label>
+      </div>
+    `,
+  });
+}
+
+function openDeleteShopModal(shop) {
+  openEntityModal({
+    title: "Eliminar Shop",
+    submitText: "Eliminar",
+    mode: "delete",
+    entity: "shop",
+    itemId: shop.id,
+    html: `
+      <div class="danger-zone">
+        <h3>¿Eliminar este shop?</h3>
+        <p>
+          Vas a eliminar <strong>${escapeHtml(shop.name || "este shop")}</strong>.
+          Esta acción no se puede deshacer.
+        </p>
+      </div>
+    `,
+  });
+}
+
+/* =========================
+   SPONSOR MODALS
+========================= */
+
+function openSponsorFormModal(mode, sponsor = {}) {
+  const isEdit = mode === "edit";
+
+  openEntityModal({
+    title: isEdit ? "Editar Sponsor" : "Crear Sponsor",
+    submitText: isEdit ? "Actualizar" : "Guardar",
+    mode,
+    entity: "sponsor",
+    itemId: sponsor.id || null,
+    html: `
+      <div class="form-field">
+        <label for="sponsorName">Nombre *</label>
+        <input
+          id="sponsorName"
+          name="name"
+          type="text"
+          required
+          value="${escapeAttr(sponsor.name || "")}"
+          placeholder="Ej: Monster Energy"
+        >
+      </div>
+
+      <div class="form-field">
+        <label for="sponsorLogo">Logo Cloudinary URL</label>
+        <input
+          id="sponsorLogo"
+          name="logo"
+          type="url"
+          value="${escapeAttr(sponsor.logo || "")}"
+          placeholder="https://res.cloudinary.com/..."
+        >
+      </div>
+
+      <div class="form-field">
+        <label for="sponsorWebsite">Website</label>
+        <input
+          id="sponsorWebsite"
+          name="website"
+          type="url"
+          value="${escapeAttr(sponsor.website || "")}"
+          placeholder="https://..."
+        >
+      </div>
+
+      <label class="form-check">
+        <input
+          id="sponsorActive"
+          name="active"
+          type="checkbox"
+          ${sponsor.active === false ? "" : "checked"}
+        >
+        <span>Sponsor activo</span>
+      </label>
+    `,
+  });
+}
+
+function openDeleteSponsorModal(sponsor) {
+  openEntityModal({
+    title: "Eliminar Sponsor",
+    submitText: "Eliminar",
+    mode: "delete",
+    entity: "sponsor",
+    itemId: sponsor.id,
+    html: `
+      <div class="danger-zone">
+        <h3>¿Eliminar este sponsor?</h3>
+        <p>
+          Vas a eliminar <strong>${escapeHtml(sponsor.name || "este sponsor")}</strong>.
+          Esta acción no se puede deshacer.
+        </p>
+      </div>
+    `,
+  });
+}
+
+/* =========================
+   SPOT CRUD HANDLERS
+========================= */
 async function reloadSpotsOnly() {
   try {
     state.spots = await getSpots();
@@ -908,7 +1604,7 @@ async function handleDeleteSpot() {
     });
 
     closeEntityModal();
-    renderSpotsOnly();
+    //renderSpotsOnly();
 
     showToast("Spot eliminado correctamente");
   } catch (error) {
@@ -917,8 +1613,321 @@ async function handleDeleteSpot() {
   }
 }
 
+/* =========================
+   EVENT MODALS
+========================= */
 
+function openEventFormModal(mode, eventItem = {}) {
+  const isEdit = mode === "edit";
 
+  openEntityModal({
+    title: isEdit ? "Editar Evento" : "Crear Evento",
+    submitText: isEdit ? "Actualizar" : "Guardar",
+    mode,
+    entity: "event",
+    itemId: eventItem.id || null,
+    html: `
+      <div class="form-field">
+        <label for="eventTitle">Título *</label>
+        <input
+          id="eventTitle"
+          name="title"
+          type="text"
+          required
+          value="${escapeAttr(eventItem.title || "")}"
+          placeholder="Ej: Best Trick Sabana"
+        >
+      </div>
+
+      <div class="form-field">
+        <label for="eventDescription">Descripción</label>
+        <textarea
+          id="eventDescription"
+          name="description"
+          rows="4"
+          placeholder="Descripción del evento">${escapeHtml(eventItem.description || "")}</textarea>
+      </div>
+
+      <div class="form-grid-2">
+        <div class="form-field">
+          <label for="eventLocation">Ubicación *</label>
+          <input
+            id="eventLocation"
+            name="location"
+            type="text"
+            required
+            value="${escapeAttr(eventItem.location || "")}"
+            placeholder="Ej: La Sabana, San José"
+          >
+        </div>
+
+        <div class="form-field">
+          <label for="eventCountry">País</label>
+          <input
+            id="eventCountry"
+            name="country"
+            type="text"
+            value="${escapeAttr(eventItem.country || "Costa Rica")}"
+          >
+        </div>
+      </div>
+
+      <div class="form-grid-2">
+        <div class="form-field">
+          <label for="eventDate">Fecha y hora *</label>
+          <input
+            id="eventDate"
+            name="date"
+            type="datetime-local"
+            required
+            value="${formatDateTimeLocal(eventItem.date)}"
+          >
+        </div>
+
+        <div class="form-field">
+          <label for="eventImage">Imagen Cloudinary URL</label>
+          <input
+            id="eventImage"
+            name="image"
+            type="url"
+            value="${escapeAttr(eventItem.image || "")}"
+            placeholder="https://res.cloudinary.com/..."
+          >
+        </div>
+      </div>
+    `,
+  });
+}
+
+function openDeleteEventModal(eventItem) {
+  openEntityModal({
+    title: "Eliminar Evento",
+    submitText: "Eliminar",
+    mode: "delete",
+    entity: "event",
+    itemId: eventItem.id,
+    html: `
+      <div class="danger-zone">
+        <h3>¿Eliminar este evento?</h3>
+        <p>
+          Vas a eliminar <strong>${escapeHtml(eventItem.title || "este evento")}</strong>.
+          Esta acción no se puede deshacer.
+        </p>
+      </div>
+    `,
+  });
+}
+
+/* =========================
+   SHOP CRUD HANDLERS
+========================= */
+
+function renderShopsOnly() {
+  renderDashboard();
+  renderShopsTable();
+  bindShopTableActions();
+}
+
+function getShopPayloadFromForm() {
+  return {
+    name: getValue("shopName"),
+    description: getValue("shopDescription"),
+    country: getValue("shopCountry") || "Costa Rica",
+    city: getValue("shopCity"),
+    category: getValue("shopCategory") || "Skateshop",
+    website: getValue("shopWebsite"),
+    instagram: getValue("shopInstagram"),
+    address: getValue("shopAddress"),
+    lat: getNumberValue("shopLat"),
+    lng: getNumberValue("shopLng"),
+    image: getValue("shopImage"),
+    verified: getChecked("shopVerified"),
+    promo: getChecked("shopPromo"),
+  };
+}
+
+async function handleCreateShop() {
+  try {
+    const payload = getShopPayloadFromForm();
+
+    if (!payload.name || !payload.city) {
+      showToast("Nombre y ciudad son obligatorios");
+      return;
+    }
+
+    const createdShop = await createShop(payload);
+
+    state.shops = [
+      createdShop,
+      ...state.shops,
+    ];
+
+    closeEntityModal();
+    renderShopsOnly();
+
+    showToast("Shop creado correctamente");
+  } catch (error) {
+    console.error(error);
+    showToast(error.message || "Error creando shop");
+  }
+}
+
+async function handleUpdateShop() {
+  try {
+    const id = Number(state.modalItemId);
+    const payload = getShopPayloadFromForm();
+
+    if (!id) {
+      showToast("ID inválido");
+      return;
+    }
+
+    if (!payload.name || !payload.city) {
+      showToast("Nombre y ciudad son obligatorios");
+      return;
+    }
+
+    const updatedShop = await updateShop(id, payload);
+
+    state.shops = state.shops.map((shop) => {
+      return Number(shop.id) === id ? updatedShop : shop;
+    });
+
+    closeEntityModal();
+    renderShopsOnly();
+
+    showToast("Shop actualizado correctamente");
+  } catch (error) {
+    console.error(error);
+    showToast(error.message || "Error actualizando shop");
+  }
+}
+
+async function handleDeleteShop() {
+  try {
+    const id = Number(state.modalItemId);
+
+    if (!id) {
+      showToast("ID inválido");
+      return;
+    }
+
+    await deleteShop(id);
+
+    state.shops = state.shops.filter((shop) => {
+      return Number(shop.id) !== id;
+    });
+
+    closeEntityModal();
+    renderShopsOnly();
+
+    showToast("Shop eliminado correctamente");
+  } catch (error) {
+    console.error(error);
+    showToast(error.message || "Error eliminando shop");
+  }
+}
+
+/* =========================
+   SPONSOR CRUD HANDLERS
+========================= */
+
+function renderSponsorsOnly() {
+  renderDashboard();
+  renderSponsorsTable();
+  bindSponsorTableActions();
+}
+
+function getSponsorPayloadFromForm() {
+  return {
+    name: getValue("sponsorName"),
+    logo: getValue("sponsorLogo"),
+    website: getValue("sponsorWebsite"),
+    active: getChecked("sponsorActive"),
+  };
+}
+
+async function handleCreateSponsor() {
+  try {
+    const payload = getSponsorPayloadFromForm();
+
+    if (!payload.name) {
+      showToast("Nombre es obligatorio");
+      return;
+    }
+
+    const createdSponsor = await createSponsor(payload);
+
+    state.sponsors = [
+      createdSponsor,
+      ...state.sponsors,
+    ];
+
+    closeEntityModal();
+    renderSponsorsOnly();
+
+    showToast("Sponsor creado correctamente");
+  } catch (error) {
+    console.error(error);
+    showToast(error.message || "Error creando sponsor");
+  }
+}
+
+async function handleUpdateSponsor() {
+  try {
+    const id = Number(state.modalItemId);
+    const payload = getSponsorPayloadFromForm();
+
+    if (!id) {
+      showToast("ID inválido");
+      return;
+    }
+
+    if (!payload.name) {
+      showToast("Nombre es obligatorio");
+      return;
+    }
+
+    const updatedSponsor = await updateSponsor(id, payload);
+
+    state.sponsors = state.sponsors.map((sponsor) => {
+      return Number(sponsor.id) === id ? updatedSponsor : sponsor;
+    });
+
+    closeEntityModal();
+    renderSponsorsOnly();
+
+    showToast("Sponsor actualizado correctamente");
+  } catch (error) {
+    console.error(error);
+    showToast(error.message || "Error actualizando sponsor");
+  }
+}
+
+async function handleDeleteSponsor() {
+  try {
+    const id = Number(state.modalItemId);
+
+    if (!id) {
+      showToast("ID inválido");
+      return;
+    }
+
+    await deleteSponsor(id);
+
+    state.sponsors = state.sponsors.filter((sponsor) => {
+      return Number(sponsor.id) !== id;
+    });
+
+    closeEntityModal();
+    renderSponsorsOnly();
+
+    showToast("Sponsor eliminado correctamente");
+  } catch (error) {
+    console.error(error);
+    showToast(error.message || "Error eliminando sponsor");
+  }
+}
 
 /* =========================
    HELPERS
@@ -926,6 +1935,10 @@ async function handleDeleteSpot() {
 
 function getValue(id) {
   return document.getElementById(id)?.value?.trim() || "";
+}
+
+function getChecked(id) {
+  return document.getElementById(id)?.checked || false;
 }
 
 function getNumberValue(id) {
@@ -946,21 +1959,38 @@ function setText(id, value) {
   }
 }
 
+// function renderImage(src, alt) {
+//   if (!src) {
+//     return `<span class= "muted"> Sin imagen</> `;
+//   }
+
+//   return `
+//   <img
+//     src = "${escapeAttr(src)}"
+//     alt = "${escapeAttr(alt || "Image")}"
+//     width = "70"
+//     loading = "lazy"
+//     onerror = "this.remove();"
+//     >    `;
+// }
+
 function renderImage(src, alt) {
-  if (!src) {
+  if (!src || String(src).trim() === "") {
     return `<span class="muted">Sin imagen</span>`;
   }
 
   return `
     <img
+      class="table-img"
       src="${escapeAttr(src)}"
-      alt="${escapeAttr(alt || "Image")}"
-      width="70"
+      alt="${escapeAttr(alt || "Imagen")}"
       loading="lazy"
-      onerror="this.remove();"
+      onerror="this.outerHTML='<span class=&quot;muted&quot;>Imagen inválida</span>'"
     >
   `;
 }
+
+
 
 function formatDate(value) {
   if (!value) return "—";
@@ -1022,7 +2052,7 @@ function restoreActiveView() {
   panels.forEach((panel) => panel.classList.remove("is-active"));
 
   const activeButton = document.querySelector(`.nav__item[data-view="${savedView}"]`);
-  const activePanel = document.querySelector(`.view[data-view-panel="${savedView}"]`);
+  const activePanel = document.querySelector(`.view[data-view-panel= "${savedView}"]`);
 
   activeButton?.classList.add("is-active");
   activePanel?.classList.add("is-active");
@@ -1032,3 +2062,17 @@ function restoreActiveView() {
   }
 }
 
+function formatDateTimeLocal(value) {
+  if (!value) return "";
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return "";
+  }
+
+  const offset = date.getTimezoneOffset();
+  const localDate = new Date(date.getTime() - offset * 60000);
+
+  return localDate.toISOString().slice(0, 16);
+}
