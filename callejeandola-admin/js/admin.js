@@ -1,14 +1,29 @@
-const API_BASE_URL = "http://localhost:4000/api";
+import {
+  getSpots,
+  createSpot,
+  updateSpot,
+  deleteSpot,
+} from "./api/spots.api.js";
 
-const state = {
-  spots: [],
-  events: [],
-  shops: [],
-  sponsors: [],
-  modalMode: null,
-  modalEntity: null,
-  modalItemId: null,
-};
+import {
+  getShops,
+  createShop,
+  updateShop,
+  deleteShop,
+} from "./api/shops.api.js";
+
+import {
+  getSponsors,
+  createSponsor,
+  updateSponsor,
+  deleteSponsor,
+} from "./api/sponsors.api.js";
+
+import {
+  getEvents,
+} from "./api/events.api.js";
+
+import { state } from "./state/state.js";
 
 document.addEventListener("DOMContentLoaded", initAdmin);
 
@@ -22,224 +37,17 @@ async function initAdmin() {
   await restoreActiveView();
 }
 
-/* =========================
-   API BASE
-========================= */
-
-async function apiRequest(endpoint, options = {}) {
-  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-    headers: {
-      "Content-Type": "application/json",
-      ...(options.headers || {}),
-    },
-    ...options,
-  });
-
-  let result = null;
-
-  try {
-    result = await response.json();
-  } catch {
-    result = null;
-  }
-
-  if (!response.ok) {
-    const message = result?.error || result?.message || `API Error ${response.status}`;
-    throw new Error(message);
-  }
-
-  return result;
-}
-
-// async function apiRequest(endpoint, options = {}) {
-//   const url = `${API_BASE_URL}${endpoint}`;
-
-//   const response = await fetch(url, {
-//     headers: {
-//       "Content-Type": "application/json",
-//       ...(options.headers || {}),
-//     },
-//     ...options,
-//   });
-
-//   const rawResponse = await response.text();
-
-//   let result = null;
-
-//   if (rawResponse) {
-//     try {
-//       result = JSON.parse(rawResponse);
-//     } catch (error) {
-//       console.error("Respuesta no JSON desde API:", {
-//         url,
-//         status: response.status,
-//         rawResponse,
-//       });
-
-//       result = {
-//         message: rawResponse,
-//       };
-//     }
-//   }
-
-//   if (!response.ok) {
-//     const message =
-//       result?.error ||
-//       result?.message ||
-//       `API Error ${response.status}`;
-
-//     throw new Error(message);
-//   }
-
-//   return result;
-// }
-
-async function apiGet(endpoint) {
-  const result = await apiRequest(endpoint);
-
-  if (Array.isArray(result)) return result;
-  if (Array.isArray(result?.data)) return result.data;
-
-  return [];
-}
-
-/* =========================
-   API: SPOTS CRUD
-========================= */
-
-async function getSpots() {
-  return apiGet("/spots");
-}
-
-async function createSpot(payload) {
-  return apiRequest("/spots", {
-    method: "POST",
-    body: JSON.stringify(payload),
-  });
-}
-
-async function updateSpot(id, payload) {
-  return apiRequest(`/spots/${id}`, {
-    method: "PUT",
-    body: JSON.stringify(payload),
-  });
-}
-
-async function deleteSpot(id) {
-  return apiRequest(`/spots/${id}`, {
-    method: "DELETE",
-  });
-}
-
-/* =========================
-   API: SHOPS CRUD
-========================= */
-
-async function getShops() {
-  return apiGet("/shops");
-}
-
-async function createShop(payload) {
-  return apiRequest("/shops", {
-    method: "POST",
-    body: JSON.stringify(payload),
-  });
-}
-
-async function updateShop(id, payload) {
-  return apiRequest(`/shops/${id}`, {
-    method: "PUT",
-    body: JSON.stringify(payload),
-  });
-}
-
-async function deleteShop(id) {
-  return apiRequest(`/shops/${id}`, {
-    method: "DELETE",
-  });
-}
-
-/* =========================
-   API: SPONSORS CRUD
-========================= */
-
-async function getSponsors() {
-  return apiGet("/sponsors");
-}
-
-async function createSponsor(payload) {
-  return apiRequest("/sponsors", {
-    method: "POST",
-    body: JSON.stringify(payload),
-  });
-}
-
-async function updateSponsor(id, payload) {
-  return apiRequest(`/sponsors/${id}`, {
-    method: "PUT",
-    body: JSON.stringify(payload),
-  });
-}
-
-async function deleteSponsor(id) {
-  return apiRequest(`/sponsors/${id}`, {
-    method: "DELETE",
-  });
-}
-
-/* =========================
-   API: EVENTS CRUD
-========================= */
-
-async function getEvents() {
-  return apiGet("/events");
-}
-
-function getEventPayloadFromForm() {
-  const rawDate = getValue("eventDate");
-
-  return {
-    title: getValue("eventTitle"),
-    description: getValue("eventDescription"),
-    date: rawDate ? new Date(rawDate).toISOString() : new Date().toISOString(),
-    location: getValue("eventLocation"),
-    country: getValue("eventCountry") || "Costa Rica",
-    image: getValue("eventImage"),
-  };
-}
-
-async function createEvent(payload) {
-  return apiRequest("/events", {
-    method: "POST",
-    body: JSON.stringify(payload),
-  });
-}
-
-async function updateEvent(id, payload) {
-  return apiRequest(`/events/${id}`, {
-    method: "PUT",
-    body: JSON.stringify(payload),
-  });
-}
-
-async function deleteEvent(id) {
-  return apiRequest(`/events/${id}`, {
-    method: "DELETE",
-  });
-}
-
 
 /* =========================
    LOAD DATA
 ========================= */
-
 async function loadAllData() {
   try {
     const [spots, events, shops, sponsors] = await Promise.all([
-      apiGet("/spots"),
-      apiGet("/events"),
-      apiGet("/shops"),
-      apiGet("/sponsors"),
+      getSpots(),
+      getEvents(),
+      getShops(),
+      getSponsors(),
     ]);
 
     state.spots = spots;
@@ -260,30 +68,6 @@ async function reloadAdmin() {
 /* =========================
    NAVIGATION
 ========================= */
-
-// function bindNavigation() {
-//   const navButtons = document.querySelectorAll(".nav__item[data-view]");
-//   const panels = document.querySelectorAll(".view[data-view-panel]");
-//   const pageTitle = document.getElementById("pageTitle");
-
-//   navButtons.forEach((button) => {
-//     button.addEventListener("click", () => {
-//       const target = button.dataset.view;
-
-//       navButtons.forEach((btn) => btn.classList.remove("is-active"));
-//       panels.forEach((panel) => panel.classList.remove("is-active"));
-
-//       button.classList.add("is-active");
-
-//       const panel = document.querySelector(`.view[data-view-panel="${target}"]`);
-//       if (panel) panel.classList.add("is-active");
-
-//       if (pageTitle) {
-//         pageTitle.textContent = button.textContent.trim();
-//       }
-//     });
-//   });
-// }
 
 function bindNavigation() {
   const navButtons = document.querySelectorAll(".nav__item[data-view]");

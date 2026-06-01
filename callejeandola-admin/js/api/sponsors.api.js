@@ -1,38 +1,25 @@
-const API_URL = "http://localhost:4000/api/sponsors";
+import { apiGet, apiRequest } from "./api.js";
 
 export async function getSponsors() {
-    const response = await fetch(API_URL);
-    return response.json();
+    return apiGet("/sponsors");
 }
 
-export async function createSponsor(data) {
-    const response = await fetch(API_URL, {
+export async function createSponsor(payload) {
+    return apiRequest("/sponsors", {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
+        body: JSON.stringify(payload),
     });
-
-    return response.json();
 }
 
-export async function updateSponsor(id, data) {
-    const response = await fetch(`${API_URL}/${id}`, {
+export async function updateSponsor(id, payload) {
+    return apiRequest(`/sponsors/${id}`, {
         method: "PUT",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
+        body: JSON.stringify(payload),
     });
-
-    return response.json();
 }
 
 export async function deleteSponsor(id) {
-    const response = await fetch(`${API_URL}/${id}`, {
-        method: "DELETE"
+    return apiRequest(`/sponsors/${id}`, {
+        method: "DELETE",
     });
-
-    return response.json();
 }

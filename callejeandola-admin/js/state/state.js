@@ -1,12 +1,11 @@
 export const state = {
+  spots: [],
+  events: [],
+  shops: [],
+  sponsors: [],
 
-    spots: [],
-    events: [],
-    shops: [],
-    sponsors: [],
-
-    selectedSpot: null,
-    selectedEvent: null,
-    selectedShop: null,
-    selectedSponsor: null
+  
+  modalMode: null,
+  modalEntity: null,
+  modalItemId: null,
 };
