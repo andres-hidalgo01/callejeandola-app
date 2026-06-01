@@ -815,14 +815,14 @@ function bindCreateButtons() {
     };
   }
 
-  const btnCreateEvent = document.querySelector('[data-open-form="event"]');
+  // const btnCreateEvent = document.querySelector('[data-open-form="event"]');
 
-  if (btnCreateEvent) {
-    btnCreateEvent.onclick = () => {
-      localStorage.setItem("cj_admin_active_view", "events");
-      openEventFormModal("create");
-    };
-  }
+  // if (btnCreateEvent) {
+  //   btnCreateEvent.onclick = () => {
+  //     localStorage.setItem("cj_admin_active_view", "events");
+  //     openEventFormModal("create");
+  //   };
+  // }
 }
 
 /* =========================
@@ -961,20 +961,20 @@ async function handleEntitySubmit() {
     return;
   }
 
-  if (state.modalEntity === "event" && state.modalMode === "create") {
-    await handleCreateEvent();
-    return;
-  }
+  // if (state.modalEntity === "event" && state.modalMode === "create") {
+  //   await handleCreateEvent();
+  //   return;
+  // }
 
-  if (state.modalEntity === "event" && state.modalMode === "edit") {
-    await handleUpdateEvent();
-    return;
-  }
+  // if (state.modalEntity === "event" && state.modalMode === "edit") {
+  //   await handleUpdateEvent();
+  //   return;
+  // }
 
-  if (state.modalEntity === "event" && state.modalMode === "delete") {
-    await handleDeleteEvent();
-    return;
-  }
+  // if (state.modalEntity === "event" && state.modalMode === "delete") {
+  //   await handleDeleteEvent();
+  //   return;
+  // }
 
   showToast("Acción no configurada");
 }
