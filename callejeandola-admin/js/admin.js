@@ -1,10 +1,4 @@
 import {
-  initNavigation,
-  restoreActiveView,
-  showView,
-} from "./services/navigation.service.js";
-
-import {
   getSpots,
   createSpot,
   updateSpot,
@@ -31,15 +25,34 @@ import {
 
 import { state } from "./state/state.js";
 
+import {
+  initNavigation,
+  restoreActiveView,
+  showView,
+} from "./services/navigation.service.js";
+
+import {
+  initModalService,
+  openEntityModal,
+  closeEntityModal,
+} from "./services/modal.service.js";
+
+import { showToast } from "./services/toast.service.js";
+
 document.addEventListener("DOMContentLoaded", initAdmin);
 
 async function initAdmin() {
   initNavigation();
   bindRefresh();
-  bindModalBaseActions();
+
+  initModalService({
+    onSubmit: handleEntitySubmit,
+  });
 
   await loadAllData();
+
   renderAll();
+
   restoreActiveView();
 }
 
@@ -74,36 +87,6 @@ async function reloadAdmin() {
 /* =========================
    NAVIGATION
 ========================= */
-
-// function bindNavigation() {
-//   const navButtons = document.querySelectorAll(".nav__item[data-view]");
-//   const panels = document.querySelectorAll(".view[data-view-panel]");
-//   const pageTitle = document.getElementById("pageTitle");
-
-//   navButtons.forEach((button) => {
-//     button.addEventListener("click", () => {
-//       const target = button.dataset.view;
-
-//       localStorage.setItem("cj_admin_active_view", target);
-
-//       navButtons.forEach((btn) => btn.classList.remove("is-active"));
-//       panels.forEach((panel) => panel.classList.remove("is-active"));
-
-//       button.classList.add("is-active");
-
-//       const panel = document.querySelector(`.view[data-view-panel="${target}"]`);
-
-//       if (panel) {
-//         panel.classList.add("is-active");
-//       }
-
-//       if (pageTitle) {
-//         pageTitle.textContent = button.textContent.trim();
-//       }
-//     });
-//   });
-// }
-
 function bindRefresh() {
   const btnRefresh = document.getElementById("btnRefresh");
 
@@ -392,38 +375,6 @@ function renderEventsTable() {
 /* =========================
    SHOPS TABLE READ ONLY
 ========================= */
-
-// function renderShopsTable() {
-//   const table = document.getElementById("shopsTable");
-
-//   if (!table) return;
-
-//   if (!state.shops.length) {
-//     table.innerHTML = `
-//       <tr>
-//         <td colspan="5">No hay shops registrados.</td>
-//       </tr>
-//     `;
-//     return;
-//   }
-
-//   table.innerHTML = state.shops
-//     .map((shop) => {
-//       return `
-//         <tr>
-//           <td>${escapeHtml(shop.name || "—")}</td>
-//           <td>${escapeHtml(shop.city || "—")}</td>
-//           <td>${escapeHtml(shop.category || "—")}</td>
-//           <td>${renderImage(shop.image, shop.name)}</td>
-//           <td>
-//             <span class="muted">Pendiente V1.1</span>
-//           </td>
-//         </tr>
-//       `;
-//     })
-//     .join("");
-// }
-
 function renderShopsTable() {
   const table = document.getElementById("shopsTable");
 
@@ -482,42 +433,6 @@ function renderShopsTable() {
 /* =========================
    SPONSORS TABLE READ ONLY
 ========================= */
-
-// function renderSponsorsTable() {
-//   const table = document.getElementById("sponsorsTable");
-
-//   if (!table) return;
-
-//   if (!state.sponsors.length) {
-//     table.innerHTML = `
-//       <tr>
-//         <td colspan="4">No hay sponsors registrados.</td>
-//       </tr>
-//     `;
-//     return;
-//   }
-
-//   table.innerHTML = state.sponsors
-//     .map((sponsor) => {
-//       return `
-//         <tr>
-//           <td>${escapeHtml(sponsor.name || "—")}</td>
-//           <td>${renderImage(sponsor.logo, sponsor.name)}</td>
-//           <td>
-//             ${sponsor.website
-//           ? `<a href="${escapeAttr(sponsor.website)}" target="_blank" rel="noopener">Website</a>`
-//           : "—"
-//         }
-//           </td>
-//           <td>
-//             <span class="muted">Pendiente V1.1</span>
-//           </td>
-//         </tr>
-//       `;
-//     })
-//     .join("");
-// }
-
 function renderSponsorsTable() {
   const table = document.getElementById("sponsorsTable");
 
@@ -605,105 +520,11 @@ function bindCreateButtons() {
     };
   }
 
-  // const btnCreateEvent = document.querySelector('[data-open-form="event"]');
-
-  // if (btnCreateEvent) {
-  //   btnCreateEvent.onclick = () => {
-  //     localStorage.setItem("cj_admin_active_view", "events");
-  //     openEventFormModal("create");
-  //   };
-  // }
 }
 
 /* =========================
    MODAL BASE
 ========================= */
-function bindModalBaseActions() {
-  const btnClose = document.getElementById("btnCloseModal");
-  const btnCancel = document.getElementById("btnCancel");
-  const btnSubmit = document.getElementById("btnSubmitEntity");
-  const form = document.getElementById("entityForm");
-
-  btnClose?.addEventListener("click", (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    closeEntityModal();
-  });
-
-  btnCancel?.addEventListener("click", (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    closeEntityModal();
-  });
-
-  form?.addEventListener("submit", (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    return false;
-  });
-
-  btnSubmit?.addEventListener("click", async (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    console.log("CLICK GUARDAR", state.modalEntity, state.modalMode);
-    await handleEntitySubmit();
-  });
-}
-
-// async function handleEntitySubmit() {
-//   console.log("CLICK GUARDAR", state.modalEntity, state.modalMode);
-
-//   if (state.modalEntity === "spot" && state.modalMode === "create") {
-//     await handleCreateSpot();
-//     return;
-//   }
-
-//   if (state.modalEntity === "spot" && state.modalMode === "edit") {
-//     await handleUpdateSpot();
-//     return;
-//   }
-
-//   if (state.modalEntity === "spot" && state.modalMode === "delete") {
-//     await handleDeleteSpot();
-//     return;
-//   }
-
-//   showToast("Acción no configurada");
-// }
-
-// async function handleEntitySubmit() {
-//   if (state.modalEntity === "spot" && state.modalMode === "create") {
-//     await handleCreateSpot();
-//     return;
-//   }
-
-//   if (state.modalEntity === "spot" && state.modalMode === "edit") {
-//     await handleUpdateSpot();
-//     return;
-//   }
-
-//   if (state.modalEntity === "spot" && state.modalMode === "delete") {
-//     await handleDeleteSpot();
-//     return;
-//   }
-
-//   if (state.modalEntity === "shop" && state.modalMode === "create") {
-//     await handleCreateShop();
-//     return;
-//   }
-
-//   if (state.modalEntity === "shop" && state.modalMode === "edit") {
-//     await handleUpdateShop();
-//     return;
-//   }
-
-//   if (state.modalEntity === "shop" && state.modalMode === "delete") {
-//     await handleDeleteShop();
-//     return;
-//   }
-
-//   showToast("Acción no configurada");
-// }
 
 async function handleEntitySubmit() {
   if (state.modalEntity === "spot" && state.modalMode === "create") {
@@ -767,54 +588,6 @@ async function handleEntitySubmit() {
   // }
 
   showToast("Acción no configurada");
-}
-
-function openEntityModal({ title, html, submitText = "Guardar", mode, entity, itemId = null }) {
-  const modal = document.getElementById("entityModal");
-  const modalTitle = document.getElementById("modalTitle");
-  const formFields = document.getElementById("formFields");
-  const submitButton = document.getElementById("btnSubmitEntity");
-
-  if (!modal || !modalTitle || !formFields) return;
-
-  state.modalMode = mode;
-  state.modalEntity = entity;
-  state.modalItemId = itemId;
-
-  modalTitle.textContent = title;
-  formFields.innerHTML = html;
-
-  if (submitButton) {
-    submitButton.textContent = submitText;
-    submitButton.classList.toggle("btn-danger", mode === "delete");
-    submitButton.classList.toggle("btn-primary", mode !== "delete");
-  }
-
-  modal.showModal();
-}
-
-function closeEntityModal() {
-  const modal = document.getElementById("entityModal");
-  const formFields = document.getElementById("formFields");
-  const submitButton = document.getElementById("btnSubmitEntity");
-
-  if (modal?.open) {
-    modal.close();
-  }
-
-  if (formFields) {
-    formFields.innerHTML = "";
-  }
-
-  if (submitButton) {
-    submitButton.textContent = "Guardar";
-    submitButton.classList.remove("btn-danger");
-    submitButton.classList.add("btn-primary");
-  }
-
-  state.modalMode = null;
-  state.modalEntity = null;
-  state.modalItemId = null;
 }
 
 /* =========================
@@ -1240,86 +1013,6 @@ function getSpotPayloadFromForm() {
     image: getValue("spotImage"),
   };
 }
-
-// async function handleCreateSpot() {
-//   try {
-//     const payload = getSpotPayloadFromForm();
-
-//     if (!payload.name || !payload.city) {
-//       showToast("Nombre y ciudad son obligatorios");
-//       return;
-//     }
-
-//     await createSpot(payload);
-
-//     closeEntityModal();
-
-//     await reloadSpotsOnly();
-
-//     // localStorage.setItem("cj_admin_active_view", "spots");
-//     // restoreActiveView();
-
-//     showToast("Spot creado correctamente");
-//   } catch (error) {
-//     console.error(error);
-//     showToast(error.message || "Error creando spot");
-//   }
-// }
-
-// async function handleUpdateSpot() {
-//   try {
-//     const id = state.modalItemId;
-//     const payload = getSpotPayloadFromForm();
-
-//     if (!id) {
-//       showToast("ID inválido");
-//       return;
-//     }
-
-//     if (!payload.name || !payload.city) {
-//       showToast("Nombre y ciudad son obligatorios");
-//       return;
-//     }
-
-//     await updateSpot(id, payload);
-
-//     closeEntityModal();
-
-//     await reloadSpotsOnly();
-
-//     // localStorage.setItem("cj_admin_active_view", "spots");
-//     // restoreActiveView();
-
-//     showToast("Spot actualizado correctamente");
-//   } catch (error) {
-//     console.error(error);
-//     showToast(error.message || "Error actualizando spot");
-//   }
-// }
-
-// async function handleDeleteSpot() {
-//   try {
-//     const id = state.modalItemId;
-
-//     if (!id) {
-//       showToast("ID inválido");
-//       return;
-//     }
-
-//     await deleteSpot(id);
-
-//     closeEntityModal();
-//     await reloadSpotsOnly();
-
-//     // localStorage.setItem("cj_admin_active_view", "spots");
-//     // restoreActiveView();
-
-//     showToast("Spot eliminado correctamente");
-//   } catch (error) {
-//     console.error(error);
-//     showToast(error.message || "Error eliminando spot");
-//   }
-// }
 
 async function handleCreateSpot() {
   try {
@@ -1749,21 +1442,6 @@ function setText(id, value) {
   }
 }
 
-// function renderImage(src, alt) {
-//   if (!src) {
-//     return `<span class= "muted"> Sin imagen</> `;
-//   }
-
-//   return `
-//   <img
-//     src = "${escapeAttr(src)}"
-//     alt = "${escapeAttr(alt || "Image")}"
-//     width = "70"
-//     loading = "lazy"
-//     onerror = "this.remove();"
-//     >    `;
-// }
-
 function renderImage(src, alt) {
   if (!src || String(src).trim() === "") {
     return `<span class="muted">Sin imagen</span>`;
@@ -1779,8 +1457,6 @@ function renderImage(src, alt) {
     >
   `;
 }
-
-
 
 function formatDate(value) {
   if (!value) return "—";
@@ -1810,27 +1486,6 @@ function escapeHtml(value) {
 function escapeAttr(value) {
   return escapeHtml(value);
 }
-
-function showToast(message) {
-  const toast = document.getElementById("toast");
-
-  if (!toast) {
-    console.log(message);
-    return;
-  }
-
-  toast.textContent = message;
-  toast.hidden = false;
-  toast.classList.add("is-active");
-
-  window.clearTimeout(showToast.timeout);
-
-  showToast.timeout = window.setTimeout(() => {
-    toast.classList.remove("is-active");
-    toast.hidden = true;
-  }, 2500);
-}
-
 
 function formatDateTimeLocal(value) {
   if (!value) return "";
