@@ -1,4 +1,10 @@
 import {
+  initNavigation,
+  restoreActiveView,
+  showView,
+} from "./services/navigation.service.js";
+
+import {
   getSpots,
   createSpot,
   updateSpot,
@@ -28,13 +34,13 @@ import { state } from "./state/state.js";
 document.addEventListener("DOMContentLoaded", initAdmin);
 
 async function initAdmin() {
-  bindNavigation();
+  initNavigation();
   bindRefresh();
   bindModalBaseActions();
 
   await loadAllData();
-  await renderAll();
-  await restoreActiveView();
+  renderAll();
+  restoreActiveView();
 }
 
 
@@ -69,34 +75,34 @@ async function reloadAdmin() {
    NAVIGATION
 ========================= */
 
-function bindNavigation() {
-  const navButtons = document.querySelectorAll(".nav__item[data-view]");
-  const panels = document.querySelectorAll(".view[data-view-panel]");
-  const pageTitle = document.getElementById("pageTitle");
+// function bindNavigation() {
+//   const navButtons = document.querySelectorAll(".nav__item[data-view]");
+//   const panels = document.querySelectorAll(".view[data-view-panel]");
+//   const pageTitle = document.getElementById("pageTitle");
 
-  navButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      const target = button.dataset.view;
+//   navButtons.forEach((button) => {
+//     button.addEventListener("click", () => {
+//       const target = button.dataset.view;
 
-      localStorage.setItem("cj_admin_active_view", target);
+//       localStorage.setItem("cj_admin_active_view", target);
 
-      navButtons.forEach((btn) => btn.classList.remove("is-active"));
-      panels.forEach((panel) => panel.classList.remove("is-active"));
+//       navButtons.forEach((btn) => btn.classList.remove("is-active"));
+//       panels.forEach((panel) => panel.classList.remove("is-active"));
 
-      button.classList.add("is-active");
+//       button.classList.add("is-active");
 
-      const panel = document.querySelector(`.view[data-view-panel="${target}"]`);
+//       const panel = document.querySelector(`.view[data-view-panel="${target}"]`);
 
-      if (panel) {
-        panel.classList.add("is-active");
-      }
+//       if (panel) {
+//         panel.classList.add("is-active");
+//       }
 
-      if (pageTitle) {
-        pageTitle.textContent = button.textContent.trim();
-      }
-    });
-  });
-}
+//       if (pageTitle) {
+//         pageTitle.textContent = button.textContent.trim();
+//       }
+//     });
+//   });
+// }
 
 function bindRefresh() {
   const btnRefresh = document.getElementById("btnRefresh");
@@ -1825,26 +1831,6 @@ function showToast(message) {
   }, 2500);
 }
 
-function restoreActiveView() {
-  const savedView = localStorage.getItem("cj_admin_active_view") || "dashboard";
-
-  const navButtons = document.querySelectorAll(".nav__item[data-view]");
-  const panels = document.querySelectorAll(".view[data-view-panel]");
-  const pageTitle = document.getElementById("pageTitle");
-
-  navButtons.forEach((btn) => btn.classList.remove("is-active"));
-  panels.forEach((panel) => panel.classList.remove("is-active"));
-
-  const activeButton = document.querySelector(`.nav__item[data-view="${savedView}"]`);
-  const activePanel = document.querySelector(`.view[data-view-panel= "${savedView}"]`);
-
-  activeButton?.classList.add("is-active");
-  activePanel?.classList.add("is-active");
-
-  if (pageTitle && activeButton) {
-    pageTitle.textContent = activeButton.textContent.trim();
-  }
-}
 
 function formatDateTimeLocal(value) {
   if (!value) return "";
