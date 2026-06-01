@@ -22,24 +22,34 @@
 // }
 
 
-import { getDashboardData } from "../api/dashboard.api.js";
+// import { getDashboardData } from "../api/dashboard.api.js";
 
-export async function loadDashboard() {
+// export async function loadDashboard() {
 
-    try {
+//     try {
 
-        const data = await getDashboardData();
+//         const data = await getDashboardData();
 
-        document.getElementById("kpiSpots").textContent =
-            data.spots.length;
-        document.getElementById("kpiEvents").textContent =
-            data.events.length;
-        document.getElementById("kpiShops").textContent =
-            data.shops.length;
-        document.getElementById("kpiSponsors").textContent =
-            data.sponsors.length;
-    }
-    catch (error) {
-        console.error(error);
-    }
+//         document.getElementById("kpiSpots").textContent =
+//             data.spots.length;
+//         document.getElementById("kpiEvents").textContent =
+//             data.events.length;
+//         document.getElementById("kpiShops").textContent =
+//             data.shops.length;
+//         document.getElementById("kpiSponsors").textContent =
+//             data.sponsors.length;
+//     }
+//     catch (error) {
+//         console.error(error);
+//     }
+// }
+
+import { state } from "../state/state.js";
+import { setText } from "../utils/dom.js";
+
+export function renderDashboard() {
+    setText("kpiSpots", state.spots.length);
+    setText("kpiEvents", state.events.length);
+    setText("kpiShops", state.shops.length);
+    setText("kpiSponsors", state.sponsors.length);
 }

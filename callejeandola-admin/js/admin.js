@@ -54,10 +54,10 @@ import {
 } from "./utils/format.js";
 
 import {
-  setText,
   renderImage,
 } from "./utils/dom.js";
 
+import { renderDashboard } from "./views/dashboard.view.js";
 
 document.addEventListener("DOMContentLoaded", initAdmin);
 
@@ -141,17 +141,6 @@ function renderAll() {
   bindShopTableActions();
   bindSponsorTableActions();
   bindEventTableActions();
-}
-
-/* =========================
-   DASHBOARD
-========================= */
-
-function renderDashboard() {
-  setText("kpiSpots", state.spots.length);
-  setText("kpiEvents", state.events.length);
-  setText("kpiShops", state.shops.length);
-  setText("kpiSponsors", state.sponsors.length);
 }
 
 /* =========================
@@ -1431,8 +1420,3 @@ async function handleDeleteSponsor() {
     showToast(error.message || "Error eliminando sponsor");
   }
 }
-
-/* =========================
-   HELPERS
-========================= */
-
