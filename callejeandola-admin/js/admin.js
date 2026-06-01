@@ -19,9 +19,7 @@ import {
   deleteSponsor,
 } from "./api/sponsors.api.js";
 
-import {
-  getEvents,
-} from "./api/events.api.js";
+import { getEvents } from "./api/events.api.js";
 
 import { state } from "./state/state.js";
 
@@ -38,6 +36,28 @@ import {
 } from "./services/modal.service.js";
 
 import { showToast } from "./services/toast.service.js";
+
+import {
+  getValue,
+  getNumberValue,
+  getChecked,
+} from "./utils/form.js";
+
+import {
+  escapeHtml,
+  escapeAttr,
+} from "./utils/sanitize.js";
+
+import {
+  formatDate,
+  formatDateTimeLocal,
+} from "./utils/format.js";
+
+import {
+  setText,
+  renderImage,
+} from "./utils/dom.js";
+
 
 document.addEventListener("DOMContentLoaded", initAdmin);
 
@@ -1416,88 +1436,3 @@ async function handleDeleteSponsor() {
    HELPERS
 ========================= */
 
-function getValue(id) {
-  return document.getElementById(id)?.value?.trim() || "";
-}
-
-function getChecked(id) {
-  return document.getElementById(id)?.checked || false;
-}
-
-function getNumberValue(id) {
-  const value = document.getElementById(id)?.value;
-
-  if (value === "" || value === null || value === undefined) {
-    return 0;
-  }
-
-  return Number(value);
-}
-
-function setText(id, value) {
-  const element = document.getElementById(id);
-
-  if (element) {
-    element.textContent = String(value);
-  }
-}
-
-function renderImage(src, alt) {
-  if (!src || String(src).trim() === "") {
-    return `<span class="muted">Sin imagen</span>`;
-  }
-
-  return `
-    <img
-      class="table-img"
-      src="${escapeAttr(src)}"
-      alt="${escapeAttr(alt || "Imagen")}"
-      loading="lazy"
-      onerror="this.outerHTML='<span class=&quot;muted&quot;>Imagen inválida</span>'"
-    >
-  `;
-}
-
-function formatDate(value) {
-  if (!value) return "—";
-
-  const date = new Date(value);
-
-  if (Number.isNaN(date.getTime())) {
-    return "—";
-  }
-
-  return date.toLocaleDateString("es-CR", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  });
-}
-
-function escapeHtml(value) {
-  return String(value ?? "")
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
-
-function escapeAttr(value) {
-  return escapeHtml(value);
-}
-
-function formatDateTimeLocal(value) {
-  if (!value) return "";
-
-  const date = new Date(value);
-
-  if (Number.isNaN(date.getTime())) {
-    return "";
-  }
-
-  const offset = date.getTimezoneOffset();
-  const localDate = new Date(date.getTime() - offset * 60000);
-
-  return localDate.toISOString().slice(0, 16);
-}
