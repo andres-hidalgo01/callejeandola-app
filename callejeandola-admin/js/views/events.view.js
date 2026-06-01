@@ -1,75 +1,28 @@
-// import {
-//     getEvents
-// }
-//     from "../api/events.api.js";
-
-// export async function loadEventsView() {
-
-//     const table =
-//         document.getElementById("eventsTable");
-
-//     if (!table) return;
-
-//     const events =
-//         await getEvents();
-
-//     table.innerHTML = "";
-
-//     events.forEach(event => {
-
-//         table.innerHTML += `
-//         <tr>
-
-//             <td>${event.title ?? ""}</td>
-
-//             <td>${event.location ?? ""}</td>
-
-//             <td>${event.date ?? ""}</td>
-
-//             <td>
-//                 ${event.image
-//                 ?
-//                 `<img src="${event.image}" width="70">`
-//                 :
-//                 "-"
-//             }
-//             </td>
-
-//             <td>
-//                 Editar | Eliminar
-//             </td>
-
-//         </tr>
-//         `;
-//     });
-
-// }
-
 import { getEvents } from "../api/events.api.js";
 
 export async function loadEventsView() {
-    const table = document.getElementById("eventsTable");
+  const table = document.getElementById("eventsTable");
 
-    if (!table) return;
+  if (!table) return;
 
-    try {
-        const events = await getEvents();
+  try {
+    const events = await getEvents();
 
-        table.innerHTML = "";
+    table.innerHTML = "";
 
-        events.forEach((event) => {
-            const date = event.date ? new Date(event.date).toLocaleDateString() : "-";
+    events.forEach((event) => {
+      const date = event.date ? new Date(event.date).toLocaleDateString() : "-";
 
-            table.innerHTML += `
+      table.innerHTML += `
         <tr>
           <td>${event.title ?? ""}</td>
           <td>${event.location ?? ""}</td>
           <td>${date}</td>
           <td>
             ${event.image
-                    ? `<img src="${event.image}" width="70" alt="${event.title ?? "Event"}">`
-                    : "-"
-                }
+          ? `<img src="${event.image}" width="70" alt="${event.title ?? "Event"}">`
+          : "-"
+        }
           </td>
           <td>
             <button class="btn btn-secondary" type="button" data-edit-event="${event.id}">
@@ -80,9 +33,9 @@ export async function loadEventsView() {
             </button>
           </td>
         </tr>
-      `;
-        });
+        `;
+    });
     } catch (error) {
-        console.error("Error loading events:", error);
-    }
+    console.error("Error loading events:", error);
+  }
 }

@@ -1,12 +1,3 @@
-// export const state = {
-//     currentView: "spots",
-
-//     spots: [],
-//     events: [],
-//     shops: [],
-//     sponsors: [],
-// };
-
 export const state = {
 
     spots: [],

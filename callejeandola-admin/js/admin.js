@@ -33,24 +33,25 @@
 const API_BASE_URL = "http://localhost:4000/api";
 
 const state = {
-    spots: [],
-    events: [],
-    shops: [],
-    sponsors: [],
-    modalMode: null,
-    modalEntity: null,
-    modalItemId: null,
+  spots: [],
+  events: [],
+  shops: [],
+  sponsors: [],
+  modalMode: null,
+  modalEntity: null,
+  modalItemId: null,
 };
 
 document.addEventListener("DOMContentLoaded", initAdmin);
 
 async function initAdmin() {
-    bindNavigation();
-    bindRefresh();
-    bindModalBaseActions();
+  bindNavigation();
+  bindRefresh();
+  bindModalBaseActions();
 
-    await loadAllData();
-    renderAll();
+  await loadAllData();
+  renderAll();
+  restoreActiveView();
 }
 
 /* =========================
@@ -58,37 +59,37 @@ async function initAdmin() {
 ========================= */
 
 async function apiRequest(endpoint, options = {}) {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-        headers: {
-            "Content-Type": "application/json",
-            ...(options.headers || {}),
-        },
-        ...options,
-    });
+  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    headers: {
+      "Content-Type": "application/json",
+      ...(options.headers || {}),
+    },
+    ...options,
+  });
 
-    let result = null;
+  let result = null;
 
-    try {
-        result = await response.json();
-    } catch {
-        result = null;
-    }
+  try {
+    result = await response.json();
+  } catch {
+    result = null;
+  }
 
-    if (!response.ok) {
-        const message = result?.error || result?.message || `API Error ${response.status}`;
-        throw new Error(message);
-    }
+  if (!response.ok) {
+    const message = result?.error || result?.message || `API Error ${response.status}`;
+    throw new Error(message);
+  }
 
-    return result;
+  return result;
 }
 
 async function apiGet(endpoint) {
-    const result = await apiRequest(endpoint);
+  const result = await apiRequest(endpoint);
 
-    if (Array.isArray(result)) return result;
-    if (Array.isArray(result?.data)) return result.data;
+  if (Array.isArray(result)) return result;
+  if (Array.isArray(result?.data)) return result.data;
 
-    return [];
+  return [];
 }
 
 /* =========================
@@ -96,27 +97,27 @@ async function apiGet(endpoint) {
 ========================= */
 
 async function getSpots() {
-    return apiGet("/spots");
+  return apiGet("/spots");
 }
 
 async function createSpot(payload) {
-    return apiRequest("/spots", {
-        method: "POST",
-        body: JSON.stringify(payload),
-    });
+  return apiRequest("/spots", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
 }
 
 async function updateSpot(id, payload) {
-    return apiRequest(`/spots/${id}`, {
-        method: "PUT",
-        body: JSON.stringify(payload),
-    });
+  return apiRequest(`/spots/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(payload),
+  });
 }
 
 async function deleteSpot(id) {
-    return apiRequest(`/spots/${id}`, {
-        method: "DELETE",
-    });
+  return apiRequest(`/spots/${id}`, {
+    method: "DELETE",
+  });
 }
 
 /* =========================
@@ -124,73 +125,105 @@ async function deleteSpot(id) {
 ========================= */
 
 async function loadAllData() {
-    try {
-        const [spots, events, shops, sponsors] = await Promise.all([
-            apiGet("/spots"),
-            apiGet("/events"),
-            apiGet("/shops"),
-            apiGet("/sponsors"),
-        ]);
+  try {
+    const [spots, events, shops, sponsors] = await Promise.all([
+      apiGet("/spots"),
+      apiGet("/events"),
+      apiGet("/shops"),
+      apiGet("/sponsors"),
+    ]);
 
-        state.spots = spots;
-        state.events = events;
-        state.shops = shops;
-        state.sponsors = sponsors;
-    } catch (error) {
-        console.error("Error loading admin data:", error);
-        showToast(error.message || "Error cargando datos desde la API");
-    }
+    state.spots = spots;
+    state.events = events;
+    state.shops = shops;
+    state.sponsors = sponsors;
+  } catch (error) {
+    console.error("Error loading admin data:", error);
+    showToast(error.message || "Error cargando datos desde la API");
+  }
 }
 
 async function reloadAdmin() {
-    await loadAllData();
-    renderAll();
+  await loadAllData();
+  renderAll();
 }
 
 /* =========================
    NAVIGATION
 ========================= */
 
+// function bindNavigation() {
+//   const navButtons = document.querySelectorAll(".nav__item[data-view]");
+//   const panels = document.querySelectorAll(".view[data-view-panel]");
+//   const pageTitle = document.getElementById("pageTitle");
+
+//   navButtons.forEach((button) => {
+//     button.addEventListener("click", () => {
+//       const target = button.dataset.view;
+
+//       navButtons.forEach((btn) => btn.classList.remove("is-active"));
+//       panels.forEach((panel) => panel.classList.remove("is-active"));
+
+//       button.classList.add("is-active");
+
+//       const panel = document.querySelector(`.view[data-view-panel="${target}"]`);
+//       if (panel) panel.classList.add("is-active");
+
+//       if (pageTitle) {
+//         pageTitle.textContent = button.textContent.trim();
+//       }
+//     });
+//   });
+// }
+
 function bindNavigation() {
-    const navButtons = document.querySelectorAll(".nav__item[data-view]");
-    const panels = document.querySelectorAll(".view[data-view-panel]");
-    const pageTitle = document.getElementById("pageTitle");
+  const navButtons = document.querySelectorAll(".nav__item[data-view]");
+  const panels = document.querySelectorAll(".view[data-view-panel]");
+  const pageTitle = document.getElementById("pageTitle");
 
-    navButtons.forEach((button) => {
-        button.addEventListener("click", () => {
-            const target = button.dataset.view;
+  navButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const target = button.dataset.view;
 
-            navButtons.forEach((btn) => btn.classList.remove("is-active"));
-            panels.forEach((panel) => panel.classList.remove("is-active"));
+      localStorage.setItem("cj_admin_active_view", target);
 
-            button.classList.add("is-active");
+      navButtons.forEach((btn) => btn.classList.remove("is-active"));
+      panels.forEach((panel) => panel.classList.remove("is-active"));
 
-            const panel = document.querySelector(`.view[data-view-panel="${target}"]`);
-            if (panel) panel.classList.add("is-active");
+      button.classList.add("is-active");
 
-            if (pageTitle) {
-                pageTitle.textContent = button.textContent.trim();
-            }
-        });
+      const panel = document.querySelector(`.view[data-view-panel="${target}"]`);
+
+      if (panel) {
+        panel.classList.add("is-active");
+      }
+
+      if (pageTitle) {
+        pageTitle.textContent = button.textContent.trim();
+      }
     });
+  });
 }
 
+
+
+
 function bindRefresh() {
-    const btnRefresh = document.getElementById("btnRefresh");
+  const btnRefresh = document.getElementById("btnRefresh");
 
-    if (!btnRefresh) return;
+  if (!btnRefresh) return;
 
-    btnRefresh.addEventListener("click", async () => {
-        btnRefresh.disabled = true;
-        btnRefresh.textContent = "Loading...";
+  btnRefresh.addEventListener("click", async () => {
+    btnRefresh.disabled = true;
+    btnRefresh.textContent = "Loading...";
 
-        await reloadAdmin();
+    await reloadAdmin();
 
-        btnRefresh.disabled = false;
-        btnRefresh.textContent = "Refresh";
+    btnRefresh.disabled = false;
+    btnRefresh.textContent = "Refresh";
 
-        showToast("Datos actualizados");
-    });
+    showToast("Datos actualizados");
+  });
 }
 
 /* =========================
@@ -198,13 +231,13 @@ function bindRefresh() {
 ========================= */
 
 function renderAll() {
-    renderDashboard();
-    renderSpotsTable();
-    renderEventsTable();
-    renderShopsTable();
-    renderSponsorsTable();
-    bindCreateButtons();
-    bindSpotTableActions();
+  renderDashboard();
+  renderSpotsTable();
+  renderEventsTable();
+  renderShopsTable();
+  renderSponsorsTable();
+  bindCreateButtons();
+  bindSpotTableActions();
 }
 
 /* =========================
@@ -212,10 +245,10 @@ function renderAll() {
 ========================= */
 
 function renderDashboard() {
-    setText("kpiSpots", state.spots.length);
-    setText("kpiEvents", state.events.length);
-    setText("kpiShops", state.shops.length);
-    setText("kpiSponsors", state.sponsors.length);
+  setText("kpiSpots", state.spots.length);
+  setText("kpiEvents", state.events.length);
+  setText("kpiShops", state.shops.length);
+  setText("kpiSponsors", state.sponsors.length);
 }
 
 /* =========================
@@ -223,22 +256,22 @@ function renderDashboard() {
 ========================= */
 
 function renderSpotsTable() {
-    const table = document.getElementById("spotsTable");
+  const table = document.getElementById("spotsTable");
 
-    if (!table) return;
+  if (!table) return;
 
-    if (!state.spots.length) {
-        table.innerHTML = `
+  if (!state.spots.length) {
+    table.innerHTML = `
       <tr>
         <td colspan="5">No hay spots registrados.</td>
       </tr>
     `;
-        return;
-    }
+    return;
+  }
 
-    table.innerHTML = state.spots
-        .map((spot) => {
-            return `
+  table.innerHTML = state.spots
+    .map((spot) => {
+      return `
         <tr>
           <td>
             <strong>${escapeHtml(spot.name || "—")}</strong>
@@ -271,38 +304,38 @@ function renderSpotsTable() {
           </td>
         </tr>
       `;
-        })
-        .join("");
+    })
+    .join("");
 }
 
 function bindSpotTableActions() {
-    document.querySelectorAll("[data-edit-spot]").forEach((button) => {
-        button.onclick = () => {
-            const id = Number(button.dataset.editSpot);
-            const spot = state.spots.find((item) => Number(item.id) === id);
+  document.querySelectorAll("[data-edit-spot]").forEach((button) => {
+    button.onclick = () => {
+      const id = Number(button.dataset.editSpot);
+      const spot = state.spots.find((item) => Number(item.id) === id);
 
-            if (!spot) {
-                showToast("Spot no encontrado");
-                return;
-            }
+      if (!spot) {
+        showToast("Spot no encontrado");
+        return;
+      }
 
-            openSpotFormModal("edit", spot);
-        };
-    });
+      openSpotFormModal("edit", spot);
+    };
+  });
 
-    document.querySelectorAll("[data-delete-spot]").forEach((button) => {
-        button.onclick = () => {
-            const id = Number(button.dataset.deleteSpot);
-            const spot = state.spots.find((item) => Number(item.id) === id);
+  document.querySelectorAll("[data-delete-spot]").forEach((button) => {
+    button.onclick = () => {
+      const id = Number(button.dataset.deleteSpot);
+      const spot = state.spots.find((item) => Number(item.id) === id);
 
-            if (!spot) {
-                showToast("Spot no encontrado");
-                return;
-            }
+      if (!spot) {
+        showToast("Spot no encontrado");
+        return;
+      }
 
-            openDeleteSpotModal(spot);
-        };
-    });
+      openDeleteSpotModal(spot);
+    };
+  });
 }
 
 /* =========================
@@ -310,22 +343,22 @@ function bindSpotTableActions() {
 ========================= */
 
 function renderEventsTable() {
-    const table = document.getElementById("eventsTable");
+  const table = document.getElementById("eventsTable");
 
-    if (!table) return;
+  if (!table) return;
 
-    if (!state.events.length) {
-        table.innerHTML = `
+  if (!state.events.length) {
+    table.innerHTML = `
       <tr>
         <td colspan="5">No hay eventos registrados.</td>
       </tr>
     `;
-        return;
-    }
+    return;
+  }
 
-    table.innerHTML = state.events
-        .map((event) => {
-            return `
+  table.innerHTML = state.events
+    .map((event) => {
+      return `
         <tr>
           <td>${escapeHtml(event.title || "—")}</td>
           <td>${escapeHtml(event.location || "—")}</td>
@@ -336,8 +369,8 @@ function renderEventsTable() {
           </td>
         </tr>
       `;
-        })
-        .join("");
+    })
+    .join("");
 }
 
 /* =========================
@@ -345,22 +378,22 @@ function renderEventsTable() {
 ========================= */
 
 function renderShopsTable() {
-    const table = document.getElementById("shopsTable");
+  const table = document.getElementById("shopsTable");
 
-    if (!table) return;
+  if (!table) return;
 
-    if (!state.shops.length) {
-        table.innerHTML = `
+  if (!state.shops.length) {
+    table.innerHTML = `
       <tr>
         <td colspan="5">No hay shops registrados.</td>
       </tr>
     `;
-        return;
-    }
+    return;
+  }
 
-    table.innerHTML = state.shops
-        .map((shop) => {
-            return `
+  table.innerHTML = state.shops
+    .map((shop) => {
+      return `
         <tr>
           <td>${escapeHtml(shop.name || "—")}</td>
           <td>${escapeHtml(shop.city || "—")}</td>
@@ -371,8 +404,8 @@ function renderShopsTable() {
           </td>
         </tr>
       `;
-        })
-        .join("");
+    })
+    .join("");
 }
 
 /* =========================
@@ -380,38 +413,38 @@ function renderShopsTable() {
 ========================= */
 
 function renderSponsorsTable() {
-    const table = document.getElementById("sponsorsTable");
+  const table = document.getElementById("sponsorsTable");
 
-    if (!table) return;
+  if (!table) return;
 
-    if (!state.sponsors.length) {
-        table.innerHTML = `
+  if (!state.sponsors.length) {
+    table.innerHTML = `
       <tr>
         <td colspan="4">No hay sponsors registrados.</td>
       </tr>
     `;
-        return;
-    }
+    return;
+  }
 
-    table.innerHTML = state.sponsors
-        .map((sponsor) => {
-            return `
+  table.innerHTML = state.sponsors
+    .map((sponsor) => {
+      return `
         <tr>
           <td>${escapeHtml(sponsor.name || "—")}</td>
           <td>${renderImage(sponsor.logo, sponsor.name)}</td>
           <td>
             ${sponsor.website
-                    ? `<a href="${escapeAttr(sponsor.website)}" target="_blank" rel="noopener">Website</a>`
-                    : "—"
-                }
+          ? `<a href="${escapeAttr(sponsor.website)}" target="_blank" rel="noopener">Website</a>`
+          : "—"
+        }
           </td>
           <td>
             <span class="muted">Pendiente V1.1</span>
           </td>
         </tr>
       `;
-        })
-        .join("");
+    })
+    .join("");
 }
 
 /* =========================
@@ -419,142 +452,147 @@ function renderSponsorsTable() {
 ========================= */
 
 function bindCreateButtons() {
-    const btnCreateSpot = document.querySelector('[data-open-form="spot"]');
+  const btnCreateSpot = document.querySelector('[data-open-form="spot"]');
 
-    if (btnCreateSpot) {
-        btnCreateSpot.onclick = () => {
-            openSpotFormModal("create");
-        };
-    }
+  if (btnCreateSpot) {
+    btnCreateSpot.onclick = () => {
+      localStorage.setItem("cj_admin_active_view", "spots");
+      openSpotFormModal("create");
+    };
+  }
 
-    document.querySelector('[data-open-form="event"]')?.addEventListener("click", () => {
-        showToast("CRUD Events entra después de validar Spots");
-    });
+  document.querySelector('[data-open-form="event"]')?.addEventListener("click", () => {
+    showToast("CRUD Events entra después de validar Spots");
+  });
 
-    document.querySelector('[data-open-form="shop"]')?.addEventListener("click", () => {
-        showToast("CRUD Shops entra después de validar Spots");
-    });
+  document.querySelector('[data-open-form="shop"]')?.addEventListener("click", () => {
+    showToast("CRUD Shops entra después de validar Spots");
+  });
 
-    document.querySelector('[data-open-form="sponsor"]')?.addEventListener("click", () => {
-        showToast("CRUD Sponsors entra después de validar Spots");
-    });
+  document.querySelector('[data-open-form="sponsor"]')?.addEventListener("click", () => {
+    showToast("CRUD Sponsors entra después de validar Spots");
+  });
 }
 
 /* =========================
    MODAL BASE
 ========================= */
+function bindModalBaseActions() {
+  const btnClose = document.getElementById("btnCloseModal");
+  const btnCancel = document.getElementById("btnCancel");
+  const btnSubmit = document.getElementById("btnSubmitEntity");
+  const form = document.getElementById("entityForm");
 
-// function bindModalBaseActions() {
-//     document.getElementById("btnCloseModal")?.addEventListener("click", closeEntityModal);
-//     document.getElementById("btnCancel")?.addEventListener("click", closeEntityModal);
+  btnClose?.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    closeEntityModal();
+  });
 
-//     const form = document.getElementById("entityForm");
+  btnCancel?.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    closeEntityModal();
+  });
 
-//     if (!form) return;
+  form?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    return false;
+  });
 
-//     form.addEventListener("submit", async (event) => {
-//         event.preventDefault();
-//         event.stopPropagation();
+  btnSubmit?.addEventListener("click", async (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    console.log("CLICK GUARDAR", state.modalEntity, state.modalMode);
+    await handleEntitySubmit();
+  });
+}
 
-//         if (state.modalEntity === "spot" && state.modalMode === "create") {
-//             await handleCreateSpot();
-//             return;
-//         }
+// async function handleEntitySubmit() {
+//     if (state.modalEntity === "spot" && state.modalMode === "create") {
+//         await handleCreateSpot();
+//         return;
+//     }
 
-//         if (state.modalEntity === "spot" && state.modalMode === "edit") {
-//             await handleUpdateSpot();
-//             return;
-//         }
+//     if (state.modalEntity === "spot" && state.modalMode === "edit") {
+//         await handleUpdateSpot();
+//         return;
+//     }
 
-//         if (state.modalEntity === "spot" && state.modalMode === "delete") {
-//             await handleDeleteSpot();
-//             return;
-//         }
-//     });
+//     if (state.modalEntity === "spot" && state.modalMode === "delete") {
+//         await handleDeleteSpot();
+//         return;
+//     }
 // }
 
-<dialog id="entityModal" class="modal">
-    <form class="modal__card" id="entityForm" novalidate onsubmit="return false;">
-        <div class="modal__head">
-            <h2 id="modalTitle">Crear</h2>
-            <button class="icon-btn" type="button" id="btnCloseModal">×</button>
-        </div>
-
-        <div id="formFields" class="form-grid"></div>
-
-        <div class="modal__actions">
-            <button class="btn btn-secondary" type="button" id="btnCancel">Cancelar</button>
-            <button class="btn btn-primary" type="button" id="btnSubmitEntity">Guardar</button>
-        </div>
-    </form>
-</dialog>
-
 async function handleEntitySubmit() {
-    if (state.modalEntity === "spot" && state.modalMode === "create") {
-        await handleCreateSpot();
-        return;
-    }
+  console.log("CLICK GUARDAR", state.modalEntity, state.modalMode);
 
-    if (state.modalEntity === "spot" && state.modalMode === "edit") {
-        await handleUpdateSpot();
-        return;
-    }
+  if (state.modalEntity === "spot" && state.modalMode === "create") {
+    await handleCreateSpot();
+    return;
+  }
 
-    if (state.modalEntity === "spot" && state.modalMode === "delete") {
-        await handleDeleteSpot();
-        return;
-    }
+  if (state.modalEntity === "spot" && state.modalMode === "edit") {
+    await handleUpdateSpot();
+    return;
+  }
+
+  if (state.modalEntity === "spot" && state.modalMode === "delete") {
+    await handleDeleteSpot();
+    return;
+  }
+
+  showToast("Acción no configurada");
 }
 
 function openEntityModal({ title, html, submitText = "Guardar", mode, entity, itemId = null }) {
-    const modal = document.getElementById("entityModal");
-    const modalTitle = document.getElementById("modalTitle");
-    const formFields = document.getElementById("formFields");
-    // const submitButton = document.querySelector('#entityForm button[type="submit"]');
-    const submitButton = document.getElementById("btnSubmitEntity");
+  const modal = document.getElementById("entityModal");
+  const modalTitle = document.getElementById("modalTitle");
+  const formFields = document.getElementById("formFields");
+  const submitButton = document.getElementById("btnSubmitEntity");
 
+  if (!modal || !modalTitle || !formFields) return;
 
-    if (!modal || !modalTitle || !formFields) return;
+  state.modalMode = mode;
+  state.modalEntity = entity;
+  state.modalItemId = itemId;
 
-    state.modalMode = mode;
-    state.modalEntity = entity;
-    state.modalItemId = itemId;
+  modalTitle.textContent = title;
+  formFields.innerHTML = html;
 
-    modalTitle.textContent = title;
-    formFields.innerHTML = html;
+  if (submitButton) {
+    submitButton.textContent = submitText;
+    submitButton.classList.toggle("btn-danger", mode === "delete");
+    submitButton.classList.toggle("btn-primary", mode !== "delete");
+  }
 
-    if (submitButton) {
-        submitButton.textContent = submitText;
-        submitButton.classList.toggle("btn-danger", mode === "delete");
-        submitButton.classList.toggle("btn-primary", mode !== "delete");
-    }
-
-    modal.showModal();
+  modal.showModal();
 }
 
 function closeEntityModal() {
-    const modal = document.getElementById("entityModal");
-    const formFields = document.getElementById("formFields");
-    // const submitButton = document.querySelector('#entityForm button[type="submit"]');
-    const submitButton = document.getElementById("btnSubmitEntity");
+  const modal = document.getElementById("entityModal");
+  const formFields = document.getElementById("formFields");
+  const submitButton = document.getElementById("btnSubmitEntity");
 
-    if (modal?.open) {
-        modal.close();
-    }
+  if (modal?.open) {
+    modal.close();
+  }
 
-    if (formFields) {
-        formFields.innerHTML = "";
-    }
+  if (formFields) {
+    formFields.innerHTML = "";
+  }
 
-    if (submitButton) {
-        submitButton.textContent = "Guardar";
-        submitButton.classList.remove("btn-danger");
-        submitButton.classList.add("btn-primary");
-    }
+  if (submitButton) {
+    submitButton.textContent = "Guardar";
+    submitButton.classList.remove("btn-danger");
+    submitButton.classList.add("btn-primary");
+  }
 
-    state.modalMode = null;
-    state.modalEntity = null;
-    state.modalItemId = null;
+  state.modalMode = null;
+  state.modalEntity = null;
+  state.modalItemId = null;
 }
 
 /* =========================
@@ -562,15 +600,15 @@ function closeEntityModal() {
 ========================= */
 
 function openSpotFormModal(mode, spot = {}) {
-    const isEdit = mode === "edit";
+  const isEdit = mode === "edit";
 
-    openEntityModal({
-        title: isEdit ? "Editar Spot" : "Crear Spot",
-        submitText: isEdit ? "Actualizar" : "Guardar",
-        mode,
-        entity: "spot",
-        itemId: spot.id || null,
-        html: `
+  openEntityModal({
+    title: isEdit ? "Editar Spot" : "Crear Spot",
+    submitText: isEdit ? "Actualizar" : "Guardar",
+    mode,
+    entity: "spot",
+    itemId: spot.id || null,
+    html: `
       <div class="form-field">
         <label for="spotName">Nombre *</label>
         <input
@@ -589,7 +627,7 @@ function openSpotFormModal(mode, spot = {}) {
           id="spotDescription"
           name="description"
           rows="4"
-          placeholder="Describe el spot, obstáculos, ambiente o estado">${escapeHtml(spot.description || "")}</textarea>
+          placeholder="Describe el spot">${escapeHtml(spot.description || "")}</textarea>
       </div>
 
       <div class="form-grid-2">
@@ -664,17 +702,17 @@ function openSpotFormModal(mode, spot = {}) {
         </div>
       </div>
     `,
-    });
+  });
 }
 
 function openDeleteSpotModal(spot) {
-    openEntityModal({
-        title: "Eliminar Spot",
-        submitText: "Eliminar",
-        mode: "delete",
-        entity: "spot",
-        itemId: spot.id,
-        html: `
+  openEntityModal({
+    title: "Eliminar Spot",
+    submitText: "Eliminar",
+    mode: "delete",
+    entity: "spot",
+    itemId: spot.id,
+    html: `
       <div class="danger-zone">
         <h3>¿Eliminar este spot?</h3>
         <p>
@@ -683,188 +721,314 @@ function openDeleteSpotModal(spot) {
         </p>
       </div>
     `,
-    });
+  });
 }
 
 /* =========================
    SPOT CRUD HANDLERS
 ========================= */
 
-function getSpotPayloadFromForm() {
-    const name = getValue("spotName");
-    const description = getValue("spotDescription");
-    const country = getValue("spotCountry") || "Costa Rica";
-    const city = getValue("spotCity");
-    const type = getValue("spotType") || "Street";
-    const image = getValue("spotImage");
-    const lat = getNumberValue("spotLat");
-    const lng = getNumberValue("spotLng");
 
-    return {
-        name,
-        description,
-        country,
-        city,
-        lat,
-        lng,
-        type,
-        image,
-    };
+async function reloadSpotsOnly() {
+  try {
+    state.spots = await getSpots();
+
+    renderDashboard();
+    renderSpotsTable();
+    bindSpotTableActions();
+  } catch (error) {
+    console.error("Error reloading spots:", error);
+    showToast(error.message || "Error actualizando spots");
+  }
 }
 
+function getSpotPayloadFromForm() {
+  return {
+    name: getValue("spotName"),
+    description: getValue("spotDescription"),
+    country: getValue("spotCountry") || "Costa Rica",
+    city: getValue("spotCity"),
+    lat: getNumberValue("spotLat"),
+    lng: getNumberValue("spotLng"),
+    type: getValue("spotType") || "Street",
+    image: getValue("spotImage"),
+  };
+}
+
+// async function handleCreateSpot() {
+//   try {
+//     const payload = getSpotPayloadFromForm();
+
+//     if (!payload.name || !payload.city) {
+//       showToast("Nombre y ciudad son obligatorios");
+//       return;
+//     }
+
+//     await createSpot(payload);
+
+//     closeEntityModal();
+
+//     await reloadSpotsOnly();
+
+//     // localStorage.setItem("cj_admin_active_view", "spots");
+//     // restoreActiveView();
+
+//     showToast("Spot creado correctamente");
+//   } catch (error) {
+//     console.error(error);
+//     showToast(error.message || "Error creando spot");
+//   }
+// }
+
+// async function handleUpdateSpot() {
+//   try {
+//     const id = state.modalItemId;
+//     const payload = getSpotPayloadFromForm();
+
+//     if (!id) {
+//       showToast("ID inválido");
+//       return;
+//     }
+
+//     if (!payload.name || !payload.city) {
+//       showToast("Nombre y ciudad son obligatorios");
+//       return;
+//     }
+
+//     await updateSpot(id, payload);
+
+//     closeEntityModal();
+
+//     await reloadSpotsOnly();
+
+//     // localStorage.setItem("cj_admin_active_view", "spots");
+//     // restoreActiveView();
+
+//     showToast("Spot actualizado correctamente");
+//   } catch (error) {
+//     console.error(error);
+//     showToast(error.message || "Error actualizando spot");
+//   }
+// }
+
+// async function handleDeleteSpot() {
+//   try {
+//     const id = state.modalItemId;
+
+//     if (!id) {
+//       showToast("ID inválido");
+//       return;
+//     }
+
+//     await deleteSpot(id);
+
+//     closeEntityModal();
+//     await reloadSpotsOnly();
+
+//     // localStorage.setItem("cj_admin_active_view", "spots");
+//     // restoreActiveView();
+
+//     showToast("Spot eliminado correctamente");
+//   } catch (error) {
+//     console.error(error);
+//     showToast(error.message || "Error eliminando spot");
+//   }
+// }
+
 async function handleCreateSpot() {
-    try {
-        const payload = getSpotPayloadFromForm();
+  try {
+    const payload = getSpotPayloadFromForm();
 
-        if (!payload.name || !payload.city) {
-            showToast("Nombre y ciudad son obligatorios");
-            return;
-        }
-
-        await createSpot(payload);
-
-        closeEntityModal();
-        await reloadAdmin();
-
-        showToast("Spot creado correctamente");
-    } catch (error) {
-        console.error(error);
-        showToast(error.message || "Error creando spot");
+    if (!payload.name || !payload.city) {
+      showToast("Nombre y ciudad son obligatorios");
+      return;
     }
+
+    const createdSpot = await createSpot(payload);
+
+    state.spots = [
+      createdSpot,
+      ...state.spots,
+    ];
+
+    closeEntityModal();
+    renderSpotsOnly();
+
+    showToast("Spot creado correctamente");
+  } catch (error) {
+    console.error(error);
+    showToast(error.message || "Error creando spot");
+  }
 }
 
 async function handleUpdateSpot() {
-    try {
-        const id = state.modalItemId;
-        const payload = getSpotPayloadFromForm();
+  try {
+    const id = Number(state.modalItemId);
+    const payload = getSpotPayloadFromForm();
 
-        if (!id) {
-            showToast("ID inválido");
-            return;
-        }
-
-        if (!payload.name || !payload.city) {
-            showToast("Nombre y ciudad son obligatorios");
-            return;
-        }
-
-        await updateSpot(id, payload);
-
-        closeEntityModal();
-        await reloadAdmin();
-
-        showToast("Spot actualizado correctamente");
-    } catch (error) {
-        console.error(error);
-        showToast(error.message || "Error actualizando spot");
+    if (!id) {
+      showToast("ID inválido");
+      return;
     }
+
+    if (!payload.name || !payload.city) {
+      showToast("Nombre y ciudad son obligatorios");
+      return;
+    }
+
+    const updatedSpot = await updateSpot(id, payload);
+
+    state.spots = state.spots.map((spot) => {
+      return Number(spot.id) === id ? updatedSpot : spot;
+    });
+
+    closeEntityModal();
+    renderSpotsOnly();
+
+    showToast("Spot actualizado correctamente");
+  } catch (error) {
+    console.error(error);
+    showToast(error.message || "Error actualizando spot");
+  }
 }
 
 async function handleDeleteSpot() {
-    try {
-        const id = state.modalItemId;
+  try {
+    const id = Number(state.modalItemId);
 
-        if (!id) {
-            showToast("ID inválido");
-            return;
-        }
-
-        await deleteSpot(id);
-
-        closeEntityModal();
-        await reloadAdmin();
-
-        showToast("Spot eliminado correctamente");
-    } catch (error) {
-        console.error(error);
-        showToast(error.message || "Error eliminando spot");
+    if (!id) {
+      showToast("ID inválido");
+      return;
     }
+
+    await deleteSpot(id);
+
+    state.spots = state.spots.filter((spot) => {
+      return Number(spot.id) !== id;
+    });
+
+    closeEntityModal();
+    renderSpotsOnly();
+
+    showToast("Spot eliminado correctamente");
+  } catch (error) {
+    console.error(error);
+    showToast(error.message || "Error eliminando spot");
+  }
 }
+
+
+
 
 /* =========================
    HELPERS
 ========================= */
 
 function getValue(id) {
-    return document.getElementById(id)?.value?.trim() || "";
+  return document.getElementById(id)?.value?.trim() || "";
 }
 
 function getNumberValue(id) {
-    const value = document.getElementById(id)?.value;
+  const value = document.getElementById(id)?.value;
 
-    if (value === "" || value === null || value === undefined) {
-        return 0;
-    }
+  if (value === "" || value === null || value === undefined) {
+    return 0;
+  }
 
-    return Number(value);
+  return Number(value);
 }
 
 function setText(id, value) {
-    const element = document.getElementById(id);
+  const element = document.getElementById(id);
 
-    if (element) {
-        element.textContent = String(value);
-    }
+  if (element) {
+    element.textContent = String(value);
+  }
 }
 
 function renderImage(src, alt) {
-    if (!src) return "—";
+  if (!src) {
+    return `<span class="muted">Sin imagen</span>`;
+  }
 
-    return `
+  return `
     <img
       src="${escapeAttr(src)}"
       alt="${escapeAttr(alt || "Image")}"
       width="70"
       loading="lazy"
+      onerror="this.remove();"
     >
   `;
 }
 
 function formatDate(value) {
-    if (!value) return "—";
+  if (!value) return "—";
 
-    const date = new Date(value);
+  const date = new Date(value);
 
-    if (Number.isNaN(date.getTime())) {
-        return "—";
-    }
+  if (Number.isNaN(date.getTime())) {
+    return "—";
+  }
 
-    return date.toLocaleDateString("es-CR", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-    });
+  return date.toLocaleDateString("es-CR", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
 }
 
 function escapeHtml(value) {
-    return String(value ?? "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }
 
 function escapeAttr(value) {
-    return escapeHtml(value);
+  return escapeHtml(value);
 }
 
 function showToast(message) {
-    const toast = document.getElementById("toast");
+  const toast = document.getElementById("toast");
 
-    if (!toast) {
-        console.log(message);
-        return;
-    }
+  if (!toast) {
+    console.log(message);
+    return;
+  }
 
-    toast.textContent = message;
-    toast.hidden = false;
-    toast.classList.add("is-active");
+  toast.textContent = message;
+  toast.hidden = false;
+  toast.classList.add("is-active");
 
-    window.clearTimeout(showToast.timeout);
+  window.clearTimeout(showToast.timeout);
 
-    showToast.timeout = window.setTimeout(() => {
-        toast.classList.remove("is-active");
-        toast.hidden = true;
-    }, 2500);
+  showToast.timeout = window.setTimeout(() => {
+    toast.classList.remove("is-active");
+    toast.hidden = true;
+  }, 2500);
 }
+
+function restoreActiveView() {
+  const savedView = localStorage.getItem("cj_admin_active_view") || "dashboard";
+
+  const navButtons = document.querySelectorAll(".nav__item[data-view]");
+  const panels = document.querySelectorAll(".view[data-view-panel]");
+  const pageTitle = document.getElementById("pageTitle");
+
+  navButtons.forEach((btn) => btn.classList.remove("is-active"));
+  panels.forEach((panel) => panel.classList.remove("is-active"));
+
+  const activeButton = document.querySelector(`.nav__item[data-view="${savedView}"]`);
+  const activePanel = document.querySelector(`.view[data-view-panel="${savedView}"]`);
+
+  activeButton?.classList.add("is-active");
+  activePanel?.classList.add("is-active");
+
+  if (pageTitle && activeButton) {
+    pageTitle.textContent = activeButton.textContent.trim();
+  }
+}
+
