@@ -1,38 +1,25 @@
-const API_URL = "http://localhost:4000/api/spots";
+import { apiGet, apiRequest } from "./api.js";
 
 export async function getSpots() {
-    const response = await fetch(API_URL);
-    return response.json();
+    return apiGet("/spots");
 }
 
-export async function createSpot(data) {
-    const response = await fetch(API_URL, {
+export async function createSpot(payload) {
+    return apiRequest("/spots", {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
+        body: JSON.stringify(payload),
     });
-
-    return response.json();
 }
 
-export async function updateSpot(id, data) {
-    const response = await fetch(`${API_URL}/${id}`, {
+export async function updateSpot(id, payload) {
+    return apiRequest(`/spots/${id}`, {
         method: "PUT",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
+        body: JSON.stringify(payload),
     });
-
-    return response.json();
 }
 
 export async function deleteSpot(id) {
-    const response = await fetch(`${API_URL}/${id}`, {
-        method: "DELETE"
+    return apiRequest(`/spots/${id}`, {
+        method: "DELETE",
     });
-
-    return response.json();
 }

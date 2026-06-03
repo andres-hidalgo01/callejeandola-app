@@ -191,6 +191,16 @@ h1, h2, h3, p {
     padding: 16px;
 }
 
+.table-img {
+    width: 70px;
+    height: 44px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+
 .kpi strong {
     display: block;
     font-size: 28px;

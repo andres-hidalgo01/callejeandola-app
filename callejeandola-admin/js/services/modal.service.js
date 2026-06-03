@@ -1,42 +1,107 @@
-export function promptForm(title, fields) {
+import { state } from "../state/state.js";
 
-    const values = {};
+let submitHandler = null;
+let initialized = false;
 
-    for (const field of fields) {
+export function initModalService({ onSubmit }) {
+    if (initialized) return;
 
-        const value =
-            prompt(`${field.label}:`, field.value || "");
+    const btnClose = document.getElementById("btnCloseModal");
+    const btnCancel = document.getElementById("btnCancel");
+    const btnSubmit = document.getElementById("btnSubmitEntity");
+    const form = document.getElementById("entityForm");
 
-        values[field.name] = value;
+    submitHandler = onSubmit;
+
+    if (form) {
+        form.onsubmit = (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            return false;
+        };
+
+        form.addEventListener("submit", (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            return false;
+        });
     }
 
-    return values;
+    btnClose?.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        closeEntityModal();
+    });
+
+    btnCancel?.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        closeEntityModal();
+    });
+
+    btnSubmit?.addEventListener("click", async (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        if (typeof submitHandler === "function") {
+            await submitHandler();
+        }
+    });
+
+    initialized = true;
 }
 
-const modal =
-    document.getElementById("entityModal");
+export function openEntityModal({
+    title,
+    html,
+    submitText = "Guardar",
+    mode,
+    entity,
+    itemId = null,
+}) {
+    const modal = document.getElementById("entityModal");
+    const modalTitle = document.getElementById("modalTitle");
+    const formFields = document.getElementById("formFields");
+    const submitButton = document.getElementById("btnSubmitEntity");
 
-const title =
-    document.getElementById("modalTitle");
+    if (!modal || !modalTitle || !formFields) return;
 
-const fields =
-    document.getElementById("formFields");
+    state.modalMode = mode;
+    state.modalEntity = entity;
+    state.modalItemId = itemId;
 
-export function openModal(
-    modalTitle,
-    html
-) {
+    modalTitle.textContent = title;
+    formFields.innerHTML = html;
 
-    title.textContent =
-        modalTitle;
-
-    fields.innerHTML =
-        html;
+    if (submitButton) {
+        submitButton.textContent = submitText;
+        submitButton.classList.toggle("btn-danger", mode === "delete");
+        submitButton.classList.toggle("btn-primary", mode !== "delete");
+    }
 
     modal.showModal();
 }
 
-export function closeModal() {
+export function closeEntityModal() {
+    const modal = document.getElementById("entityModal");
+    const formFields = document.getElementById("formFields");
+    const submitButton = document.getElementById("btnSubmitEntity");
 
-    modal.close();
+    if (modal?.open) {
+        modal.close();
+    }
+
+    if (formFields) {
+        formFields.innerHTML = "";
+    }
+
+    if (submitButton) {
+        submitButton.textContent = "Guardar";
+        submitButton.classList.remove("btn-danger");
+        submitButton.classList.add("btn-primary");
+    }
+
+    state.modalMode = null;
+    state.modalEntity = null;
+    state.modalItemId = null;
 }

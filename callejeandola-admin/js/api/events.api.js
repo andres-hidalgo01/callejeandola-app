@@ -1,38 +1,25 @@
-const API_URL = "http://localhost:4000/api/events";
+import { apiGet, apiRequest } from "./api.js";
 
 export async function getEvents() {
-    const response = await fetch(API_URL);
-    return response.json();
+    return apiGet("/events");
 }
 
-export async function createEvent(data) {
-    const response = await fetch(API_URL, {
+export async function createEvent(payload) {
+    return apiRequest("/events", {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
+        body: JSON.stringify(payload),
     });
-
-    return response.json();
 }
 
-export async function updateEvent(id, data) {
-    const response = await fetch(`${API_URL}/${id}`, {
+export async function updateEvent(id, payload) {
+    return apiRequest(`/events/${id}`, {
         method: "PUT",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
+        body: JSON.stringify(payload),
     });
-
-    return response.json();
 }
 
 export async function deleteEvent(id) {
-    const response = await fetch(`${API_URL}/${id}`, {
-        method: "DELETE"
+    return apiRequest(`/events/${id}`, {
+        method: "DELETE",
     });
-
-    return response.json();
 }
