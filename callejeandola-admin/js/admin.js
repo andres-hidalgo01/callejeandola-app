@@ -123,6 +123,8 @@ function bindAuthActions() {
 
       handleLogout();
     };
+  } else {
+    console.warn("btnLogout no encontrado en el DOM");
   }
 }
 
@@ -193,6 +195,8 @@ function handleLogout() {
 
   state.currentUser = null;
 
+  localStorage.removeItem("cj_admin_active_view");
+
   showLoginView();
 
   showToast("Sesión cerrada");
@@ -204,10 +208,64 @@ function updateSessionUI(user) {
 
   if (role) {
     role.textContent = user?.role || "NO_ROLE";
+  } else {
+    console.warn("sessionRole no encontrado en el DOM");
   }
 
   if (sessionUser) {
     sessionUser.textContent = user?.email || "Sin sesión";
+  } else {
+    console.warn("sessionUser no encontrado en el DOM");
+  }
+
+  applyRoleAccess(user);
+}
+
+function applyRoleAccess(user) {
+  const role = user?.role || "USER";
+  const navItems = document.querySelectorAll(".nav__item[data-roles]");
+
+  navItems.forEach((item) => {
+    const allowedRoles = item.dataset.roles
+      .split(",")
+      .map((itemRole) => itemRole.trim());
+
+    const isAllowed = allowedRoles.includes(role);
+
+    item.hidden = !isAllowed;
+    item.disabled = !isAllowed;
+  });
+
+  const activeItem = document.querySelector(".nav__item.is-active");
+
+  if (activeItem?.hidden) {
+    localStorage.setItem("cj_admin_active_view", "dashboard");
+  }
+}
+
+function showLoginView() {
+  const loginView = document.getElementById("loginView");
+  const adminApp = document.getElementById("adminApp");
+
+  if (loginView) {
+    loginView.hidden = false;
+  }
+
+  if (adminApp) {
+    adminApp.hidden = true;
+  }
+}
+
+function showAdminView() {
+  const loginView = document.getElementById("loginView");
+  const adminApp = document.getElementById("adminApp");
+
+  if (loginView) {
+    loginView.hidden = true;
+  }
+
+  if (adminApp) {
+    adminApp.hidden = false;
   }
 }
 
@@ -306,44 +364,3 @@ async function handleEntitySubmit() {
   showToast("Acción no configurada");
 }
 
-function showLoginView() {
-  const loginView = document.getElementById("loginView");
-  const adminApp = document.getElementById("adminApp");
-
-  if (loginView) {
-    loginView.hidden = false;
-  }
-
-  if (adminApp) {
-    adminApp.hidden = true;
-  }
-}
-
-function showAdminView() {
-  const loginView = document.getElementById("loginView");
-  const adminApp = document.getElementById("adminApp");
-
-  if (loginView) {
-    loginView.hidden = true;
-  }
-
-  if (adminApp) {
-    adminApp.hidden = false;
-  }
-}
-
-function applyRoleAccess(user) {
-  const role = user?.role || "USER";
-  const navItems = document.querySelectorAll(".nav__item[data-roles]");
-
-  navItems.forEach((item) => {
-    const allowedRoles = item.dataset.roles
-      .split(",")
-      .map((itemRole) => itemRole.trim());
-
-    const isAllowed = allowedRoles.includes(role);
-
-    item.hidden = !isAllowed;
-    item.disabled = !isAllowed;
-  });
-}

@@ -769,3 +769,17 @@ td img {
 [hidden] {
     display: none !important;
 }
+
+.session {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+#sessionUser {
+    max-width: 220px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

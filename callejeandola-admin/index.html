@@ -52,12 +52,32 @@
             </div>
 
             <nav class="nav">
-                <button class="nav__item is-active" data-view="dashboard">Dashboard</button>
-                <button class="nav__item" data-view="spots">Spots</button>
-                <button class="nav__item" data-view="events">Events</button>
-                <button class="nav__item" data-view="shops">Shops</button>
-                <button class="nav__item" data-view="sponsors">Sponsors</button>
-                <button class="nav__item" data-view="users">Users</button>
+                <button class="nav__item is-active" type="button" data-view="dashboard"
+                    data-roles="GLOBAL_ADMIN,LOCAL_ADMIN,JUDGE,SHOP_OWNER">
+                    Dashboard
+                </button>
+
+                <button class="nav__item" type="button" data-view="spots" data-roles="GLOBAL_ADMIN,LOCAL_ADMIN">
+                    Spots
+                </button>
+
+                <button class="nav__item" type="button" data-view="events" data-roles="GLOBAL_ADMIN,LOCAL_ADMIN,JUDGE">
+                    Events
+                </button>
+
+                <button class="nav__item" type="button" data-view="shops"
+                    data-roles="GLOBAL_ADMIN,LOCAL_ADMIN,SHOP_OWNER">
+                    Shops
+                </button>
+
+                <button class="nav__item" type="button" data-view="sponsors"
+                    data-roles="GLOBAL_ADMIN,LOCAL_ADMIN,SHOP_OWNER">
+                    Sponsors
+                </button>
+
+                <button class="nav__item" type="button" data-view="users" data-roles="GLOBAL_ADMIN">
+                    Users
+                </button>
             </nav>
         </aside>
 
@@ -69,8 +89,16 @@
                 </div>
 
                 <div class="session">
-                    <span class="badge">GLOBAL_ADMIN</span>
-                    <button class="btn btn-secondary" type="button" id="btnRefresh">Refresh</button>
+                    <span class="badge" id="sessionRole">NO_SESSION</span>
+                    <span class="muted" id="sessionUser">Sin sesión</span>
+
+                    <button class="btn btn-secondary" type="button" id="btnRefresh">
+                        Refresh
+                    </button>
+
+                    <button class="btn btn-secondary" type="button" id="btnLogout">
+                        Logout
+                    </button>
                 </div>
             </header>
 
@@ -206,7 +234,7 @@
     <div id="toast" class="toast" hidden></div>
 
     <script type="module" src="./js/admin.js"></script>
-    
+
 </body>
 
 </html>
