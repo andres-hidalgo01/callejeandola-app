@@ -1,0 +1,6 @@
+
+# Local SQLite database
+callejeandola-api/prisma/dev.db
+callejeandola-api/prisma/dev.db-journal
+callejeandola-api/prisma/*.db
+callejeandola-api/prisma/*.db-journal
