@@ -102,7 +102,7 @@ exports.updateSponsor = async (req, res) => {
     res.status(500).json({
       error: "Error updating sponsor",
     });
-  }Fs
+  }
 };
 
 exports.deleteSponsor = async (req, res) => {
