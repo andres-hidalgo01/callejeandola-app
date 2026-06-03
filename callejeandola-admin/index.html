@@ -9,7 +9,39 @@
 </head>
 
 <body>
-    <div class="admin-app">
+
+    <section class="login-view" id="loginView">
+        <div class="login-card">
+            <div class="brand login-brand">
+                <div class="brand__mark">CJ</div>
+                <div>
+                    <strong>Callejeandola</strong>
+                    <span>Admin Access</span>
+                </div>
+            </div>
+
+            <h1>Iniciar sesión</h1>
+            <p class="muted">Ingresá con una cuenta autorizada para administrar Callejeandola.</p>
+
+            <form id="loginForm" action="javascript:void(0);" onsubmit="return false;" novalidate>
+                <div class="form-field">
+                    <label for="loginEmail">Email</label>
+                    <input id="loginEmail" type="email" placeholder="admin@callejeandola.com" autocomplete="email">
+                </div>
+
+                <div class="form-field">
+                    <label for="loginPassword">Password</label>
+                    <input id="loginPassword" type="password" placeholder="••••••••" autocomplete="current-password">
+                </div>
+
+                <button class="btn btn-primary login-btn" type="button" id="btnLogin">
+                    Entrar
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <div class="admin-app" id="adminApp" hidden>
         <aside class="sidebar">
             <div class="brand">
                 <div class="brand__mark">CJ</div>
@@ -174,6 +206,7 @@
     <div id="toast" class="toast" hidden></div>
 
     <script type="module" src="./js/admin.js"></script>
+    
 </body>
 
 </html>

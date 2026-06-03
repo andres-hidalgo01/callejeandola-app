@@ -4,7 +4,8 @@ export const state = {
   shops: [],
   sponsors: [],
 
-  
+  currentUser: null,
+
   modalMode: null,
   modalEntity: null,
   modalItemId: null,
