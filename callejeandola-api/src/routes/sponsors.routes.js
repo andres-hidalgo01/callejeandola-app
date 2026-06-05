@@ -1,18 +1,37 @@
-
 const express = require("express");
-
 const router = express.Router();
 
 const sponsorsController = require("../controllers/sponsors.controller");
 
-router.get("/", sponsorsController.getSponsors);
+const {
+    authMiddleware,
+    requireRole,
+} = require("../middlewares/auth.middleware");
 
+const GLOBAL_ADMIN_ONLY = ["GLOBAL_ADMIN"];
+
+router.get("/", sponsorsController.getSponsors);
 router.get("/:id", sponsorsController.getSponsorById);
 
-router.post("/", sponsorsController.createSponsor);
+router.post(
+    "/",
+    authMiddleware,
+    requireRole(GLOBAL_ADMIN_ONLY),
+    sponsorsController.createSponsor
+);
 
-router.put("/:id", sponsorsController.updateSponsor);
+router.put(
+    "/:id",
+    authMiddleware,
+    requireRole(GLOBAL_ADMIN_ONLY),
+    sponsorsController.updateSponsor
+);
 
-router.delete("/:id", sponsorsController.deleteSponsor);
+router.delete(
+    "/:id",
+    authMiddleware,
+    requireRole(GLOBAL_ADMIN_ONLY),
+    sponsorsController.deleteSponsor
+);
 
 module.exports = router;

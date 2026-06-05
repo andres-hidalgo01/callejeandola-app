@@ -1,15 +1,37 @@
 const express = require("express");
 const router = express.Router();
+
 const spotsController = require("../controllers/spots.controller");
 
-router.get("/", spotsController.getSpots);
+const {
+    authMiddleware,
+    requireRole,
+} = require("../middlewares/auth.middleware");
 
+const GLOBAL_ADMIN_ONLY = ["GLOBAL_ADMIN"];
+
+router.get("/", spotsController.getSpots);
 router.get("/:id", spotsController.getSpotById);
 
-router.post("/", spotsController.createSpot);
+router.post(
+    "/",
+    authMiddleware,
+    requireRole(GLOBAL_ADMIN_ONLY),
+    spotsController.createSpot
+);
 
-router.put("/:id", spotsController.updateSpot);
+router.put(
+    "/:id",
+    authMiddleware,
+    requireRole(GLOBAL_ADMIN_ONLY),
+    spotsController.updateSpot
+);
 
-router.delete("/:id", spotsController.deleteSpot);
+router.delete(
+    "/:id",
+    authMiddleware,
+    requireRole(GLOBAL_ADMIN_ONLY),
+    spotsController.deleteSpot
+);
 
 module.exports = router;
