@@ -51,7 +51,7 @@
                 </div>
             </div>
 
-            <nav class="nav">
+            <!-- <nav class="nav">
                 <button class="nav__item is-active" type="button" data-view="dashboard"
                     data-roles="GLOBAL_ADMIN,LOCAL_ADMIN,JUDGE,SHOP_OWNER">
                     Dashboard
@@ -78,7 +78,37 @@
                 <button class="nav__item" type="button" data-view="users" data-roles="GLOBAL_ADMIN">
                     Users
                 </button>
+            </nav> -->
+
+            <nav class="nav">
+                <button class="nav__item is-active" type="button" data-view="dashboard"
+                    data-roles="GLOBAL_ADMIN,LOCAL_ADMIN,JUDGE">
+                    Dashboard
+                </button>
+
+                <button class="nav__item" type="button" data-view="spots" data-roles="GLOBAL_ADMIN">
+                    Spots
+                </button>
+
+                <button class="nav__item" type="button" data-view="events" data-roles="GLOBAL_ADMIN,LOCAL_ADMIN,JUDGE">
+                    Events
+                </button>
+
+                <button class="nav__item" type="button" data-view="shops" data-roles="GLOBAL_ADMIN">
+                    Shops
+                </button>
+
+                <button class="nav__item" type="button" data-view="sponsors" data-roles="GLOBAL_ADMIN">
+                    Sponsors
+                </button>
+
+                <button class="nav__item" type="button" data-view="users" data-roles="GLOBAL_ADMIN">
+                    Users
+                </button>
             </nav>
+
+
+
         </aside>
 
         <main class="main">
@@ -207,8 +237,8 @@
                 </div>
                 <div class="card">
                     <p class="muted">
-                        Users queda como módulo futuro. Aquí luego se manejarán roles: USER, SKATER, JUDGE, SHOP_OWNER,
-                        LOCAL_ADMIN y GLOBAL_ADMIN.
+                        Users queda como módulo siguiente. Aquí luego el GLOBAL_ADMIN podrá manejar
+                        usuarios, roles y permisos: GUEST, SKATER, JUDGE, LOCAL_ADMIN y GLOBAL_ADMIN.
                     </p>
                 </div>
             </section>

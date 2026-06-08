@@ -1,0 +1,38 @@
+const ROLES = {
+    GUEST: "GUEST",
+    SKATER: "SKATER",
+    JUDGE: "JUDGE",
+    LOCAL_ADMIN: "LOCAL_ADMIN",
+    GLOBAL_ADMIN: "GLOBAL_ADMIN",
+};
+
+const VALID_ROLES = [
+    ROLES.GUEST,
+    ROLES.SKATER,
+    ROLES.JUDGE,
+    ROLES.LOCAL_ADMIN,
+    ROLES.GLOBAL_ADMIN,
+];
+
+const PERMISSIONS = {
+    GLOBAL_ADMIN_ONLY: [
+        ROLES.GLOBAL_ADMIN,
+    ],
+
+    EVENT_MANAGERS: [
+        ROLES.GLOBAL_ADMIN,
+        ROLES.LOCAL_ADMIN,
+    ],
+
+    ADMIN_ACCESS: [
+        ROLES.GLOBAL_ADMIN,
+        ROLES.LOCAL_ADMIN,
+        ROLES.JUDGE,
+    ],
+};
+
+module.exports = {
+    ROLES,
+    VALID_ROLES,
+    PERMISSIONS,
+};

@@ -8,29 +8,32 @@ const {
     requireRole,
 } = require("../middlewares/auth.middleware");
 
-const EVENT_MANAGERS = ["GLOBAL_ADMIN", "LOCAL_ADMIN"];
+const { PERMISSIONS } = require("../config/roles");
 
 router.get("/", eventsController.getEvents);
-router.get("/:id", eventsController.getEventById);
+
+if (eventsController.getEventById) {
+    router.get("/:id", eventsController.getEventById);
+}
 
 router.post(
     "/",
     authMiddleware,
-    requireRole(EVENT_MANAGERS),
+    requireRole(PERMISSIONS.EVENT_MANAGERS),
     eventsController.createEvent
 );
 
 router.put(
     "/:id",
     authMiddleware,
-    requireRole(EVENT_MANAGERS),
+    requireRole(PERMISSIONS.EVENT_MANAGERS),
     eventsController.updateEvent
 );
 
 router.delete(
     "/:id",
     authMiddleware,
-    requireRole(EVENT_MANAGERS),
+    requireRole(PERMISSIONS.EVENT_MANAGERS),
     eventsController.deleteEvent
 );
 

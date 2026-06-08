@@ -12,7 +12,7 @@ model User {
   name      String
   email     String   @unique
   password  String
-  role      String   @default("USER")
+  role      String   @default("GUEST")
   active    Boolean  @default(true)
   country   String   @default("Costa Rica")
   createdAt DateTime @default(now())

@@ -1,15 +1,7 @@
 const bcrypt = require("bcryptjs");
 const prisma = require("../config/prisma");
 const { generateToken } = require("../utils/jwt");
-
-const VALID_ROLES = [
-    "USER",
-    "SKATER",
-    "JUDGE",
-    "SHOP_OWNER",
-    "LOCAL_ADMIN",
-    "GLOBAL_ADMIN",
-];
+const { VALID_ROLES } = require("../config/roles");
 
 function sanitizeUser(user) {
     if (!user) return null;
@@ -30,7 +22,7 @@ async function registerUser({ name, email, password, role, country }) {
     const cleanName = String(name || "").trim();
     const cleanEmail = String(email || "").trim().toLowerCase();
     const cleanPassword = String(password || "").trim();
-    const cleanRole = VALID_ROLES.includes(role) ? role : "USER";
+    const cleanRole = VALID_ROLES.includes(role) ? role : "GUEST";
     const cleanCountry = String(country || "Costa Rica").trim();
 
     if (!cleanName || !cleanEmail || !cleanPassword) {
