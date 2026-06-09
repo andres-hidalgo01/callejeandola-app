@@ -8,6 +8,7 @@ const shopsRoutes = require("./routes/shops.routes");
 const authRoutes = require("./routes/auth.routes");
 
 const usersRoutes = require("./routes/users.routes");
+const profileRoutes = require("./routes/profile.routes");
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use(cors({
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);
+app.use("/api/profile", profileRoutes);
 
 app.use("/api/spots", spotsRoutes);
 app.use("/api/events", eventsRoutes);
