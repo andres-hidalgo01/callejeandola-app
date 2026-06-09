@@ -7,6 +7,8 @@ const sponsorsRoutes = require("./routes/sponsors.routes");
 const shopsRoutes = require("./routes/shops.routes");
 const authRoutes = require("./routes/auth.routes");
 
+const usersRoutes = require("./routes/users.routes");
+
 const app = express();
 
 app.use(cors({
@@ -28,6 +30,8 @@ app.use("/api/spots", spotsRoutes);
 app.use("/api/events", eventsRoutes);
 app.use("/api/sponsors", sponsorsRoutes);
 app.use("/api/shops", shopsRoutes);
+
+app.use("/api/users", usersRoutes);
 
 app.get("/", (req, res) => {
     res.json({
