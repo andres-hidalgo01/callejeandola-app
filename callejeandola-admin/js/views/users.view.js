@@ -131,13 +131,22 @@ export function bindUserTableActions() {
 function openUserRoleModal(user) {
     const roleOptions = AVAILABLE_ROLES
         .map((role) => {
+            const isSelected = user.role === role;
+
             return `
-        <option
-          value="${escapeAttr(role)}"
-          ${user.role === role ? "selected" : ""}
-        >
-          ${escapeHtml(role)}
-        </option>
+        <label class="role-option ${isSelected ? "is-selected" : ""}">
+          <input
+            type="radio"
+            name="userRole"
+            value="${escapeAttr(role)}"
+            ${isSelected ? "checked" : ""}
+          >
+
+          <span class="role-option__main">
+            <strong>${escapeHtml(role)}</strong>
+            <small>${getRoleDescription(role)}</small>
+          </span>
+        </label>
       `;
         })
         .join("");
@@ -159,10 +168,11 @@ function openUserRoleModal(user) {
       </div>
 
       <div class="form-field">
-        <label for="userRole">Rol</label>
-        <select id="userRole" name="role">
+        <label>Rol</label>
+
+        <div class="role-options">
           ${roleOptions}
-        </select>
+        </div>
       </div>
 
       <div class="card soft-warning">
@@ -173,6 +183,18 @@ function openUserRoleModal(user) {
       </div>
     `,
     });
+}
+
+function getRoleDescription(role) {
+    const descriptions = {
+        GUEST: "Sin privilegios. No accede al Admin.",
+        SKATER: "Perfil público de skater. No accede al Admin.",
+        JUDGE: "Puede ver Dashboard y Events en solo lectura.",
+        LOCAL_ADMIN: "Puede administrar eventos.",
+        GLOBAL_ADMIN: "Control total del sistema.",
+    };
+
+    return descriptions[role] || "Rol del sistema";
 }
 
 function openUserStatusModal(user) {
@@ -218,10 +240,16 @@ function renderUsersOnly() {
     showView("users");
 }
 
+
 async function handleUpdateUserRole() {
     try {
         const id = Number(state.modalItemId);
-        const role = getValue("userRole");
+
+        const selectedRoleInput = document.querySelector(
+            'input[name="userRole"]:checked'
+        );
+
+        const role = selectedRoleInput?.value;
 
         if (!id) {
             showToast("ID inválido");

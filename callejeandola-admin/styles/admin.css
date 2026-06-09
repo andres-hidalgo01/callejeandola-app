@@ -794,3 +794,67 @@ td img {
     background: rgba(245, 158, 11, 0.08);
     border-color: rgba(245, 158, 11, 0.24);
 }
+
+/* =========================
+   ROLE OPTIONS CUSTOM UI
+   ========================= */
+
+.role-options {
+    display: grid;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.role-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 58px;
+    padding: 12px 14px;
+    border-radius: 16px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: rgba(15, 23, 42, 0.72);
+    cursor: pointer;
+    transition:
+        border-color 160ms ease,
+        background 160ms ease,
+        transform 160ms ease;
+}
+
+.role-option:hover {
+    border-color: rgba(34, 211, 238, 0.5);
+    background: rgba(15, 23, 42, 0.95);
+    transform: translateY(-1px);
+}
+
+.role-option.is-selected,
+.role-option:has(input:checked) {
+    border-color: rgba(34, 211, 238, 0.7);
+    background:
+        linear-gradient(135deg, rgba(124, 92, 255, 0.22), rgba(34, 211, 238, 0.14)),
+        rgba(15, 23, 42, 0.95);
+}
+
+.role-option input {
+    width: 16px;
+    height: 16px;
+    accent-color: #22d3ee;
+    flex: 0 0 auto;
+}
+
+.role-option__main {
+    display: grid;
+    gap: 3px;
+}
+
+.role-option__main strong {
+    color: #f8fafc;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+}
+
+.role-option__main small {
+    color: #94a3b8;
+    font-size: 12px;
+    line-height: 1.35;
+}
