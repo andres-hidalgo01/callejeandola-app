@@ -3,6 +3,7 @@ export const state = {
   events: [],
   shops: [],
   sponsors: [],
+  users: [],
 
   currentUser: null,
 

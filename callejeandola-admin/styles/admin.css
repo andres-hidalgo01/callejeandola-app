@@ -783,3 +783,14 @@ td img {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
+.badge-danger {
+    border-color: rgba(248, 113, 113, 0.45);
+    color: #fecaca;
+    background: rgba(127, 29, 29, 0.25);
+}
+
+.soft-warning {
+    background: rgba(245, 158, 11, 0.08);
+    border-color: rgba(245, 158, 11, 0.24);
+}

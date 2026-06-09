@@ -233,15 +233,33 @@
 
             <section class="view" data-view-panel="users">
                 <div class="module-head">
-                    <h2>Users</h2>
+                    <div>
+                        <h2>Users</h2>
+                        <p class="muted">
+                            Administración de usuarios, roles y estado de acceso.
+                        </p>
+                    </div>
                 </div>
-                <div class="card">
-                    <p class="muted">
-                        Users queda como módulo siguiente. Aquí luego el GLOBAL_ADMIN podrá manejar
-                        usuarios, roles y permisos: GUEST, SKATER, JUDGE, LOCAL_ADMIN y GLOBAL_ADMIN.
-                    </p>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Email</th>
+                                <th>Rol</th>
+                                <th>País</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTable"></tbody>
+                    </table>
                 </div>
             </section>
+
+
+
         </main>
     </div>
 

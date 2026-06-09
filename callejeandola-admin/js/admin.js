@@ -76,6 +76,14 @@ import {
   getStoredUser,
 } from "./services/session.service.js";
 
+import { getUsers } from "./api/users.api.js";
+
+import {
+  renderUsersTable,
+  bindUserTableActions,
+  handleUserSubmit,
+} from "./views/users.view.js";
+
 document.addEventListener("DOMContentLoaded", initAdmin);
 
 async function initAdmin() {
@@ -274,17 +282,23 @@ function showAdminView() {
 ========================= */
 async function loadAllData() {
   try {
-    const [spots, events, shops, sponsors] = await Promise.all([
+    const [spots, shops, sponsors, events] = await Promise.all([
       getSpots(),
-      getEvents(),
       getShops(),
       getSponsors(),
+      getEvents(),
     ]);
 
     state.spots = spots;
-    state.events = events;
     state.shops = shops;
     state.sponsors = sponsors;
+    state.events = events;
+
+    if (state.currentUser?.role === "GLOBAL_ADMIN") {
+      state.users = await getUsers();
+    } else {
+      state.users = [];
+    }
   } catch (error) {
     console.error("Error loading admin data:", error);
     showToast(error.message || "Error cargando datos desde la API");
@@ -325,6 +339,7 @@ function renderAll() {
   renderShopsTable();
   renderSponsorsTable();
   renderEventsTable();
+  renderUsersTable();
 
   bindSpotCreateButton();
   bindShopCreateButton();
@@ -335,6 +350,7 @@ function renderAll() {
   bindShopTableActions();
   bindSponsorTableActions();
   bindEventTableActions();
+  bindUserTableActions();
 }
 
 /* =========================
@@ -358,6 +374,11 @@ async function handleEntitySubmit() {
 
   if (state.modalEntity === "event") {
     await handleEventSubmit();
+    return;
+  }
+
+  if (state.modalEntity === "user") {
+    await handleUserSubmit();
     return;
   }
 
