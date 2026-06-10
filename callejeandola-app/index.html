@@ -75,16 +75,12 @@
               <p class="sub">Mapa, filtros rápidos y spots útiles para patinar hoy.</p>
             </div>
 
-            <!-- <div class="segmented" role="group" aria-label="Modo">
-              <button class="seg is-active" type="button" data-mode="list">List</button>
-              <button class="seg js-open-map" type="button">Map</button>
-            </div> -->
+
           </div>
 
           <div class="toolbar">
             <div class="search">
               <label class="sr-only" for="qSpots">Buscar spots</label>
-              <!-- <button class="seg js-open-map" type="button">Map</button> -->
               <input id="qSpots" type="search" placeholder="Buscar: nombre, zona, obstáculo…" autocomplete="off" />
             </div>
 
@@ -257,7 +253,7 @@
 
         </section>
 
-        <section class="view" data-view="profile">
+        <!-- <section class="view" data-view="profile">
           <div id="profileLocked" class="profile-gate" hidden>
             <div class="card profile-gate__card">
               <div class="avatar">CJ</div>
@@ -317,7 +313,100 @@
               </div>
             </div>
           </div>
+        </section> -->
+
+        <section class="view" data-view="profile" id="profileView">
+          <div class="profile-shell">
+            <div class="profile-card" id="profileGuestCard">
+              <div class="profile-avatar">CJ</div>
+
+              <h2>Tu perfil Callejeandola</h2>
+              <p class="muted">
+                Iniciá sesión para guardar tu perfil, conectar con eventos y preparar tu espacio skater.
+              </p>
+
+              <form id="profileLoginForm" action="javascript:void(0);" onsubmit="return false;" novalidate>
+                <div class="form-field">
+                  <label for="profileLoginEmail">Email</label>
+                  <input id="profileLoginEmail" type="email" placeholder="skater@callejeandola.com"
+                    autocomplete="email">
+                </div>
+
+                <div class="form-field">
+                  <label for="profileLoginPassword">Password</label>
+
+                  <div class="password-field">
+                    <input id="profileLoginPassword" type="password" placeholder="••••••••"
+                      autocomplete="current-password">
+
+                    <button class="password-toggle" type="button" id="btnToggleProfilePassword"
+                      aria-label="Mostrar contraseña">
+                      👁
+                    </button>
+                  </div>
+                </div>
+
+                <button class="btn btn-primary" type="button" id="btnProfileLogin">
+                  Iniciar sesión
+                </button>
+              </form>
+            </div>
+            <div class="profile-card" id="profileUserCard" hidden>
+              <div class="profile-head">
+                <div class="profile-avatar" id="profileAvatar">CJ</div>
+
+                <div>
+                  <h2 id="profileUserName">Perfil</h2>
+                  <p class="muted" id="profileUserMeta">Sin datos</p>
+                </div>
+              </div>
+
+              <div class="profile-grid">
+                <div class="form-field">
+                  <label for="profileDisplayName">Nombre público</label>
+                  <input id="profileDisplayName" type="text" placeholder="Ej: Andres Hidalgo">
+                </div>
+
+                <div class="form-field">
+                  <label for="profileCity">Ciudad</label>
+                  <input id="profileCity" type="text" placeholder="Ej: San José">
+                </div>
+
+                <div class="form-field">
+                  <label for="profileStance">Stance</label>
+                  <input id="profileStance" type="text" placeholder="Regular / Goofy">
+                </div>
+
+                <div class="form-field">
+                  <label for="profileLevel">Nivel</label>
+                  <input id="profileLevel" type="text" placeholder="Beginner / Intermediate / Advanced">
+                </div>
+
+                <div class="form-field profile-grid-full">
+                  <label for="profileInstagram">Instagram</label>
+                  <input id="profileInstagram" type="url" placeholder="https://instagram.com/...">
+                </div>
+
+                <div class="form-field profile-grid-full">
+                  <label for="profileBio">Bio</label>
+                  <textarea id="profileBio" rows="4"
+                    placeholder="Contá algo sobre tu estilo, spots favoritos o crew."></textarea>
+                </div>
+              </div>
+
+              <div class="profile-actions">
+                <button class="btn btn-primary" type="button" id="btnProfileSave">
+                  Guardar perfil
+                </button>
+
+                <button class="btn btn-secondary" type="button" id="btnProfileLogout">
+                  Cerrar sesión
+                </button>
+              </div>
+            </div>
+          </div>
         </section>
+
 
       </div>
 
@@ -332,7 +421,6 @@
               <button class="icon-btn" id="btnLocate" type="button">◎</button>
               <button class="icon-btn map-close" id="btnCloseMap" type="button">✕</button>
             </div>
-            <!-- <button class="icon-btn" id="btnLocate" type="button" aria-label="Centrar en mi ubicación">◎</button> -->
           </div>
 
           <div class="map__canvas" id="mapCanvas" aria-label="Mapa (mock)">
@@ -418,6 +506,7 @@
   </div>
 
   <script type="module" src="./js/app.js"></script>
+  <script type="module" src="./js/profile.bootstrap.js"></script>
   <script src="js/i18n.js"></script>
 </body>
 
