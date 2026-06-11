@@ -1,3 +1,13 @@
+import { getAuthToken } from "./services/session.service.js";
+
+import {
+    getFavoriteSpots,
+    addFavoriteSpot,
+    removeFavoriteSpot,
+    getSavedEvents,
+} from "./api/engagement.api.js";
+
+
 import { api } from "./api.js";
 
 const $ = (q, el = document) => el.querySelector(q);
@@ -26,7 +36,10 @@ let state = {
         user: null,
     },
 
-    favorites: new Set(loadFavs()),
+    favorites: new Set(loadFavs().map(String)),
+    favoriteSpots: [],
+    savedEvents: new Set(),
+    savedEventsList: [],
 
     data: {
         spots: [],
@@ -61,6 +74,10 @@ document.querySelector(".brand")?.addEventListener("click", (e) => {
     e.preventDefault();
     document.querySelector("#main")?.scrollIntoView({ behavior: "smooth", block: "start" });
     setTab("spots");
+});
+
+window.addEventListener("cj:session-changed", async () => {
+    await refreshEngagementUi();
 });
 
 /* =========================================
@@ -105,9 +122,52 @@ async function loadDataFromApi() {
         toast("No se pudo conectar con la API");
     } finally {
         hideBusy();
-        renderAll();
+
+        await loadEngagementFromApi();
+
+        renderSpots();
+        renderEvents();
+        renderShops();
+        renderSponsors();
+        renderFavorites();
+        renderSavedEvents();
+        updateKpis();
+        updateProfileCounts();
     }
 }
+
+async function loadEngagementFromApi() {
+    const token = getAuthToken();
+
+    if (!token) {
+        state.favorites = new Set();
+        state.favoriteSpots = [];
+        state.savedEvents = new Set();
+        state.savedEventsList = [];
+        return;
+    }
+
+    try {
+        const [favoriteSpots, savedEvents] = await Promise.all([
+            getFavoriteSpots(),
+            getSavedEvents(),
+        ]);
+
+        state.favoriteSpots = favoriteSpots;
+        state.favorites = new Set(favoriteSpots.map((spot) => String(spot.id)));
+
+        state.savedEventsList = savedEvents;
+        state.savedEvents = new Set(savedEvents.map((event) => String(event.id)));
+    } catch (error) {
+        console.warn("Engagement API fallback:", error);
+
+        state.favoriteSpots = [];
+        state.favorites = new Set();
+        state.savedEventsList = [];
+        state.savedEvents = new Set();
+    }
+}
+
 
 /* =========================================
    NORMALIZERS
@@ -468,6 +528,10 @@ function renderAll() {
     renderFavorites();
     updateKpis();
     updateProfileCounts();
+    renderFavorites();
+    renderSavedEvents();
+    updateKpis();
+    updateProfileCounts();
 }
 
 function renderSpots() {
@@ -664,51 +728,177 @@ function renderProfile() {
 
 function renderFavorites() {
     const box = $("#favoritesList");
-    if (!box) return;
+    const token = getAuthToken();
 
-    const spots = state.data.spots || [];
-    const favs = spots.filter((s) => state.favorites.has(String(s.id)));
+    const localFavoriteSpots = (state.data.spots || []).filter((spot) =>
+        state.favorites.has(String(spot.id))
+    );
+
+    const favs = token ? state.favoriteSpots : localFavoriteSpots;
 
     $("#kpiFavs") && ($("#kpiFavs").textContent = String(state.favorites.size));
     $("#pFavs") && ($("#pFavs").textContent = String(state.favorites.size));
 
-    if (favs.length === 0) {
-        box.innerHTML = `<div class="mini-item"><span class="muted">Aún no tienes favoritos</span><span>♡</span></div>`;
-    } else {
-        box.innerHTML = favs
-            .map(
-                (s) => `
-        <div class="mini-item">
-          <span><strong>${escapeHtml(s.name)}</strong><span class="muted"> · ${escapeHtml(s.zone || "—")}</span></span>
-          <button class="icon-btn" type="button" data-unfav="${s.id}" aria-label="Quitar favorito">♥</button>
-        </div>
-      `
-            )
-            .join("");
+    if (!box) return;
+
+    if (!token) {
+        box.innerHTML = `
+      <div class="mini-item">
+        <span class="muted">Iniciá sesión para guardar favoritos en tu perfil.</span>
+        <span>♡</span>
+      </div>
+    `;
+        return;
     }
 
-    $$("[data-unfav]").forEach((b) => {
-        b.addEventListener("click", () => toggleFav(String(b.dataset.unfav)));
-    });
+    if (!favs.length) {
+        box.innerHTML = `
+      <div class="mini-item">
+        <span class="muted">Aún no tenés spots favoritos.</span>
+        <span>♡</span>
+      </div>
+    `;
+        return;
+    }
 
-    const profileEventsList = $("#profileEventsList");
-    if (profileEventsList) {
-        const events = state.data.events || [];
-        if (!events.length) {
-            profileEventsList.innerHTML = `<div class="mini-item"><span class="muted">Aún no hay eventos disponibles</span><span>🏁</span></div>`;
+    box.innerHTML = favs
+        .map((spot) => {
+            return `
+        <div class="mini-item">
+          <span>
+            <strong>${escapeHtml(spot.name || "Spot")}</strong>
+            <span class="muted"> · ${escapeHtml(spot.zone || spot.city || "—")}</span>
+          </span>
+
+          <button
+            class="icon-btn is-active"
+            type="button"
+            data-unfav="${spot.id}"
+            aria-label="Quitar favorito"
+          >
+            ♥
+          </button>
+        </div>
+      `;
+        })
+        .join("");
+
+    $$("[data-unfav]").forEach((button) => {
+        button.addEventListener("click", () => toggleFav(button.dataset.unfav));
+    });
+}
+
+function renderSavedEvents() {
+    const box = $("#savedEventsList");
+    const token = getAuthToken();
+    const savedEvents = state.savedEventsList || [];
+
+    $("#pSavedEvents") &&
+        ($("#pSavedEvents").textContent = String(savedEvents.length));
+
+    if (!box) return;
+
+    if (!token) {
+        box.innerHTML = "";
+        return;
+    }
+
+    if (!savedEvents.length) {
+        box.innerHTML = `
+      <div class="mini-item mini-item--empty">
+        <span class="muted">Aún no tenés eventos guardados.</span>
+        <span>＋</span>
+      </div>
+    `;
+        return;
+    }
+
+    box.innerHTML = savedEvents
+        .map((event) => {
+            return `
+        <div class="mini-item">
+          <span>
+            <strong>${escapeHtml(event.title || event.name || "Evento")}</strong>
+            <span class="muted"> · ${escapeHtml(event.place || event.city || "—")}</span>
+          </span>
+          <span>✓</span>
+        </div>
+      `;
+        })
+        .join("");
+}
+
+
+async function toggleFav(id) {
+    const token = getAuthToken();
+
+    if (!token) {
+        toast("Iniciá sesión para guardar favoritos");
+        setTab("profile");
+        return;
+    }
+
+    const cleanId = Number(id);
+
+    if (!Number.isInteger(cleanId)) {
+        toast("Este spot demo no se puede guardar todavía");
+        return;
+    }
+
+    const idKey = String(cleanId);
+    const wasFavorite = state.favorites.has(idKey);
+
+    try {
+        if (wasFavorite) {
+            state.favorites.delete(idKey);
+            state.favoriteSpots = state.favoriteSpots.filter(
+                (spot) => String(spot.id) !== idKey
+            );
+
+            renderSpots();
+            renderFavorites();
+            updateKpis();
+
+            await removeFavoriteSpot(cleanId);
+
+            toast("Quitado de favoritos");
         } else {
-            profileEventsList.innerHTML = events
-                .slice(0, 3)
-                .map(
-                    (e) => `
-          <div class="mini-item">
-            <span><strong>${escapeHtml(e.title)}</strong><span class="muted"> · ${escapeHtml(e.place || "—")}</span></span>
-            <span>🏁</span>
-          </div>
-        `
-                )
-                .join("");
+            state.favorites.add(idKey);
+
+            const spot = (state.data.spots || []).find(
+                (item) => String(item.id) === idKey
+            );
+
+            if (spot) {
+                state.favoriteSpots = [spot, ...state.favoriteSpots];
+            }
+
+            renderSpots();
+            renderFavorites();
+            updateKpis();
+
+            await addFavoriteSpot(cleanId);
+
+            toast("Guardado en favoritos");
         }
+
+        await loadEngagementFromApi();
+
+        renderSpots();
+        renderFavorites();
+        renderSavedEvents();
+        updateKpis();
+    } catch (error) {
+        console.error("Favorite toggle error:", error);
+
+        await loadEngagementFromApi();
+
+        renderSpots();
+        renderFavorites();
+        renderSavedEvents();
+        updateKpis();
+
+        toast(error.message || "Error actualizando favoritos");
     }
 }
 
@@ -731,9 +921,7 @@ function spotCard(s) {
 
     return `
     <article class="card spot-card">
-      <div class="card__image">
-        <img src="${s.image || "./assets/default-spot.jpg"}" alt="${escapeHtml(s.name)}" loading="lazy">
-      </div>
+    ${renderMediaBlock(s, "spot")}      
 
       <div class="card__body">
         <div class="card__meta">
@@ -756,9 +944,9 @@ function spotCard(s) {
             Ver detalle
           </button>
 
-          <button class="icon-btn" id="fav_${s.id}" type="button" aria-label="Favorito">
-            ${fav ? "♥" : "♡"}
-          </button>
+        <button class="icon-btn ${fav ? "is-active" : ""}" id="fav_${s.id}" type="button" aria-label="Favorito">
+          ${fav ? "♥" : "♡"}
+        </button>
         </div>
       </div>
     </article>
@@ -766,13 +954,10 @@ function spotCard(s) {
 }
 
 function eventCard(e) {
-    const img = e.image || "./assets/default-event.jpg";
 
     return `
     <article class="card event-card">
-      <div class="card__image">
-        <img src="${img}" alt="${escapeHtml(e.title)}" loading="lazy">
-      </div>
+    ${renderMediaBlock(e, "event")}
 
       <div class="card__body">
         <div class="card__meta">
@@ -796,13 +981,9 @@ function eventCard(e) {
 }
 
 function shopCard(shop) {
-    const img = shop.image || "./assets/default-shop.jpg";
-
     return `
     <article class="card shop-card">
-      <div class="card__image">
-        <img src="${img}" alt="${escapeHtml(shop.name)}" loading="lazy">
-      </div>
+    ${renderMediaBlock(shop, "shop")}
 
       <div class="card__body">
         <div class="card__meta">
@@ -828,21 +1009,6 @@ function shopCard(shop) {
 /* =========================================
    FAVORITES
 ========================================= */
-function toggleFav(id) {
-    if (state.favorites.has(id)) {
-        state.favorites.delete(id);
-        toast("Quitado de favoritos");
-    } else {
-        state.favorites.add(id);
-        toast("Guardado en favoritos");
-    }
-
-    saveFavs([...state.favorites]);
-    renderSpots();
-    renderFavorites();
-    updateProfileCounts();
-}
-
 function loadFavs() {
     try {
         const raw = localStorage.getItem("cj_favs");
@@ -875,18 +1041,12 @@ function closeModal() {
 }
 
 function openSpot(s) {
-    const images = s.images?.length
-        ? s.images
-        : s.image
-            ? [s.image]
-            : ["./assets/default-spot.jpg"];
-
     modalInfo(
         s.name,
         `
       <div class="detail-modal">
         <div class="detail-hero">
-          <img src="${images[0]}" alt="${escapeHtml(s.name)}" loading="lazy">
+          ${renderMediaBlock(s, "spot")}
         </div>
 
         <div class="detail-meta">
@@ -902,14 +1062,6 @@ function openSpot(s) {
           <div><strong>Descripción:</strong> ${escapeHtml(s.description || "Sin descripción")}</div>
           <div><strong>Rating:</strong> ${Number(s.rating || 0).toFixed(1)} ${starText(Number(s.rating || 0))}</div>
           <div><strong>Coordenadas:</strong> ${s.lat || 0}, ${s.lng || 0}</div>
-        </div>
-
-        <div class="detail-gallery">
-          ${images.map((img) => `
-            <button class="detail-thumb" type="button" data-img="${img}">
-              <img src="${img}" alt="${escapeHtml(s.name)}" loading="lazy">
-            </button>
-          `).join("")}
         </div>
 
         <div class="detail-actions">
@@ -939,18 +1091,12 @@ function openSpot(s) {
 }
 
 function openEvent(e) {
-    const images = e.images?.length
-        ? e.images
-        : e.image
-            ? [e.image]
-            : ["./assets/default-event.jpg"];
-
     modalInfo(
         e.title,
         `
       <div class="detail-modal">
-        <div class="detail-hero event-detail-hero">
-          <img src="${images[0]}" alt="${escapeHtml(e.title)}" loading="lazy">
+        <div class="detail-hero event-detail-hero">          
+            ${renderMediaBlock(e, "event")}
         </div>
 
         <div class="detail-meta">
@@ -993,14 +1139,13 @@ function openEvent(e) {
 }
 
 function openShop(shop) {
-    const img = shop.image || "./assets/default-shop.jpg";
 
     modalInfo(
         shop.name,
         `
       <div class="detail-modal">
         <div class="detail-hero shop-detail-hero">
-          <img src="${img}" alt="${escapeHtml(shop.name)}" loading="lazy">
+          ${renderMediaBlock(shop, "shop")}
         </div>
 
         <div class="detail-meta">
@@ -1071,19 +1216,6 @@ function locateMe() {
         { enableHighAccuracy: true, timeout: 8000 }
     );
 }
-
-// function openRoute(item) {
-//     const lat = Number(item.lat || 0);
-//     const lng = Number(item.lng || 0);
-
-//     if (!lat || !lng) {
-//         toast("Este lugar aún no tiene coordenadas reales");
-//         return;
-//     }
-
-//     const url = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
-//     window.open(url, "_blank", "noopener");
-// }
 
 function openRoute(item) {
     const lat = Number(item.lat || 0);
@@ -1199,6 +1331,61 @@ function flash(sel) {
 
     clearTimeout(flash._t);
     flash._t = setTimeout(() => el.classList.remove("flash"), 450);
+}
+
+function escapeAttr(value) {
+    return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;");
+}
+
+function renderMediaBlock(entity, type = "spot") {
+    const image =
+        entity.image ||
+        entity.imageUrl ||
+        entity.photo ||
+        entity.photoUrl ||
+        "";
+
+    const title =
+        entity.name ||
+        entity.title ||
+        "Callejeandola";
+
+    if (!image) {
+        return `
+      <div class="entity-media entity-media--${type} is-fallback">
+        <div class="entity-media__mark">CJ</div>
+        <span>${escapeHtml(title)}</span>
+      </div>
+    `;
+    }
+
+    return `
+    <div class="entity-media entity-media--${type}">
+      <img
+        src="${escapeAttr(image)}"
+        alt="${escapeAttr(title)}"
+        loading="lazy"
+        onerror="this.remove(); this.parentElement.classList.add('is-fallback');"
+      >
+      <div class="entity-media__mark">CJ</div>
+      <span>${escapeHtml(title)}</span>
+    </div>
+  `;
+}
+
+async function refreshEngagementUi() {
+    await loadEngagementFromApi();
+
+    renderSpots();
+    renderEvents();
+    renderFavorites();
+    renderSavedEvents();
+    updateKpis();
+    updateProfileCounts();
 }
 
 /* =========================================

@@ -22,7 +22,7 @@ async function registerUser({ name, email, password, role, country }) {
     const cleanName = String(name || "").trim();
     const cleanEmail = String(email || "").trim().toLowerCase();
     const cleanPassword = String(password || "").trim();
-    const cleanRole = VALID_ROLES.includes(role) ? role : "GUEST";
+    const cleanRole = "SKATER";
     const cleanCountry = String(country || "Costa Rica").trim();
 
     if (!cleanName || !cleanEmail || !cleanPassword) {

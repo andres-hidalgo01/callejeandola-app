@@ -253,68 +253,6 @@
 
         </section>
 
-        <!-- <section class="view" data-view="profile">
-          <div id="profileLocked" class="profile-gate" hidden>
-            <div class="card profile-gate__card">
-              <div class="avatar">CJ</div>
-              <h2 class="h2">Inicia sesión para ver tu perfil</h2>
-              <p class="muted">
-                Accede a favoritos, eventos guardados y actividad personalizada.
-              </p>
-              <div class="profile-gate__actions">
-                <button class="btn btn-primary" type="button" id="btnLoginMock">Iniciar sesión</button>
-              </div>
-            </div>
-          </div>
-
-          <div id="profilePrivate">
-            <div class="profile">
-              <div class="profile__card surface">
-                <div class="profile__top">
-                  <div class="avatar" aria-hidden="true">CJ</div>
-                  <div>
-                    <h2 class="h2">Tu perfil</h2>
-                    <p class="muted">Favoritos, eventos guardados y actividad local.</p>
-                  </div>
-                </div>
-
-                <div class="profile__stats">
-                  <div class="stat">
-                    <div class="stat__num" id="pFavs">0</div>
-                    <div class="stat__label">Favoritos</div>
-                  </div>
-                  <div class="stat">
-                    <div class="stat__num" id="pEvents">0</div>
-                    <div class="stat__label">Eventos guardados</div>
-                  </div>
-                  <div class="stat">
-                    <div class="stat__num" id="pShops">0</div>
-                    <div class="stat__label">shops seguidas</div>
-                  </div>
-                </div>
-
-                <div class="profile__actions">
-                  <button class="btn btn-primary" type="button" id="btnShare">Share profile</button>
-                  <button class="btn btn-ghost" type="button" id="btnSettings">Settings</button>
-                  <button class="btn btn-secondary" type="button" id="btnLogoutMock">Cerrar sesión</button>
-                </div>
-              </div>
-
-              <div class="profile__card card">
-                <h3>Favoritos</h3>
-                <p class="muted">Tus spots guardados para session rápida.</p>
-                <div class="mini" id="favoritesList"></div>
-              </div>
-
-              <div class="profile__card card">
-                <h3>Eventos</h3>
-                <p class="muted">Tus próximos eventos o registros.</p>
-                <div class="mini" id="profileEventsList"></div>
-              </div>
-            </div>
-          </div>
-        </section> -->
-
         <section class="view" data-view="profile" id="profileView">
           <div class="profile-shell">
             <div class="profile-card" id="profileGuestCard">
@@ -322,8 +260,18 @@
 
               <h2>Tu perfil Callejeandola</h2>
               <p class="muted">
-                Iniciá sesión para guardar tu perfil, conectar con eventos y preparar tu espacio skater.
+                Creá tu cuenta skater o iniciá sesión para guardar tu perfil, spots y eventos.
               </p>
+
+              <div class="auth-switch">
+                <button class="auth-switch__btn is-active" type="button" id="btnShowLogin">
+                  Login
+                </button>
+
+                <button class="auth-switch__btn" type="button" id="btnShowRegister">
+                  Registro
+                </button>
+              </div>
 
               <form id="profileLoginForm" action="javascript:void(0);" onsubmit="return false;" novalidate>
                 <div class="form-field">
@@ -343,11 +291,49 @@
                       aria-label="Mostrar contraseña">
                       👁
                     </button>
+
                   </div>
                 </div>
 
                 <button class="btn btn-primary" type="button" id="btnProfileLogin">
                   Iniciar sesión
+                </button>
+              </form>
+
+              <form id="profileRegisterForm" action="javascript:void(0);" onsubmit="return false;" novalidate hidden>
+                <div class="form-field">
+                  <label for="profileRegisterName">Nombre</label>
+                  <input id="profileRegisterName" type="text" placeholder="Ej: Andres Hidalgo" autocomplete="name">
+                </div>
+
+                <div class="form-field">
+                  <label for="profileRegisterEmail">Email</label>
+                  <input id="profileRegisterEmail" type="email" placeholder="skater@callejeandola.com"
+                    autocomplete="email">
+                </div>
+
+                <div class="form-field">
+                  <label for="profileRegisterCountry">País</label>
+                  <input id="profileRegisterCountry" type="text" value="Costa Rica" placeholder="Costa Rica"
+                    autocomplete="country-name">
+                </div>
+
+                <div class="form-field">
+                  <label for="profileRegisterPassword">Password</label>
+
+                  <div class="password-field">
+                    <input id="profileRegisterPassword" type="password" placeholder="Mínimo 6 caracteres"
+                      autocomplete="new-password">
+
+                    <button class="password-toggle" type="button" id="btnToggleProfileRegisterPassword"
+                      aria-label="Mostrar contraseña">
+                      👁
+                    </button>
+                  </div>
+                </div>
+
+                <button class="btn btn-primary" type="button" id="btnProfileRegister">
+                  Crear cuenta skater
                 </button>
               </form>
             </div>
@@ -403,10 +389,49 @@
                   Cerrar sesión
                 </button>
               </div>
+
+              <div class="profile-activity">
+                <div class="profile-activity__head">
+                  <div>
+                    <h3>Tu actividad</h3>
+                    <p class="muted">Spots favoritos y eventos guardados.</p>
+                  </div>
+                </div>
+
+                <div class="profile-activity__grid">
+                  <section class="profile-activity-card">
+                    <div class="profile-activity-card__head">
+                      <h4>Spots favoritos</h4>
+                      <span id="pFavs">0</span>
+                    </div>
+
+                    <div class="mini-list" id="favoritesList">
+                      <div class="mini-item">
+                        <span class="muted">Aún no tenés favoritos.</span>
+                        <span>♡</span>
+                      </div>
+                    </div>
+                  </section>
+
+                  <section class="profile-activity-card">
+                    <div class="profile-activity-card__head">
+                      <h4>Eventos guardados</h4>
+                      <span id="pSavedEvents">0</span>
+                    </div>
+
+                    <div class="mini-list" id="savedEventsList">
+                      <div class="mini-item">
+                        <span class="muted">Aún no tenés eventos guardados.</span>
+                        <span>＋</span>
+                      </div>
+                    </div>
+                  </section>
+                </div>
+              </div>
+
             </div>
           </div>
         </section>
-
 
       </div>
 

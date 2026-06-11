@@ -1,4 +1,4 @@
-import { login, getMe } from "../api/auth.api.js";
+import { register, login, getMe } from "../api/auth.api.js";
 import { getMyProfile, updateMyProfile } from "../api/profile.api.js";
 
 import {
@@ -18,14 +18,37 @@ export function initProfileView() {
 
 function bindProfileActions() {
     const btnLogin = document.getElementById("btnProfileLogin");
+    const btnRegister = document.getElementById("btnProfileRegister");
     const btnSave = document.getElementById("btnProfileSave");
     const btnLogout = document.getElementById("btnProfileLogout");
+
+    const btnShowLogin = document.getElementById("btnShowLogin");
+    const btnShowRegister = document.getElementById("btnShowRegister");
+
     const btnTogglePassword = document.getElementById("btnToggleProfilePassword");
+    const btnToggleRegisterPassword = document.getElementById(
+        "btnToggleProfileRegisterPassword"
+    );
+
+    if (btnShowLogin) {
+        btnShowLogin.onclick = () => showLoginForm();
+    }
+
+    if (btnShowRegister) {
+        btnShowRegister.onclick = () => showRegisterForm();
+    }
 
     if (btnLogin) {
         btnLogin.onclick = async (event) => {
             event.preventDefault();
             await handleProfileLogin();
+        };
+    }
+
+    if (btnRegister) {
+        btnRegister.onclick = async (event) => {
+            event.preventDefault();
+            await handleProfileRegister();
         };
     }
 
@@ -43,24 +66,8 @@ function bindProfileActions() {
         };
     }
 
-    if (btnTogglePassword) {
-        btnTogglePassword.onclick = (event) => {
-            event.preventDefault();
-
-            const passwordInput = document.getElementById("profileLoginPassword");
-
-            if (!passwordInput) return;
-
-            const isPassword = passwordInput.type === "password";
-
-            passwordInput.type = isPassword ? "text" : "password";
-            btnTogglePassword.textContent = isPassword ? "🙈" : "👁";
-            btnTogglePassword.setAttribute(
-                "aria-label",
-                isPassword ? "Ocultar contraseña" : "Mostrar contraseña"
-            );
-        };
-    }
+    setupPasswordToggle("profileLoginPassword", btnTogglePassword);
+    setupPasswordToggle("profileRegisterPassword", btnToggleRegisterPassword);
 }
 
 async function bootstrapProfileSession() {
@@ -77,30 +84,31 @@ async function bootstrapProfileSession() {
     }
 
     try {
-        const me = await getMe();
+        const meResult = await getMe();
 
-        currentUser = me.user;
+        currentUser = meResult.user || meResult.data || meResult;
 
         const profileResult = await getMyProfile();
-
-        currentProfile = profileResult.data;
+        currentProfile = profileResult.data || null;
 
         showUserProfile();
         renderUserMeta();
         renderProfileForm();
     } catch (error) {
         console.error("Profile bootstrap error:", error);
+
         clearSession();
         currentUser = null;
         currentProfile = null;
+
         showGuestProfile();
     }
 }
 
 async function handleProfileLogin() {
     try {
-        const email = document.getElementById("profileLoginEmail")?.value?.trim();
-        const password = document.getElementById("profileLoginPassword")?.value?.trim();
+        const email = getValue("profileLoginEmail");
+        const password = getValue("profileLoginPassword");
 
         if (!email || !password) {
             alert("Email y password son obligatorios");
@@ -117,14 +125,57 @@ async function handleProfileLogin() {
         currentUser = result.user;
 
         const profileResult = await getMyProfile();
-        currentProfile = profileResult.data;
+        currentProfile = profileResult.data || null;
 
         showUserProfile();
         renderUserMeta();
         renderProfileForm();
+        notifySessionChanged();
     } catch (error) {
         console.error("Profile login error:", error);
         alert(error.message || "Error iniciando sesión");
+    }
+}
+
+async function handleProfileRegister() {
+    try {
+        const name = getValue("profileRegisterName");
+        const email = getValue("profileRegisterEmail");
+        const password = getValue("profileRegisterPassword");
+        const country = getValue("profileRegisterCountry") || "Costa Rica";
+
+        if (!name || !email || !password) {
+            alert("Nombre, email y password son obligatorios");
+            return;
+        }
+
+        if (password.length < 6) {
+            alert("El password debe tener mínimo 6 caracteres");
+            return;
+        }
+
+        const result = await register({
+            name,
+            email,
+            password,
+            country,
+        });
+
+        setSession(result.token, result.user);
+
+        currentUser = result.user;
+
+        const profileResult = await getMyProfile();
+        currentProfile = profileResult.data || null;
+
+        showUserProfile();
+        renderUserMeta();
+        renderProfileForm();
+
+        alert("Cuenta skater creada correctamente");
+    } catch (error) {
+        console.error("Profile register error:", error);
+        alert(error.message || "Error creando cuenta");
     }
 }
 
@@ -142,7 +193,7 @@ async function handleProfileSave() {
 
         const result = await updateMyProfile(payload);
 
-        currentProfile = result.data;
+        currentProfile = result.data || null;
 
         renderUserMeta();
         renderProfileForm();
@@ -161,6 +212,7 @@ function handleProfileLogout() {
     currentProfile = null;
 
     showGuestProfile();
+    notifySessionChanged();
 }
 
 function showGuestProfile() {
@@ -169,6 +221,8 @@ function showGuestProfile() {
 
     if (guestCard) guestCard.hidden = false;
     if (userCard) userCard.hidden = true;
+
+    showLoginForm();
 }
 
 function showUserProfile() {
@@ -177,6 +231,32 @@ function showUserProfile() {
 
     if (guestCard) guestCard.hidden = true;
     if (userCard) userCard.hidden = false;
+}
+
+function showLoginForm() {
+    const loginForm = document.getElementById("profileLoginForm");
+    const registerForm = document.getElementById("profileRegisterForm");
+    const btnShowLogin = document.getElementById("btnShowLogin");
+    const btnShowRegister = document.getElementById("btnShowRegister");
+
+    if (loginForm) loginForm.hidden = false;
+    if (registerForm) registerForm.hidden = true;
+
+    btnShowLogin?.classList.add("is-active");
+    btnShowRegister?.classList.remove("is-active");
+}
+
+function showRegisterForm() {
+    const loginForm = document.getElementById("profileLoginForm");
+    const registerForm = document.getElementById("profileRegisterForm");
+    const btnShowLogin = document.getElementById("btnShowLogin");
+    const btnShowRegister = document.getElementById("btnShowRegister");
+
+    if (loginForm) loginForm.hidden = true;
+    if (registerForm) registerForm.hidden = false;
+
+    btnShowLogin?.classList.remove("is-active");
+    btnShowRegister?.classList.add("is-active");
 }
 
 function renderUserMeta() {
@@ -194,7 +274,8 @@ function renderUserMeta() {
     }
 
     if (meta) {
-        meta.textContent = `${currentUser?.role || "GUEST"} · ${currentUser?.country || "Costa Rica"}`;
+        meta.textContent = `${currentUser?.role || "SKATER"} · ${currentUser?.country || "Costa Rica"
+            }`;
     }
 
     if (avatar) {
@@ -203,12 +284,65 @@ function renderUserMeta() {
 }
 
 function renderProfileForm() {
-    setValue("profileDisplayName", currentProfile?.displayName || currentUser?.name || "");
+    setValue(
+        "profileDisplayName",
+        currentProfile?.displayName || currentUser?.name || ""
+    );
+
     setValue("profileCity", currentProfile?.city || "");
     setValue("profileStance", currentProfile?.stance || "");
     setValue("profileLevel", currentProfile?.level || "");
     setValue("profileInstagram", currentProfile?.instagram || "");
     setValue("profileBio", currentProfile?.bio || "");
+}
+
+function setupPasswordToggle(inputId, button) {
+    if (!button) return;
+
+    button.innerHTML = getEyeIcon(false);
+    button.setAttribute("aria-label", "Mostrar contraseña");
+
+    button.onclick = (event) => {
+        event.preventDefault();
+        togglePasswordVisibility(inputId, button);
+    };
+}
+
+function togglePasswordVisibility(inputId, button) {
+    const passwordInput = document.getElementById(inputId);
+
+    if (!passwordInput) return;
+
+    const isHidden = passwordInput.type === "password";
+    const shouldShowPassword = isHidden;
+
+    passwordInput.type = shouldShowPassword ? "text" : "password";
+
+    button.innerHTML = getEyeIcon(shouldShowPassword);
+    button.setAttribute(
+        "aria-label",
+        shouldShowPassword ? "Ocultar contraseña" : "Mostrar contraseña"
+    );
+}
+
+function getEyeIcon(isVisible) {
+    if (isVisible) {
+        return `
+      <svg class="password-eye-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M3 3l18 18" />
+        <path d="M10.58 10.58A2 2 0 0 0 12 14a2 2 0 0 0 1.42-.58" />
+        <path d="M9.88 4.24A10.94 10.94 0 0 1 12 4c7 0 10 8 10 8a18.5 18.5 0 0 1-3.2 4.5" />
+        <path d="M6.61 6.61C3.98 8.39 2 12 2 12s3 8 10 8a10.7 10.7 0 0 0 5.39-1.39" />
+      </svg>
+    `;
+    }
+
+    return `
+    <svg class="password-eye-icon" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M2 12s3-8 10-8 10 8 10 8-3 8-10 8S2 12 2 12z" />
+      <circle cx="12" cy="12" r="3" />
+    </svg>
+  `;
 }
 
 function getValue(id) {
@@ -224,10 +358,23 @@ function setValue(id, value) {
 }
 
 function getInitials(value) {
-    return String(value || "CJ")
-        .split(" ")
-        .filter(Boolean)
-        .slice(0, 2)
-        .map((part) => part[0]?.toUpperCase())
-        .join("") || "CJ";
+    return (
+        String(value || "CJ")
+            .split(" ")
+            .filter(Boolean)
+            .slice(0, 2)
+            .map((part) => part[0]?.toUpperCase())
+            .join("") || "CJ"
+    );
+}
+
+function notifySessionChanged() {
+    window.dispatchEvent(
+        new CustomEvent("cj:session-changed", {
+            detail: {
+                user: currentUser,
+                profile: currentProfile,
+            },
+        })
+    );
 }

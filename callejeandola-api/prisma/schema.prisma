@@ -12,12 +12,30 @@ model User {
   name      String
   email     String   @unique
   password  String
-  role      String   @default("GUEST")
+  role      String   @default("SKATER")
   active    Boolean  @default(true)
   country   String   @default("Costa Rica")
   profile   Profile?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model UserFavoriteSpot {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  spotId    Int
+  createdAt DateTime @default(now())
+
+  @@unique([userId, spotId])
+}
+
+model UserSavedEvent {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  eventId   Int
+  createdAt DateTime @default(now())
+
+  @@unique([userId, eventId])
 }
 
 model Profile {
@@ -36,7 +54,6 @@ model Profile {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
-
 
 model Spot {
   id          Int      @id @default(autoincrement())
