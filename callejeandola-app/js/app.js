@@ -5,6 +5,8 @@ import {
     addFavoriteSpot,
     removeFavoriteSpot,
     getSavedEvents,
+    addSavedEvent,
+    removeSavedEvent,
 } from "./api/engagement.api.js";
 
 
@@ -620,6 +622,15 @@ function renderEvents() {
         });
     });
 
+    $$("[data-save-event]").forEach((button) => {
+        button.addEventListener("click", async (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+
+            await toggleSavedEvent(button.dataset.saveEvent);
+        });
+    });
+
     $$("[data-cal]").forEach((b) => {
         b.addEventListener("click", () => toast("Calendario (mock)"));
     });
@@ -799,7 +810,12 @@ function renderSavedEvents() {
     if (!box) return;
 
     if (!token) {
-        box.innerHTML = "";
+        box.innerHTML = `
+      <div class="mini-item mini-item--empty">
+        <span class="muted">Iniciá sesión para guardar eventos.</span>
+        <span>＋</span>
+      </div>
+    `;
         return;
     }
 
@@ -821,11 +837,28 @@ function renderSavedEvents() {
             <strong>${escapeHtml(event.title || event.name || "Evento")}</strong>
             <span class="muted"> · ${escapeHtml(event.place || event.city || "—")}</span>
           </span>
-          <span>✓</span>
+
+          <button
+            class="icon-btn is-active"
+            type="button"
+            data-remove-saved-event="${event.id}"
+            aria-label="Quitar evento guardado"
+          >
+            ✓
+          </button>
         </div>
       `;
         })
         .join("");
+
+    $$("[data-remove-saved-event]").forEach((button) => {
+        button.addEventListener("click", async (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+
+            await toggleSavedEvent(button.dataset.removeSavedEvent);
+        });
+    });
 }
 
 
@@ -902,6 +935,77 @@ async function toggleFav(id) {
     }
 }
 
+async function toggleSavedEvent(id) {
+    const token = getAuthToken();
+
+    if (!token) {
+        toast("Iniciá sesión para guardar eventos");
+        setTab("profile");
+        return;
+    }
+
+    const cleanId = Number(id);
+
+    if (!Number.isInteger(cleanId)) {
+        toast("Este evento no se puede guardar todavía");
+        return;
+    }
+
+    const idKey = String(cleanId);
+    const wasSaved = state.savedEvents.has(idKey);
+
+    try {
+        if (wasSaved) {
+            state.savedEvents.delete(idKey);
+            state.savedEventsList = state.savedEventsList.filter(
+                (event) => String(event.id) !== idKey
+            );
+
+            renderEvents();
+            renderSavedEvents();
+            updateProfileCounts();
+
+            await removeSavedEvent(cleanId);
+
+            toast("Evento quitado de guardados");
+        } else {
+            state.savedEvents.add(idKey);
+
+            const eventItem = (state.data.events || []).find(
+                (item) => String(item.id) === idKey
+            );
+
+            if (eventItem) {
+                state.savedEventsList = [eventItem, ...state.savedEventsList];
+            }
+
+            renderEvents();
+            renderSavedEvents();
+            updateProfileCounts();
+
+            await addSavedEvent(cleanId);
+
+            toast("Evento guardado");
+        }
+
+        await loadEngagementFromApi();
+
+        renderEvents();
+        renderSavedEvents();
+        updateProfileCounts();
+    } catch (error) {
+        console.error("Saved event toggle error:", error);
+
+        await loadEngagementFromApi();
+
+        renderEvents();
+        renderSavedEvents();
+        updateProfileCounts();
+
+        toast(error.message || "Error actualizando evento guardado");
+    }
+}
+
 function updateKpis() {
     $("#kpiFavs") && ($("#kpiFavs").textContent = String(state.favorites.size));
     $("#kpiVerified") && ($("#kpiVerified").textContent = String((state.data.spots || []).filter((s) => s.verified).length));
@@ -954,26 +1058,42 @@ function spotCard(s) {
 }
 
 function eventCard(e) {
+    const token = getAuthToken();
+    const saved = state.savedEvents.has(String(e.id));
+
+    const saveButton = token
+        ? `
+      <button
+        class="btn btn-secondary ${saved ? "is-saved" : ""}"
+        type="button"
+        data-save-event="${e.id}"
+      >
+        ${saved ? "Quitar" : "Guardar"}
+        </button>
+    `
+        : "";
 
     return `
     <article class="card event-card">
-    ${renderMediaBlock(e, "event")}
+      ${renderMediaBlock(e, "event")}
 
       <div class="card__body">
         <div class="card__meta">
-          <span class="badge">${escapeHtml(e.month || "—")} ${escapeHtml(e.day || "")}</span>
+          <span class="badge">${escapeHtml(e.month || "JUN")} ${escapeHtml(e.day || "20")}</span>
           <span class="badge badge--soft">${Number(e.price || 0) === 0 ? "Free" : "Paid"}</span>
         </div>
 
-        <h3 class="event__title">${escapeHtml(e.title)}</h3>
+        <h3 class="event__title">${escapeHtml(e.title || e.name || "Evento")}</h3>
 
-        <p class="muted">📍 ${escapeHtml(e.place || "—")}</p>
-        <p class="muted micro">🕒 ${escapeHtml(e.time || "—")}</p>
+        <p class="muted">📍 ${escapeHtml(e.place || e.city || "-")}</p>
+        <p class="muted micro">⏱ ${escapeHtml(e.time || "-")}</p>
 
         <div class="card__actions">
           <button class="btn btn-primary" type="button" data-event="${e.id}">
             Detalles
           </button>
+
+          ${saveButton}
         </div>
       </div>
     </article>
