@@ -9,7 +9,6 @@ import {
     removeSavedEvent,
 } from "./api/engagement.api.js";
 
-
 import { api } from "./api.js";
 
 const $ = (q, el = document) => el.querySelector(q);
@@ -32,6 +31,10 @@ let state = {
 
     shopsFilter: "all",
     shopsQuery: "",
+
+    routeTarget: null,
+    isMapOpen: false,
+    routePulseTimer: null,
 
     session: {
         isLoggedIn: false,
@@ -170,7 +173,6 @@ async function loadEngagementFromApi() {
     }
 }
 
-
 /* =========================================
    NORMALIZERS
 ========================================= */
@@ -259,6 +261,18 @@ function normalizeSponsors(sponsors) {
 ========================================= */
 function setTab(tab) {
     state.tab = tab;
+
+    if (state.isMapOpen) {
+        const mapView = $("#mapView");
+
+        state.isMapOpen = false;
+        document.body.classList.remove("is-map-open");
+
+        if (mapView) {
+            mapView.hidden = true;
+            mapView.classList.remove("is-open");
+        }
+    }
 
     $$(".tab").forEach((b) => {
         const active = b.dataset.tab === tab;
@@ -491,7 +505,12 @@ function bindActions() {
     });
 
     $("#btnOpenMap")?.addEventListener("click", openMapView);
-    $("#btnCloseMap")?.addEventListener("click", closeMapView);
+
+    // $("#btnCloseMap")?.addEventListener("click", closeMapView);
+
+    $("#btnCloseMap")?.addEventListener("click", () => {
+        closeMapView();
+    });
 
     $$(".js-open-map").forEach((btn) => {
         btn.addEventListener("click", openMapView);
@@ -534,6 +553,9 @@ function renderAll() {
     renderSavedEvents();
     updateKpis();
     updateProfileCounts();
+
+    bindRouteHub();
+    renderRouteHub();
 }
 
 function renderSpots() {
@@ -861,7 +883,6 @@ function renderSavedEvents() {
     });
 }
 
-
 async function toggleFav(id) {
     const token = getAuthToken();
 
@@ -1181,7 +1202,6 @@ function openSpot(s) {
           <div><strong>Zona:</strong> ${escapeHtml(s.zone || s.city || "—")}</div>
           <div><strong>Descripción:</strong> ${escapeHtml(s.description || "Sin descripción")}</div>
           <div><strong>Rating:</strong> ${Number(s.rating || 0).toFixed(1)} ${starText(Number(s.rating || 0))}</div>
-          <div><strong>Coordenadas:</strong> ${s.lat || 0}, ${s.lng || 0}</div>
         </div>
 
         <div class="detail-actions">
@@ -1195,9 +1215,7 @@ function openSpot(s) {
 
     setTimeout(() => {
         $("#btnRouteFromModal")?.addEventListener("click", () => {
-            closeModal();
-            openRoute(s);
-            openMapView();
+            activateRouteTarget(s, "spot");
         });
 
         $$(".detail-thumb").forEach((btn) => {
@@ -1229,24 +1247,32 @@ function openEvent(e) {
           <div><strong>Lugar:</strong> ${escapeHtml(e.place || "—")}</div>
           <div><strong>Hora:</strong> ${escapeHtml(e.time || "—")}</div>
           <div><strong>Descripción:</strong> ${escapeHtml(e.description || e.format || "Sin descripción")}</div>
-          <div><strong>Coordenadas:</strong> ${e.lat || 0}, ${e.lng || 0}</div>
         </div>
 
         <div class="detail-actions">
-          <button class="btn btn-primary" type="button" id="btnRouteFromModal">
+          <button class="btn btn-primary" type="button" id="btnSaveEventFromModal">
+            Guardar
+          </button>
+
+          <button class="btn btn-secondary" type="button" id="btnRouteEventFromModal">
             Route
           </button>
+        </div>
         </div>
       </div>
     `
     );
 
     setTimeout(() => {
-        $("#btnRouteFromModal")?.addEventListener("click", () => {
-            closeModal();
-            openRoute(e);
-            openMapView();
+        $("#btnRouteEventFromModal")?.addEventListener("click", () => {
+            activateRouteTarget(e, "event");
         });
+
+        setTimeout(() => {
+            $("#btnRouteEventFromModal")?.addEventListener("click", () => {
+                openRoute(e);
+            });
+        }, 0);
 
         $$(".detail-thumb").forEach((btn) => {
             btn.addEventListener("click", () => {
@@ -1294,16 +1320,18 @@ function openShop(shop) {
           <button class="icon-btn" type="button" id="btnRouteFromModal" title="Route">
             ◎
           </button>
+
+        <button class="btn btn-secondary" type="button" id="btnRouteShopFromModal">
+            Route
+        </button>
         </div>
       </div>
     `
     );
 
     setTimeout(() => {
-        $("#btnRouteFromModal")?.addEventListener("click", () => {
-            closeModal();
-            openRoute(shop);
-            openMapView();
+        $("#btnRouteShopFromModal")?.addEventListener("click", () => {
+            activateRouteTarget(shop, "shop");
         });
     }, 0);
 }
@@ -1335,18 +1363,6 @@ function locateMe() {
         },
         { enableHighAccuracy: true, timeout: 8000 }
     );
-}
-
-function openRoute(item) {
-    const lat = Number(item.lat || 0);
-    const lng = Number(item.lng || 0);
-
-    if (!lat || !lng) {
-        toast("Este lugar aún no tiene coordenadas reales");
-        return;
-    }
-
-    toast(`Ruta lista para: ${item.name || item.title || "ubicación"}`);
 }
 
 async function shareProfile() {
@@ -1497,6 +1513,291 @@ function renderMediaBlock(entity, type = "spot") {
   `;
 }
 
+function getEntityCoords(entity) {
+    const lat = Number(
+        entity.lat ??
+        entity.latitude ??
+        entity.locationLat ??
+        0
+    );
+
+    const lng = Number(
+        entity.lng ??
+        entity.long ??
+        entity.longitude ??
+        entity.locationLng ??
+        0
+    );
+
+    const hasCoords =
+        Number.isFinite(lat) &&
+        Number.isFinite(lng) &&
+        !(lat === 0 && lng === 0);
+
+    return {
+        lat,
+        lng,
+        hasCoords,
+    };
+}
+
+function getEntityTitle(entity) {
+    return (
+        entity.name ||
+        entity.title ||
+        entity.place ||
+        "Callejeandola location"
+    );
+}
+
+function buildRouteUrls(entity) {
+    const coords = getEntityCoords(entity);
+    const title = getEntityTitle(entity);
+
+    if (!coords.hasCoords) {
+        return {
+            hasCoords: false,
+            title,
+            lat: coords.lat,
+            lng: coords.lng,
+            googleMapsUrl: "",
+            wazeUrl: "",
+        };
+    }
+
+    const destination = `${coords.lat},${coords.lng}`;
+
+    return {
+        hasCoords: true,
+        title,
+        lat: coords.lat,
+        lng: coords.lng,
+        googleMapsUrl: `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}`,
+        wazeUrl: `https://www.waze.com/ul?ll=${encodeURIComponent(destination)}&navigate=yes`,
+    };
+}
+
+function openExternalUrl(url) {
+    if (!url) return;
+
+    window.open(url, "_blank", "noopener,noreferrer");
+}
+
+function openRoute(entity) {
+    const route = buildRouteUrls(entity);
+
+    if (!route.hasCoords) {
+        showRouteUnavailable(entity, route);
+        return;
+    }
+
+    modalInfo(
+        "Cómo llegar",
+        `
+      <div class="route-modal route-modal--ready">
+        <div class="route-modal__mark">CJ</div>
+
+        <h3>${escapeHtml(route.title)}</h3>
+
+        <p class="muted">
+          Elegí tu app para llegar al spot.
+        </p>
+
+        <div class="route-modal__actions">
+          <button class="btn btn-primary" type="button" id="btnRouteWaze">
+            Abrir Waze
+          </button>
+
+          <button class="btn btn-secondary" type="button" id="btnRouteGoogle">
+            Google Maps
+          </button>
+        </div>
+      </div>
+    `
+    );
+
+    setTimeout(() => {
+        $("#btnRouteWaze")?.addEventListener("click", () => {
+            openExternalUrl(route.wazeUrl);
+        });
+
+        $("#btnRouteGoogle")?.addEventListener("click", () => {
+            openExternalUrl(route.googleMapsUrl);
+        });
+    }, 0);
+}
+
+function showRouteUnavailable(entity, route = buildRouteUrls(entity)) {
+    modalInfo(
+        "Ruta no disponible",
+        `
+      <div class="route-modal">
+        <div class="route-modal__mark">CJ</div>
+
+        <h3>${escapeHtml(route.title || getEntityTitle(entity))}</h3>
+
+        <p class="muted">
+          Este lugar todavía no tiene coordenadas válidas.
+          Agregá lat/lng desde el Admin para habilitar navegación.
+        </p>
+
+        <div class="route-modal__coords">
+          <span>Lat: ${escapeHtml(String(route.lat || 0))}</span>
+          <span>Lng: ${escapeHtml(String(route.lng || 0))}</span>
+        </div>
+      </div>
+    `
+    );
+}
+
+function activateRouteTarget(entity, type = "spot") {
+    const route = buildRouteUrls(entity);
+
+    if (!route.hasCoords) {
+        showRouteUnavailable(entity, route);
+        return;
+    }
+
+    state.routeTarget = {
+        type,
+        entity,
+        route,
+    };
+
+    closeModal();
+
+    if (typeof openMapView === "function") {
+        openMapView();
+    }
+
+    renderRouteHub();
+    renderActiveRouteOnMap();
+
+    const hub = $("#btnRouteHub");
+
+    if (hub) {
+        hub.classList.remove("is-pulsing");
+        void hub.offsetWidth;
+        hub.classList.add("is-pulsing");
+
+        clearTimeout(state.routePulseTimer);
+
+        state.routePulseTimer = setTimeout(() => {
+            hub.classList.remove("is-pulsing");
+        }, 1400);
+    }
+
+    toast(`Ruta lista: ${route.title}`);
+}
+
+function renderActiveRouteOnMap() {
+    const panel = $("#mapRoutePanel");
+
+    if (!panel) return;
+
+    const target = state.routeTarget;
+
+    if (!target?.route?.hasCoords) {
+        panel.hidden = true;
+        panel.innerHTML = "";
+        return;
+    }
+
+    const { route, type } = target;
+
+    panel.hidden = false;
+
+    panel.innerHTML = `
+    <div class="route-preview">
+
+      <div class="route-preview__content">
+        <span class="map-route-panel__label">Ruta activa</span>
+
+        <strong>${escapeHtml(route.title)}</strong>
+
+        <div class="route-app-actions">
+          <button class="route-app-btn route-app-btn--waze" type="button" id="btnMapRouteWaze">
+            <span class="route-app-btn__icon">↗</span>
+            <span>Waze</span>
+          </button>
+
+          <button class="route-app-btn route-app-btn--maps" type="button" id="btnMapRouteGoogle">
+            <span class="route-app-btn__icon">⌖</span>
+            <span>Maps</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+
+    $("#btnMapRouteWaze")?.addEventListener("click", () => {
+        openExternalUrl(route.wazeUrl);
+    });
+
+    $("#btnMapRouteGoogle")?.addEventListener("click", () => {
+        openExternalUrl(route.googleMapsUrl);
+    });
+}
+
+function bindRouteHub() {
+    const hub = $("#btnRouteHub");
+
+    if (hub) {
+        hub.addEventListener("click", () => {
+            if (!state.routeTarget?.entity) {
+                toast("Busca un spot");
+                setTab("spots");
+                return;
+            }
+
+            showMapView();
+            renderRouteHub();
+            renderActiveRouteOnMap();
+
+            toast(`Ruta activa: ${state.routeTarget.route.title}`);
+        });
+    }
+
+    $("#btnMapRouteWaze")?.addEventListener("click", () => {
+        const route = state.routeTarget?.route;
+
+        if (!route?.hasCoords) {
+            toast("No hay ruta activa");
+            return;
+        }
+
+        openExternalUrl(route.wazeUrl);
+    });
+
+    $("#btnMapRouteGoogle")?.addEventListener("click", () => {
+        const route = state.routeTarget?.route;
+
+        if (!route?.hasCoords) {
+            toast("No hay ruta activa");
+            return;
+        }
+
+        openExternalUrl(route.googleMapsUrl);
+    });
+}
+
+function renderRouteHub() {
+    const hub = $("#btnRouteHub");
+
+    if (!hub) return;
+
+    const hasRoute = Boolean(state.routeTarget?.route?.hasCoords);
+
+    hub.classList.toggle("is-ready", hasRoute);
+
+    hub.setAttribute(
+        "title",
+        hasRoute
+            ? `Ruta activa: ${state.routeTarget.route.title}`
+            : "Busca spots y patinalos"
+    );
+}
+
 async function refreshEngagementUi() {
     await loadEngagementFromApi();
 
@@ -1550,9 +1851,44 @@ function initLanguageMenu() {
 ========================================= */
 
 function openMapView() {
+    showMapView();
+}
+
+function showMapView() {
+    const mapView = $("#mapView");
+
+    state.isMapOpen = true;
     document.body.classList.add("is-map-open");
+
+    if (mapView) {
+        mapView.hidden = false;
+    }
+
+    renderActiveRouteOnMap();
+}
+
+function hideMapView() {
+    const mapView = $("#mapView");
+
+    state.isMapOpen = false;
+    document.body.classList.remove("is-map-open");
+
+    if (mapView) {
+        mapView.hidden = true;
+    }
 }
 
 function closeMapView() {
+    const mapView = $("#mapView");
+
+    state.isMapOpen = false;
+
     document.body.classList.remove("is-map-open");
+
+    if (mapView) {
+        mapView.hidden = true;
+        mapView.classList.remove("is-open");
+    }
+
+    setTab(state.currentTab || "spots");
 }

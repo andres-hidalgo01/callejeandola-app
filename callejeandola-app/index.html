@@ -12,11 +12,6 @@
 </head>
 
 <body>
-  <div class="bg-orb bg-orb--a" aria-hidden="true"></div>
-  <div class="bg-orb bg-orb--b" aria-hidden="true"></div>
-
-  <a class="skip-link" href="#main">Saltar al contenido</a>
-
   <header class="appbar">
     <div class="container appbar__inner">
       <a class="brand" href="#main" aria-label="Callejeandola">
@@ -47,14 +42,14 @@
     </div>
   </header>
 
-  <section class="sponsors" aria-label="Patrocinadores">
+  <!-- <section class="sponsors" aria-label="Patrocinadores">
     <div class="container sponsors__inner">
       <span class="badge sponsors__badge">Sponsors</span>
       <div class="marquee" aria-label="Cintillo de marcas">
         <div class="marquee__track" id="sponsorsMarquee"></div>
       </div>
     </div>
-  </section>
+  </section> -->
 
   <main id="main" class="main">
     <section class="container shell">
@@ -74,8 +69,6 @@
               <h1 class="h1">Encuentra spots cerca</h1>
               <p class="sub">Mapa, filtros rápidos y spots útiles para patinar hoy.</p>
             </div>
-
-
           </div>
 
           <div class="toolbar">
@@ -141,7 +134,6 @@
               <p class="sub">Calendario claro: ubicación, hora, formato.</p>
 
             </div>
-            <button class="seg js-open-map" type="button">Map</button>
           </div>
 
           <div class="toolbar">
@@ -443,8 +435,7 @@
               <p class="muted micro">Spots, shops y eventos cerca de ti.</p>
             </div>
             <div style="display:flex; gap:8px;">
-              <button class="icon-btn" id="btnLocate" type="button">◎</button>
-              <button class="icon-btn map-close" id="btnCloseMap" type="button">✕</button>
+              <button class="icon-btn map-close" id="btnCloseMap" type="button" aria-label="Cerrar mapa">✕</button>
             </div>
           </div>
 
@@ -454,34 +445,39 @@
             <div class="pin pin--c" title="Event"></div>
           </div>
 
-          <div class="map__foot">
-            <button class="btn btn-secondary" type="button" id="btnRoute">Route</button>
-            <button class="btn btn-ghost" type="button" id="btnReport">Report</button>
+          <div class="map-route-panel" id="mapRoutePanel" hidden>
+            <div class="route-map-preview">
+              <div class="route-map-preview__path"></div>
+              <div class="route-map-preview__pin route-map-preview__pin--start"></div>
+              <div class="route-map-preview__pin route-map-preview__pin--end"></div>
+              <div class="route-map-preview__avatar">
+                <img src="./assets/icons/route-hub.ico" alt="">
+              </div>
+            </div>
+
+            <div class="map-route-panel__head">
+              <span class="map-route-panel__label">Ruta activa</span>
+              <strong id="mapRouteTitle">Seleccioná un spot</strong>
+            </div>
+
+            <p class="muted" id="mapRouteMeta">
+              Busca un spot para patinar
+            </p>
+
+            <button class="map-app-btn map-app-btn--waze" type="button" id="btnMapRouteWaze">
+              <span class="map-app-btn__icon">↗</span>
+              <strong>Waze</strong>
+            </button>
+
+            <button class="map-app-btn map-app-btn--google" type="button" id="btnMapRouteGoogle">
+              <span class="map-app-btn__icon">⌖</span>
+              <strong>Maps</strong>
+            </button>
           </div>
         </div>
 
-        <div class="card" id="sponsorsCard">
-          <div class="badge-row">
-            <span class="badge">Sponsors</span>
-            <span class="badge badge--soft">Local scene</span>
-          </div>
-          <h3 class="h3">Patrocinadores y aliados</h3>
-          <p class="muted micro">Brands, shops y eventos activos.</p>
-          <div class="sponsors-grid" id="sponsorsGrid"></div>
         </div>
 
-        <div class="community card">
-          <div class="badge-row">
-            <span class="badge">Community</span>
-            <span class="badge badge--soft">Verified</span>
-          </div>
-          <h3>Hecho por skaters</h3>
-          <p class="muted">Agrega spots, sigue eventos y apoya shops locales.</p>
-          <div class="community__actions">
-            <button class="btn btn-primary" type="button" id="btnJoin">Join</button>
-            <button class="btn btn-secondary" type="button" id="btnRules">Rules</button>
-          </div>
-        </div>
       </aside>
 
     </section>
@@ -495,21 +491,33 @@
         </div>
       </div>
     </div>
+
   </main>
 
   <nav class="bottom-nav" aria-label="Navegación inferior">
     <button class="bn is-active" type="button" data-tab="spots" aria-label="Spots">
       <span class="bn__icon">📍</span><span class="bn__label">Spots</span>
     </button>
+    
     <button class="bn" type="button" data-tab="events" aria-label="Events">
       <span class="bn__icon">🏁</span><span class="bn__label">Events</span>
     </button>
+
+    <button class="bn" id="btnRouteHub" type="button" aria-label="Abrir ruta Callejeandola">
+      <span class="bn__icon route-hub__icon">
+        <img class="route-hub__img" src="./assets/icons/route-hub.ico" alt="">
+      </span>
+      <span class="bn__label route-hub__label">Ruta</span>
+    </button>
+
     <button class="bn" type="button" data-tab="shops" aria-label="Shops">
       <span class="bn__icon">🛹</span><span class="bn__label">Shops</span>
     </button>
+
     <button class="bn" type="button" data-tab="profile" aria-label="Profile">
       <span class="bn__icon">👤</span><span class="bn__label">Profile</span>
     </button>
+
   </nav>
 
   <dialog class="modal" id="modal">
@@ -533,6 +541,7 @@
   <script type="module" src="./js/app.js"></script>
   <script type="module" src="./js/profile.bootstrap.js"></script>
   <script src="js/i18n.js"></script>
+
 </body>
 
 </html>
