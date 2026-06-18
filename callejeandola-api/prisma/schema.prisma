@@ -61,14 +61,12 @@ model Spot {
   description String?
   country     String
   city        String
+  zone        String?
   lat         Float
   lng         Float
   type        String
-
   image       String?
-
   createdAt   DateTime @default(now())
-
   events Event[]
 }
 
