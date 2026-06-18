@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "nodemon src/server.js",
     "seed": "node prisma/seed.js",
+    "load:register": "node scripts/load-register-users.js",
     "start": "node src/server.js",
     "prisma": "prisma"
   },
