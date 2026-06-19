@@ -5,9 +5,11 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
     "seed": "node prisma/seed.js",
     "load:register": "node scripts/load-register-users.js",
-    "start": "node src/server.js",
+    "db:push": "prisma db push",
+    "db:generate": "prisma generate",
     "prisma": "prisma"
   },
   "keywords": [],
@@ -19,7 +21,7 @@
     "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",
-    "dotenv": "^17.3.1",
+    "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3"
   },
