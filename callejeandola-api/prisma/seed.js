@@ -366,18 +366,20 @@ async function upsertUsers() {
 
 async function upsertByName(model, items) {
     for (const item of items) {
+        const { id, ...data } = item;
+
         const existing = await model.findFirst({
-            where: { name: item.name },
+            where: { name: data.name },
         });
 
         if (existing) {
             await model.update({
                 where: { id: existing.id },
-                data: item,
+                data,
             });
         } else {
             await model.create({
-                data: item,
+                data,
             });
         }
     }
@@ -385,23 +387,24 @@ async function upsertByName(model, items) {
 
 async function upsertEvents(items = events) {
     for (const item of items) {
+        const { id, ...data } = item;
+
         const existing = await prisma.event.findFirst({
-            where: { title: item.title },
+            where: { title: data.title },
         });
 
         if (existing) {
             await prisma.event.update({
                 where: { id: existing.id },
-                data: item,
+                data,
             });
         } else {
             await prisma.event.create({
-                data: item,
+                data,
             });
         }
     }
 }
-
 
 async function main() {
     console.log("Starting Callejeandola seed...");
