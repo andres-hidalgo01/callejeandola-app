@@ -16,6 +16,15 @@ const app = express();
 app.use(cors(corsOptions));
 app.use(express.json());
 
+app.get("/api/health", (req, res) => {
+  res.status(200).json({
+    ok: true,
+    service: "callejeandola-api",
+    status: "healthy",
+    timestamp: new Date().toISOString(),
+  });
+});
+
 app.use("/api/auth", authRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/me", engagementRoutes);
