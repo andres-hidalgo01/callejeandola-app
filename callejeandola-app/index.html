@@ -9,6 +9,8 @@
   <meta name="description" content="Descubre spots y skateparks y entérate de eventos. Callejeandola." />
   <link rel="icon" href="assets/icons/pushing.png" type="image/svg+xml" />
   <link rel="stylesheet" href="styles/global.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
 </head>
 
 <body>
@@ -209,7 +211,6 @@
                 <option value="boards">Boards</option>
               </select>
             </div>
-
 
             <div class="chips" aria-label="Filtros de shops">
               <button class="chip chip-btn is-active" type="button" data-shopfilter="all">All</button>
@@ -438,44 +439,22 @@
               <button class="icon-btn map-close" id="btnCloseMap" type="button" aria-label="Cerrar mapa">✕</button>
             </div>
           </div>
-
-          <div class="map__canvas" id="mapCanvas" aria-label="Mapa (mock)">
-            <div class="pin pin--a" title="Spot"></div>
-            <div class="pin pin--b" title="Shop"></div>
-            <div class="pin pin--c" title="Event"></div>
+          <div class="real-map-shell">
+            <div id="realMap" class="real-map" aria-label="Mapa real de spots"></div>
           </div>
 
-          <div class="map-route-panel" id="mapRoutePanel" hidden>
-            <div class="route-map-preview">
-              <div class="route-map-preview__path"></div>
-              <div class="route-map-preview__pin route-map-preview__pin--start"></div>
-              <div class="route-map-preview__pin route-map-preview__pin--end"></div>
-              <div class="route-map-preview__avatar">
-                <img src="./assets/icons/route-hub.ico" alt="">
-              </div>
+          <div class="route-hud" id="routeHud" hidden>
+            <div class="route-hud__arrow">↗</div>
+            <div class="route-hud__body">
+              <span class="route-hud__label">Ruta activa</span>
+              <strong id="routeHudTitle">Seleccioná un spot</strong>
             </div>
-
-            <div class="map-route-panel__head">
-              <span class="map-route-panel__label">Ruta activa</span>
-              <strong id="mapRouteTitle">Seleccioná un spot</strong>
-            </div>
-
-            <p class="muted" id="mapRouteMeta">
-              Busca un spot para patinar
-            </p>
-
-            <button class="map-app-btn map-app-btn--waze" type="button" id="btnMapRouteWaze">
-              <span class="map-app-btn__icon">↗</span>
-              <strong>Waze</strong>
-            </button>
-
-            <button class="map-app-btn map-app-btn--google" type="button" id="btnMapRouteGoogle">
-              <span class="map-app-btn__icon">⌖</span>
-              <strong>Maps</strong>
-            </button>
           </div>
-        </div>
 
+          <div class="route-fallback" id="mapRoutePanel" hidden aria-hidden="true">
+            <button type="button" id="btnMapRouteWaze">Waze</button>
+            <button type="button" id="btnMapRouteGoogle">Google Maps</button>
+          </div>
         </div>
 
       </aside>
@@ -498,7 +477,7 @@
     <button class="bn is-active" type="button" data-tab="spots" aria-label="Spots">
       <span class="bn__icon">📍</span><span class="bn__label">Spots</span>
     </button>
-    
+
     <button class="bn" type="button" data-tab="events" aria-label="Events">
       <span class="bn__icon">🏁</span><span class="bn__label">Events</span>
     </button>
@@ -539,6 +518,7 @@
   </div>
 
   <script src="./config.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script type="module" src="./js/app.js"></script>
   <script type="module" src="./js/profile.bootstrap.js"></script>
   <script src="js/i18n.js"></script>

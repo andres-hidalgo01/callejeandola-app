@@ -52,7 +52,11 @@ let state = {
         shops: [],
         sponsors: [],
     },
+
 };
+
+let realMap = null;
+let realMapMarkersLayer = null;
 
 /* =========================================
    INIT
@@ -354,6 +358,193 @@ function applyViewMode() {
     }
 }
 
+function hasValidCoords(item) {
+    const lat = Number(item?.lat);
+    const lng = Number(item?.lng);
+
+    return Number.isFinite(lat) && Number.isFinite(lng) && lat !== 0 && lng !== 0;
+}
+
+function getMapItems() {
+    const spots = (state.spots || [])
+        .filter(hasValidCoords)
+        .map((item) => ({
+            ...item,
+            mapType: "spot",
+            mapIcon: "📍",
+            mapTitle: item.name,
+            mapSubtitle: item.zone || item.city || "Costa Rica",
+        }));
+
+    const events = (state.events || [])
+        .filter(hasValidCoords)
+        .map((item) => ({
+            ...item,
+            mapType: "event",
+            mapIcon: "🏁",
+            mapTitle: item.title,
+            mapSubtitle: item.location || item.place || item.city || "Evento",
+        }));
+
+    const shops = (state.shops || [])
+        .filter(hasValidCoords)
+        .map((item) => ({
+            ...item,
+            mapType: "shop",
+            mapIcon: "🛹",
+            mapTitle: item.name,
+            mapSubtitle: item.city || "Skateshop",
+        }));
+
+    return [...spots, ...events, ...shops];
+}
+
+function createMapIcon(type = "spot", icon = "📍") {
+    const className =
+        type === "event"
+            ? "cj-map-marker cj-map-marker--event"
+            : type === "shop"
+                ? "cj-map-marker cj-map-marker--shop"
+                : "cj-map-marker";
+
+    return L.divIcon({
+        html: `<div class="${className}">${icon}</div>`,
+        className: "cj-map-marker-wrap",
+        iconSize: [34, 34],
+        iconAnchor: [17, 34],
+        popupAnchor: [0, -32],
+    });
+}
+
+function ensureRealMap() {
+    const mapElement = document.getElementById("realMap");
+
+    if (!mapElement || !window.L) return null;
+
+    if (realMap) {
+        setTimeout(() => realMap.invalidateSize(), 80);
+        return realMap;
+    }
+
+    realMap = L.map(mapElement, {
+        zoomControl: true,
+        attributionControl: true,
+    }).setView([9.935, -84.09], 10);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution: "&copy; OpenStreetMap",
+    }).addTo(realMap);
+
+    realMapMarkersLayer = L.layerGroup().addTo(realMap);
+
+    setTimeout(() => realMap.invalidateSize(), 120);
+
+    return realMap;
+}
+
+function renderRealMapMarkers() {
+    const map = ensureRealMap();
+
+    if (!map || !realMapMarkersLayer) return;
+
+    realMapMarkersLayer.clearLayers();
+
+    const items = getMapItems();
+
+    if (!items.length) {
+        map.setView([9.935, -84.09], 10);
+        return;
+    }
+
+    const bounds = [];
+
+    items.forEach((item) => {
+        const lat = Number(item.lat);
+        const lng = Number(item.lng);
+
+        bounds.push([lat, lng]);
+
+        const marker = L.marker([lat, lng], {
+            icon: createMapIcon(item.mapType, item.mapIcon),
+        });
+
+        const safeTitle = escapeHtml(item.mapTitle || "Spot");
+        const safeSubtitle = escapeHtml(item.mapSubtitle || "Costa Rica");
+        const buttonId = `mapRoute_${item.mapType}_${item.id}`;
+
+        marker.bindPopup(`
+      <div class="cj-map-popup">
+        <strong>${safeTitle}</strong>
+        <span>${safeSubtitle}</span>
+        <button type="button" id="${buttonId}">Route</button>
+      </div>
+    `);
+
+        marker.on("popupopen", () => {
+            setTimeout(() => {
+                document.getElementById(buttonId)?.addEventListener("click", () => {
+                    activateRouteFromMap(item);
+                });
+            }, 0);
+        });
+
+        marker.addTo(realMapMarkersLayer);
+    });
+
+    if (bounds.length === 1) {
+        map.setView(bounds[0], 15);
+    } else {
+        map.fitBounds(bounds, {
+            padding: [28, 28],
+            maxZoom: 14,
+        });
+    }
+
+    setTimeout(() => map.invalidateSize(), 150);
+}
+
+function activateRouteFromMap(item) {
+    if (!item) return;
+
+    if (typeof activateRouteTarget === "function") {
+        activateRouteTarget(item.mapType || "spot", item);
+    } else {
+        const lat = Number(item.lat);
+        const lng = Number(item.lng);
+        const title = item.mapTitle || item.name || item.title || "Destino";
+
+        state.routeTarget = {
+            type: item.mapType || "spot",
+            entity: item,
+            route: {
+                title,
+                lat,
+                lng,
+                hasCoords: hasValidCoords(item),
+                wazeUrl: `https://waze.com/ul?ll=${lat},${lng}&navigate=yes`,
+                googleMapsUrl: `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`,
+            },
+        };
+
+        renderRouteHub?.();
+        renderActiveRouteOnMap?.();
+    }
+
+    renderActiveRouteOnMap?.();
+    renderRouteHub?.();
+
+    const map = ensureRealMap();
+
+    if (map && hasValidCoords(item)) {
+        map.setView([Number(item.lat), Number(item.lng)], 16);
+    }
+
+    toast?.(`Ruta activa: ${item.mapTitle || item.name || item.title}`);
+
+    renderRouteHud();
+}
+
 /* =========================================
    THEME
 ========================================= */
@@ -556,6 +747,10 @@ function renderAll() {
 
     bindRouteHub();
     renderRouteHub();
+
+    if (state.isMapOpen) {
+        renderRealMapMarkers();
+    }
 }
 
 function renderSpots() {
@@ -1688,6 +1883,7 @@ function activateRouteTarget(entity, type = "spot") {
     }
 
     toast(`Ruta lista: ${route.title}`);
+    renderRouteHud();
 }
 
 function renderActiveRouteOnMap() {
@@ -1737,6 +1933,26 @@ function renderActiveRouteOnMap() {
     $("#btnMapRouteGoogle")?.addEventListener("click", () => {
         openExternalUrl(route.googleMapsUrl);
     });
+
+    $("#mapRoutePanel")?.setAttribute("hidden", "");
+    renderRouteHud?.();
+}
+
+function renderRouteHud() {
+    const hud = document.getElementById("routeHud");
+    const title = document.getElementById("routeHudTitle");
+
+    const route = state.routeTarget?.route;
+
+    if (!hud || !title) return;
+
+    if (!route?.hasCoords) {
+        hud.hidden = true;
+        return;
+    }
+
+    hud.hidden = false;
+    title.textContent = route.title || "Spot listo para llegar";
 }
 
 function bindRouteHub() {
@@ -1852,6 +2068,10 @@ function initLanguageMenu() {
 
 function openMapView() {
     showMapView();
+
+    setTimeout(() => {
+        renderRealMapMarkers();
+    }, 120);
 }
 
 function showMapView() {
@@ -1865,6 +2085,12 @@ function showMapView() {
     }
 
     renderActiveRouteOnMap();
+    renderRouteHud();
+
+    setTimeout(() => {
+        renderRealMapMarkers();
+    }, 120);
+
 }
 
 function hideMapView() {
