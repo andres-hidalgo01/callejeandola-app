@@ -25,6 +25,11 @@ const env = {
     port: Number(process.env.PORT || 4000),
     jwtSecret: process.env.JWT_SECRET || "dev-secret-change-me",
     clientOrigins: parseOrigins(process.env.CLIENT_ORIGINS),
+
+    CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME,
+    CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
+    CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
+    CLOUDINARY_FOLDER: process.env.CLOUDINARY_FOLDER || "callejeandola",
 };
 
 module.exports = { env };

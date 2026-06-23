@@ -1,4 +1,11 @@
-import { register, login, getMe } from "../api/auth.api.js";
+import {
+    register,
+    login,
+    getMe,
+    verifyEmail,
+    resendVerificationCode,
+} from "../api/auth.api.js";
+
 import { getMyProfile, updateMyProfile } from "../api/profile.api.js";
 
 import {
@@ -6,6 +13,7 @@ import {
     clearSession,
     hasSession,
     getStoredUser,
+    getAuthToken,
 } from "../services/session.service.js";
 
 let currentUser = null;
@@ -21,6 +29,9 @@ function bindProfileActions() {
     const btnRegister = document.getElementById("btnProfileRegister");
     const btnSave = document.getElementById("btnProfileSave");
     const btnLogout = document.getElementById("btnProfileLogout");
+    const btnVerifyEmail = document.getElementById("btnVerifyEmail");
+    const btnResendEmailCode = document.getElementById("btnResendEmailCode");
+
 
     const btnShowLogin = document.getElementById("btnShowLogin");
     const btnShowRegister = document.getElementById("btnShowRegister");
@@ -66,6 +77,20 @@ function bindProfileActions() {
         };
     }
 
+    if (btnVerifyEmail) {
+        btnVerifyEmail.onclick = async (event) => {
+            event.preventDefault();
+            await handleVerifyEmailCode();
+        };
+    }
+
+    if (btnResendEmailCode) {
+        btnResendEmailCode.onclick = async (event) => {
+            event.preventDefault();
+            await handleResendEmailCode();
+        };
+    }
+
     setupPasswordToggle("profileLoginPassword", btnTogglePassword);
     setupPasswordToggle("profileRegisterPassword", btnToggleRegisterPassword);
 }
@@ -94,6 +119,8 @@ async function bootstrapProfileSession() {
         showUserProfile();
         renderUserMeta();
         renderProfileForm();
+        renderEmailVerificationState(currentUser);
+
     } catch (error) {
         console.error("Profile bootstrap error:", error);
 
@@ -130,6 +157,7 @@ async function handleProfileLogin() {
         showUserProfile();
         renderUserMeta();
         renderProfileForm();
+        renderEmailVerificationState(currentUser);
         notifySessionChanged();
     } catch (error) {
         console.error("Profile login error:", error);
@@ -171,6 +199,7 @@ async function handleProfileRegister() {
         showUserProfile();
         renderUserMeta();
         renderProfileForm();
+        renderEmailVerificationState(currentUser);
 
         alert("Cuenta skater creada correctamente");
     } catch (error) {
@@ -213,6 +242,7 @@ function handleProfileLogout() {
 
     showGuestProfile();
     notifySessionChanged();
+    renderEmailVerificationState(null);
 }
 
 function showGuestProfile() {
@@ -377,4 +407,64 @@ function notifySessionChanged() {
             },
         })
     );
+}
+
+function renderEmailVerificationState(user) {
+    const box = document.getElementById("emailVerifyBox");
+
+    if (!box) return;
+
+    box.hidden = Boolean(user?.emailVerified);
+}
+
+async function handleVerifyEmailCode() {
+    try {
+        const code = document.getElementById("profileEmailCode")?.value?.trim();
+        const email = currentUser?.email;
+
+        if (!email || !code) {
+            alert("Ingresá el código de verificación");
+            return;
+        }
+
+        const result = await verifyEmail({ email, code });
+
+        currentUser = {
+            ...currentUser,
+            ...result.user,
+        };
+
+        const token = getAuthToken();
+
+        if (token) {
+            setSession(token, currentUser);
+        }
+
+        renderUserMeta();
+        renderEmailVerificationState(currentUser);
+
+        alert("Email verificado correctamente");
+        notifySessionChanged();
+    } catch (error) {
+        console.error("Verify email error:", error);
+        alert(error.message || "No se pudo verificar el email");
+    }
+}
+
+async function handleResendEmailCode() {
+    try {
+        const email = currentUser?.email;
+
+        if (!email) {
+            alert("No hay email de usuario activo");
+            return;
+        }
+
+        await resendVerificationCode({ email });
+
+        alert("Código reenviado. Revisá la consola local.");
+    } catch (error) {
+        console.error("Resend verification code error:", error);
+        alert(error.message || "No se pudo reenviar el código");
+    }
 }

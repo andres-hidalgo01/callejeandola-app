@@ -340,6 +340,28 @@
                 </div>
               </div>
 
+              <div class="email-verify-box" id="emailVerifyBox" hidden>
+                <div>
+                  <strong>Email pendiente de verificación</strong>
+                  <p class="muted micro">
+                    Ingresá el código de 6 dígitos generado para tu correo.
+                  </p>
+                </div>
+
+                <div class="email-verify-form">
+                  <input id="profileEmailCode" type="text" inputmode="numeric" maxlength="6" placeholder="Código"
+                    autocomplete="one-time-code" />
+
+                  <button class="btn btn-primary" type="button" id="btnVerifyEmail">
+                    Verificar
+                  </button>
+
+                  <button class="btn btn-secondary" type="button" id="btnResendEmailCode">
+                    Reenviar
+                  </button>
+                </div>
+              </div>
+
               <div class="profile-grid">
                 <div class="form-field">
                   <label for="profileDisplayName">Nombre público</label>
