@@ -4,56 +4,50 @@ const steps = [
     {
         title: "Bienvenido a Callejeandola",
         eyebrow: "Inicio",
-        text: "Esta app te ayuda a encontrar spots, eventos y skateshops desde el teléfono.",
-        targetSelectors: [".appbar", "header", "body"],
+        text: "Encontrá spots, eventos y skateshops desde el teléfono.",
+        targetSelectors: [".appbar", "header"],
         position: "bottom",
+        spotlight: false,
     },
     {
         title: "Explorá spots",
         eyebrow: "Spots",
         text: "Aquí ves spots cercanos, fotos, detalles, favoritos y ubicación para ir a patinar.",
-        targetSelectors: ["#tourTabSpots"],
+        targetSelectors: ["#tourTabSpots", '[data-tab="spots"]'],
         position: "top",
     },
     {
-        title: "Usá Route",
-        eyebrow: "Ruta",
-        text: "El botón central abre el mapa de Callejeandola. Cuando seleccionás un spot, queda como ruta activa.",
+        title: "Buscá ruta",
+        eyebrow: "Route",
+        text: "El botón central abre el mapa de Callejeandola. Al elegir un spot, queda como ruta activa.",
         targetSelectors: ["#tourTabRoute", "#btnRouteHub", ".route-hub"],
         position: "top",
     },
     {
-        title: "Mapa real",
-        eyebrow: "Localizador",
-        text: "El mapa muestra spots con coordenadas reales. Waze y Google Maps quedan como respaldo externo.",
-        targetSelectors: ["#realMap", "#mapCard", ".real-map-shell"],
-        position: "bottom",
-    },
-    {
         title: "Eventos",
         eyebrow: "Competencias",
-        text: "En Events vas a ver jams, competencias y actividades. Luego aquí entra el registro de competidores.",
-        targetSelectors: ["#tourTabEvents"],
+        text: "Aquí vas a ver jams, competencias y actividades. Luego entra el registro de competidores.",
+        targetSelectors: ["#tourTabEvents", '[data-tab="events"]'],
         position: "top",
     },
     {
         title: "Skateshops",
         eyebrow: "Comunidad",
-        text: "En Shops aparecen tiendas, marcas, sponsors y puntos importantes de la escena.",
-        targetSelectors: ["#tourTabShops"],
+        text: "Aquí aparecen tiendas, marcas, sponsors y puntos importantes de la escena.",
+        targetSelectors: ["#tourTabShops", '[data-tab="shops"]'],
         position: "top",
     },
     {
         title: "Tu perfil",
         eyebrow: "Skater",
-        text: "En Profile podés registrarte, iniciar sesión, verificar email, guardar favoritos y completar tus datos.",
-        targetSelectors: ["#tourTabProfile"],
+        text: "Registrate, verificá tu email, guardá favoritos y completá tus datos.",
+        targetSelectors: ["#tourTabProfile", '[data-tab="profile"]'],
         position: "top",
     },
     {
         title: "Listo para patinar",
-        eyebrow: "GO Skateboarding",
-        text: "Probá buscar un spot, abrí detalle, tocá Route y guardalo como favorito.",
+        eyebrow: "Go Skateboarding",
+        text: "Buscá un spot, abrí detalle, tocá Route y guardalo como favorito.",
         targetSelectors: ["#tourTabRoute", "#btnRouteHub", ".route-hub"],
         position: "top",
     },
@@ -95,17 +89,34 @@ function findTarget(step) {
 }
 
 function getTargetRect(target) {
-    
     if (!target || target === document.body) {
         return {
             top: 90,
             left: 18,
             width: Math.min(window.innerWidth - 36, 420),
-            height: 120,
+            height: 96,
         };
     }
 
     const rect = target.getBoundingClientRect();
+    const isBottomNavTarget = Boolean(target.closest?.(".bottom-nav"));
+
+    if (isBottomNavTarget) {
+        const isRoute =
+            target.id === "tourTabRoute" ||
+            target.id === "btnRouteHub" ||
+            target.classList.contains("route-hub");
+
+        const size = isRoute ? 72 : 64;
+
+        return {
+            top: Math.max(10, rect.top + rect.height / 2 - size / 2),
+            left: Math.max(10, rect.left + rect.width / 2 - size / 2),
+            width: size,
+            height: size,
+        };
+    }
+
     const padding = 6;
 
     return {
@@ -182,8 +193,23 @@ function renderStep() {
     setTimeout(() => {
         const rect = getTargetRect(target);
 
-        setSpotlight(rect);
-        setCardPosition(rect, step);
+        if (step.spotlight === false) {
+            spotlight.hidden = true;
+
+            setCardPosition(
+                {
+                    top: 140,
+                    left: 16,
+                    width: Math.min(window.innerWidth - 32, 360),
+                    height: 120,
+                },
+                step
+            );
+        } else {
+            spotlight.hidden = false;
+            setSpotlight(rect);
+            setCardPosition(rect, step);
+        }
 
         const progress = Math.round(((currentStep + 1) / steps.length) * 100);
 
