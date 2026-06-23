@@ -11,6 +11,9 @@ model User {
   id        Int      @id @default(autoincrement())
   name      String
   email     String   @unique
+  emailVerified              Boolean   @default(false)
+  emailVerificationCode      String?
+  emailVerificationExpiresAt DateTime?
   password  String
   role      String   @default("SKATER")
   active    Boolean  @default(true)
@@ -18,6 +21,8 @@ model User {
   profile   Profile?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  
 }
 
 model UserFavoriteSpot {

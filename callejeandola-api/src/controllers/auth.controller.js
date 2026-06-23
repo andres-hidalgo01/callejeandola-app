@@ -1,5 +1,13 @@
 const authService = require("../services/auth.service");
 
+const {
+    register,
+    login,
+    me,
+    verifyEmail,
+    resendVerificationCode,
+} = require("../services/auth.service");
+
 exports.register = async (req, res) => {
     try {
         const result = await authService.registerUser(req.body);
@@ -46,6 +54,30 @@ exports.me = async (req, res) => {
 
         res.status(500).json({
             error: "Error fetching authenticated user",
+        });
+    }
+};
+
+exports.verifyEmailController = async (req, res) => {
+    try {
+        const result = await authService.verifyEmail(req.body);
+
+        return res.status(200).json(result);
+    } catch (error) {
+        return res.status(error.statusCode || 500).json({
+            error: error.message || "Error verifying email",
+        });
+    }
+};
+
+exports.resendVerificationCodeController = async (req, res) => {
+    try {
+        const result = await authService.resendVerificationCode(req.body);
+
+        return res.status(200).json(result);
+    } catch (error) {
+        return res.status(error.statusCode || 500).json({
+            error: error.message || "Error resending verification code",
         });
     }
 };

@@ -1,5 +1,6 @@
 const bcrypt = require("bcryptjs");
 const prisma = require("../config/prisma");
+const crypto = require("crypto");
 const { generateToken } = require("../utils/jwt");
 const { VALID_ROLES } = require("../config/roles");
 
@@ -13,6 +14,7 @@ function sanitizeUser(user) {
         role: user.role,
         active: user.active,
         country: user.country,
+        emailVerified: user.emailVerified,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
     };
@@ -51,16 +53,24 @@ async function registerUser({ name, email, password, role, country }) {
 
     const hashedPassword = await bcrypt.hash(cleanPassword, 10);
 
+    const emailVerificationCode = generateEmailCode();
+    const emailVerificationExpiresAt = getEmailCodeExpiration();
+
     const user = await prisma.user.create({
         data: {
             name: cleanName,
             email: cleanEmail,
+            emailVerified: false,
+            emailVerificationCode,
+            emailVerificationExpiresAt,
             password: hashedPassword,
             role: cleanRole,
             country: cleanCountry,
             active: true,
         },
     });
+
+    logVerificationCode(user, emailVerificationCode);
 
     const safeUser = sanitizeUser(user);
 
@@ -136,9 +146,134 @@ async function getUserById(userId) {
     return sanitizeUser(user);
 }
 
+function generateEmailCode() {
+    return String(crypto.randomInt(100000, 999999));
+}
+
+function getEmailCodeExpiration() {
+    return new Date(Date.now() + 15 * 60 * 1000);
+}
+
+function logVerificationCode(user, code) {
+    console.log("");
+    console.log("====================================");
+    console.log("CALLEJEANDOLA EMAIL VERIFICATION");
+    console.log(`Email: ${user.email}`);
+    console.log(`Code: ${code}`);
+    console.log("Expires in: 15 minutes");
+    console.log("====================================");
+    console.log("");
+}
+
+async function verifyEmail({ email, code }) {
+    const cleanEmail = String(email || "").trim().toLowerCase();
+    const cleanCode = String(code || "").trim();
+
+    if (!cleanEmail || !cleanCode) {
+        const error = new Error("Email and verification code are required");
+        error.statusCode = 400;
+        throw error;
+    }
+
+    const user = await prisma.user.findUnique({
+        where: { email: cleanEmail },
+    });
+
+    if (!user) {
+        const error = new Error("User not found");
+        error.statusCode = 404;
+        throw error;
+    }
+
+    if (user.emailVerified) {
+        return {
+            message: "Email already verified",
+            user: sanitizeUser(user),
+        };
+    }
+
+    if (!user.emailVerificationCode || !user.emailVerificationExpiresAt) {
+        const error = new Error("Verification code not available");
+        error.statusCode = 400;
+        throw error;
+    }
+
+    if (new Date() > user.emailVerificationExpiresAt) {
+        const error = new Error("Verification code expired");
+        error.statusCode = 400;
+        throw error;
+    }
+
+    if (String(user.emailVerificationCode) !== cleanCode) {
+        const error = new Error("Invalid verification code");
+        error.statusCode = 400;
+        throw error;
+    }
+
+    const updatedUser = await prisma.user.update({
+        where: { id: user.id },
+        data: {
+            emailVerified: true,
+            emailVerificationCode: null,
+            emailVerificationExpiresAt: null,
+        },
+    });
+
+    return {
+        message: "Email verified successfully",
+        user: sanitizeUser(updatedUser),
+    };
+}
+
+async function resendVerificationCode({ email }) {
+    const cleanEmail = String(email || "").trim().toLowerCase();
+
+    if (!cleanEmail) {
+        const error = new Error("Email is required");
+        error.statusCode = 400;
+        throw error;
+    }
+
+    const user = await prisma.user.findUnique({
+        where: { email: cleanEmail },
+    });
+
+    if (!user) {
+        const error = new Error("User not found");
+        error.statusCode = 404;
+        throw error;
+    }
+
+    if (user.emailVerified) {
+        return {
+            message: "Email already verified",
+            user: sanitizeUser(user),
+        };
+    }
+
+    const emailVerificationCode = generateEmailCode();
+    const emailVerificationExpiresAt = getEmailCodeExpiration();
+
+    const updatedUser = await prisma.user.update({
+        where: { id: user.id },
+        data: {
+            emailVerificationCode,
+            emailVerificationExpiresAt,
+        },
+    });
+
+    logVerificationCode(updatedUser, emailVerificationCode);
+
+    return {
+        message: "Verification code sent",
+    };
+}
+
 module.exports = {
     registerUser,
     loginUser,
     getUserById,
     sanitizeUser,
+    verifyEmail,
+    resendVerificationCode,
 };
