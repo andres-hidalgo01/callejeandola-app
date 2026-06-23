@@ -304,8 +304,11 @@ function renderUserMeta() {
     }
 
     if (meta) {
-        meta.textContent = `${currentUser?.role || "SKATER"} · ${currentUser?.country || "Costa Rica"
-            }`;
+        const verifiedLabel = currentUser?.emailVerified
+            ? "Email verificado"
+            : "Email pendiente";
+
+        meta.textContent = `${currentUser?.role || "SKATER"} · ${currentUser?.country || "Costa Rica"} · ${verifiedLabel}`;
     }
 
     if (avatar) {
