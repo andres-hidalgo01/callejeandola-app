@@ -496,26 +496,26 @@
   </main>
 
   <nav class="bottom-nav" aria-label="Navegación inferior">
-    <button class="bn is-active" type="button" data-tab="spots" aria-label="Spots">
+    <button class="bn is-active" type="button" data-tab="spots" aria-label="Spots" id="tourTabSpots">
       <span class="bn__icon">📍</span><span class="bn__label">Spots</span>
     </button>
 
-    <button class="bn" type="button" data-tab="events" aria-label="Events">
+    <button class="bn" type="button" data-tab="events" aria-label="Events" id="tourTabEvents">
       <span class="bn__icon">🏁</span><span class="bn__label">Events</span>
     </button>
 
-    <button class="bn" id="btnRouteHub" type="button" aria-label="Abrir ruta Callejeandola">
+    <button class="bn" id="btnRouteHub" type="button" aria-label="Abrir ruta Callejeandola" id="tourTabRoute">
       <span class="bn__icon route-hub__icon">
         <img class="route-hub__img" src="./assets/icons/route-hub.ico" alt="">
       </span>
       <span class="bn__label route-hub__label">Ruta</span>
     </button>
 
-    <button class="bn" type="button" data-tab="shops" aria-label="Shops">
+    <button class="bn" type="button" data-tab="shops" aria-label="Shops" id="tourTabShops">
       <span class="bn__icon">🛹</span><span class="bn__label">Shops</span>
     </button>
 
-    <button class="bn" type="button" data-tab="profile" aria-label="Profile">
+    <button class="bn" type="button" data-tab="profile" aria-label="Profile" id="tourTabProfile">
       <span class="bn__icon">👤</span><span class="bn__label">Profile</span>
     </button>
 
@@ -542,6 +542,7 @@
   <script src="./config.js"></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script type="module" src="./js/app.js"></script>
+  <script type="module" src="./js/onboarding.js"></script>
   <script type="module" src="./js/profile.bootstrap.js"></script>
   <script src="js/i18n.js"></script>
 
