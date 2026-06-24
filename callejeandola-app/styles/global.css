@@ -3013,8 +3013,10 @@ img {
   left: 31px;
   top: 455px;
   right: 31px;
-  min-height: 86px;
   z-index: 700;
+
+  min-height: 86px;
+
   display: grid;
   grid-template-columns: 58px 1fr;
   align-items: center;
@@ -3082,7 +3084,7 @@ img {
   font-weight: 700;
 }
 
-/* Mantener atribución legal, pero más discreta */
+
 .leaflet-control-attribution {
   max-width: 160px;
   overflow: hidden;
@@ -3875,3 +3877,518 @@ textarea:focus {
 .shop-card {
   margin-top: 0 !important;
 }
+
+
+/* =========================================
+   MAP VALUE POLISH v0.21
+   Route HUD + mobile map UX
+   ========================================= */
+
+.real-map-shell {
+  position: relative;
+  min-height: 320px;
+  border-radius: 24px;
+  overflow: hidden;
+  border: 1px solid rgba(34, 211, 238, 0.18);
+  background: #020617;
+  box-shadow:
+    0 18px 46px rgba(0, 0, 0, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.real-map {
+  width: 100%;
+  height: 100%;
+  min-height: 320px;
+}
+
+.leaflet-control-attribution {
+  opacity: 0.68;
+  font-size: 9px;
+  background: rgba(2, 6, 23, 0.64) !important;
+  color: rgba(226, 232, 240, 0.62) !important;
+}
+
+.leaflet-control-attribution a {
+  color: rgba(34, 211, 238, 0.86) !important;
+}
+
+.map-locate,
+.map-close {
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.88) !important;
+  border: 1px solid rgba(148, 163, 184, 0.18) !important;
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.26);
+}
+
+.map-locate {
+  color: #67e8f9 !important;
+  font-size: 20px;
+  font-weight: 950;
+}
+
+/* HUD encima del mapa, tipo navegación */
+.route-hud {
+  position: absolute;
+  left: 14px;
+  top: 14px;
+  right: 14px;
+  z-index: 700;
+  min-height: 86px;
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 12px;
+  align-items: center;
+  padding: 12px;
+  border-radius: 22px;
+  color: #f8fafc;
+  background:
+    radial-gradient(circle at 18% 12%, rgba(34, 211, 238, 0.18), transparent 34%),
+    linear-gradient(135deg, rgba(2, 6, 23, 0.96), rgba(15, 23, 42, 0.94));
+  border: 1px solid rgba(34, 211, 238, 0.22);
+  box-shadow:
+    0 24px 70px rgba(0, 0, 0, 0.46),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(14px);
+}
+
+.route-hud[hidden] {
+  display: none !important;
+}
+
+.route-hud__arrow {
+  width: 54px;
+  height: 54px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  font-size: 28px;
+  font-weight: 950;
+  color: #020617;
+  background: linear-gradient(135deg, #7c5cff, #22d3ee);
+  box-shadow: 0 18px 42px rgba(34, 211, 238, 0.28);
+}
+
+.route-hud__body {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.route-hud__label {
+  color: #22d3ee;
+  font-size: 10px;
+  font-weight: 950;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.route-hud__body strong {
+  color: #f8fafc;
+  font-size: 18px;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+
+
+/* ================================================================================================ */
+
+
+
+/* Panel debajo del mapa: fallback discreto */
+.map-route-panel {
+  margin-top: 12px;
+  padding: 14px;
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 14% 0%, rgba(34, 211, 238, 0.12), transparent 36%),
+    rgba(15, 23, 42, 0.72);
+  border: 1px solid rgba(148, 163, 184, 0.14);
+}
+
+.map-route-panel[hidden] {
+  display: none !important;
+}
+
+.map-route-panel__head {
+  display: grid;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.map-route-panel__label {
+  color: #22d3ee;
+  font-size: 10px;
+  font-weight: 950;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.map-route-panel__head strong {
+  color: #f8fafc;
+  font-size: 17px;
+  line-height: 1.14;
+}
+
+.map-route-status {
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 9px 10px;
+  border-radius: 14px;
+  color: #cbd5e1;
+  background: rgba(2, 6, 23, 0.34);
+  border: 1px solid rgba(148, 163, 184, 0.10);
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+.map-route-status__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  flex: 0 0 auto;
+  background: #22d3ee;
+  box-shadow: 0 0 0 5px rgba(34, 211, 238, 0.12);
+}
+
+.map-route-panel__coords {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.map-route-panel__coords[hidden] {
+  display: none !important;
+}
+
+.map-route-panel__coords span {
+  min-height: 30px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 10px;
+  border-radius: 999px;
+  color: #94a3b8;
+  background: rgba(2, 6, 23, 0.34);
+  border: 1px solid rgba(148, 163, 184, 0.10);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.map-app-btn {
+  min-height: 42px;
+  margin-top: 10px;
+  padding: 0 13px;
+  border: 0;
+  border-radius: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #f8fafc;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 900;
+  cursor: pointer;
+  background: rgba(30, 41, 59, 0.88);
+  box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.18);
+}
+
+.map-app-btn+.map-app-btn {
+  margin-left: 8px;
+}
+
+.map-app-btn--waze {
+  background:
+    radial-gradient(circle at top left, rgba(34, 211, 238, 0.18), transparent 42%),
+    rgba(15, 23, 42, 0.92);
+}
+
+.map-app-btn--google {
+  background:
+    radial-gradient(circle at top left, rgba(124, 92, 255, 0.18), transparent 42%),
+    rgba(15, 23, 42, 0.92);
+}
+
+/* Leaflet markers/popups */
+.cj-map-marker {
+  width: 34px;
+  height: 34px;
+  border-radius: 15px;
+  display: grid;
+  place-items: center;
+  color: #f8fafc;
+  font-size: 16px;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.34), transparent 28%),
+    linear-gradient(135deg, #7c5cff, #22d3ee);
+  box-shadow:
+    0 12px 28px rgba(34, 211, 238, 0.30),
+    0 0 0 5px rgba(34, 211, 238, 0.10),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+}
+
+.cj-map-marker--active {
+  animation: cjMapPulse 900ms ease-in-out infinite alternate;
+}
+
+@keyframes cjMapPulse {
+  from {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+
+  to {
+    transform: scale(1.08);
+    filter: brightness(1.18);
+  }
+}
+
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background: rgba(15, 23, 42, 0.96);
+  color: #e5e7eb;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.48);
+}
+
+.leaflet-popup-content {
+  margin: 12px;
+}
+
+.cj-map-popup {
+  min-width: 190px;
+  color: #e5e7eb;
+}
+
+.cj-map-popup strong {
+  display: block;
+  margin-bottom: 4px;
+  color: #f8fafc;
+  font-size: 14px;
+}
+
+.cj-map-popup span {
+  display: block;
+  margin-bottom: 10px;
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+.cj-map-popup button {
+  width: 100%;
+  min-height: 36px;
+  border: 0;
+  border-radius: 13px;
+  color: #020617;
+  font-family: inherit;
+  font-weight: 950;
+  cursor: pointer;
+  background: linear-gradient(135deg, #7c5cff, #22d3ee);
+}
+
+/* =========================================
+   MAP VALUE POLISH — Internal route first
+   ========================================= */
+
+#btnMapRouteWaze,
+#btnMapRouteGoogle {
+  display: none !important;
+}
+
+.map-route-panel {
+  margin-top: 12px;
+}
+
+.map-route-status {
+  margin-top: 10px;
+}
+
+.route-hud {
+  pointer-events: none;
+}
+
+.real-map-shell {
+  position: relative;
+}
+
+.cj-route-line-label {
+  color: #e2e8f0;
+  font-size: 11px;
+  font-weight: 900;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.8);
+}
+
+#btnMapRouteWaze,
+#btnMapRouteGoogle,
+#btnRouteWaze,
+#btnRouteGoogle {
+  display: none !important;
+}
+
+.route-preview--internal {
+  display: grid;
+  grid-template-columns: 54px 1fr;
+  gap: 12px;
+  align-items: start;
+}
+
+.route-preview__icon {
+  width: 54px;
+  height: 54px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  color: #020617;
+  font-size: 28px;
+  font-weight: 950;
+  background: linear-gradient(135deg, #7c5cff, #22d3ee);
+}
+
+/* =========================================
+   v0.21 PATCH — Compact internal map HUD
+   ========================================= */
+/* 
+#mapCard,
+.map-surface,
+.real-map-shell {
+  position: relative;
+}
+
+/* El HUD debe ser compacto, no una card gigante */
+#routeHud.route-hud {
+  position: absolute !important;
+  top: 79px !important;
+  left: 29px !important;
+  right: 29px !important;
+  z-index: 750 !important;
+
+  min-height: 68px !important;
+  padding: 10px 12px !important;
+  border-radius: 22px !important;
+
+  display: grid !important;
+  grid-template-columns: 48px 1fr !important;
+  align-items: center !important;
+  gap: 10px !important;
+
+  background:
+    radial-gradient(circle at 16% 10%, rgba(34, 211, 238, 0.18), transparent 36%),
+    rgba(2, 6, 23, 0.92) !important;
+
+  border: 1px solid rgba(34, 211, 238, 0.24) !important;
+  box-shadow:
+    0 18px 46px rgba(0, 0, 0, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+
+  backdrop-filter: blur(14px);
+  pointer-events: none;
+}
+
+#routeHud[hidden] {
+  display: none !important;
+}
+
+#routeHud .route-hud__arrow {
+  width: 48px !important;
+  height: 48px !important;
+  border-radius: 18px !important;
+  display: grid !important;
+  place-items: center !important;
+  font-size: 25px !important;
+  line-height: 1 !important;
+}
+
+#routeHud .route-hud__body {
+  min-width: 0 !important;
+  display: grid !important;
+  gap: 2px !important;
+}
+
+#routeHud .route-hud__label {
+  font-size: 10px !important;
+  line-height: 1 !important;
+  letter-spacing: 0.12em !important;
+  color: #22d3ee !important;
+  text-transform: uppercase !important;
+}
+
+#routeHud strong,
+#routeHudTitle {
+  display: block !important;
+  max-width: 100% !important;
+  color: #f8fafc !important;
+  font-size: 16px !important;
+  line-height: 1.05 !important;
+  letter-spacing: -0.035em !important;
+  white-space: normal !important;
+}
+
+/* El estado NO debe vivir dentro del HUD principal */
+#routeHud .map-route-status,
+#routeHud #mapRouteStatus,
+#routeHud .map-route-panel__coords,
+#routeHud #mapRouteCoords {
+  display: none !important;
+}
+
+/* Mapa con altura suficiente para que el HUD no lo mate */
+.real-map-shell {
+  top: 80px;
+  min-height: 360px !important;
+  border-radius: 24px !important;
+  overflow: hidden !important;
+}
+
+.real-map,
+#realMap {
+  min-height: 360px !important;
+}
+
+/* Panel inferior: discreto, no protagonista */
+#mapRoutePanel.map-route-panel {
+  margin-top: 12px !important;
+  padding: 12px !important;
+  border-radius: 20px !important;
+  background: rgba(15, 23, 42, 0.72) !important;
+  border: 1px solid rgba(148, 163, 184, 0.14) !important;
+  box-shadow: none !important;
+}
+
+#mapRoutePanel .route-preview--internal {
+  display: grid !important;
+  grid-template-columns: 44px 1fr !important;
+  gap: 10px !important;
+  align-items: center !important;
+}
+
+#mapRoutePanel .route-preview__icon {
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 16px !important;
+  font-size: 22px !important;
+}
+
+/* Si el panel tiene coordenadas, que sean pequeñas */
+#mapRoutePanel .map-route-panel__coords {
+  margin-top: 8px !important;
+}
+
+#mapRoutePanel .map-route-panel__coords span {
+  min-height: 26px !important;
+  font-size: 10px !important;
+}
+
+/* Waze/Google siguen ocultos: Callejeandola map primero */
+#btnMapRouteWaze,
+#btnMapRouteGoogle,
+#btnRouteWaze,
+#btnRouteGoogle {
+  display: none !important;
+}
+
+*/

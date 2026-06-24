@@ -455,10 +455,16 @@
           <div class="map__head">
             <div>
               <h3 class="h3">Mapa</h3>
-              <p class="muted micro">Spots, shops y eventos cerca de ti.</p>
+              <!-- <p class="muted micro">Spots, shops y eventos cerca de ti.</p> -->
             </div>
             <div style="display:flex; gap:8px;">
-              <button class="icon-btn map-close" id="btnCloseMap" type="button" aria-label="Cerrar mapa">✕</button>
+              <button class="icon-btn map-locate" id="btnMapLocateMe" type="button" aria-label="Centrar mi ubicación">
+                ◎
+              </button>
+
+              <button class="icon-btn map-close" id="btnCloseMap" type="button" aria-label="Cerrar mapa">
+                ✕
+              </button>
             </div>
           </div>
           <div class="real-map-shell">
@@ -470,6 +476,15 @@
             <div class="route-hud__body">
               <span class="route-hud__label">Ruta activa</span>
               <strong id="routeHudTitle">Seleccioná un spot</strong>
+            </div>
+            <div class="map-route-status" id="mapRouteStatus">
+              <span class="map-route-status__dot"></span>
+              <span id="mapRouteStatusText">Seleccioná un spot para activar ruta.</span>
+            </div>
+
+            <div class="map-route-panel__coords" id="mapRouteCoords" hidden>
+              <span id="mapRouteLat">Lat: —</span>
+              <span id="mapRouteLng">Lng: —</span>
             </div>
           </div>
 

@@ -57,6 +57,10 @@ let state = {
 
 let realMap = null;
 let realMapMarkersLayer = null;
+let userLocation = null;
+let userMarker = null;
+let activeRouteLine = null;
+let activeRouteSpot = null;
 
 /* =========================================
    INIT
@@ -697,7 +701,7 @@ function bindActions() {
 
     $("#btnOpenMap")?.addEventListener("click", openMapView);
 
-    // $("#btnCloseMap")?.addEventListener("click", closeMapView);
+    $("#btnMapLocateMe")?.addEventListener("click", locateMe);
 
     $("#btnCloseMap")?.addEventListener("click", () => {
         closeMapView();
@@ -725,6 +729,8 @@ function bindActions() {
         renderFavorites();
         updateProfileCounts();
     });
+
+    document.getElementById("btnMapLocateMe")?.addEventListener("click", locateMe);
 }
 
 /* =========================================
@@ -1541,6 +1547,7 @@ function openReport() {
 
 function locateMe() {
     if (!navigator.geolocation) {
+        updateRouteStatus("Tu navegador no soporta ubicación.");
         toast("Geolocalización no soportada");
         return;
     }
@@ -1550,13 +1557,45 @@ function locateMe() {
     navigator.geolocation.getCurrentPosition(
         (pos) => {
             hideBusy();
-            toast(`📍 ${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`);
+
+            userLocation = {
+                lat: pos.coords.latitude,
+                lng: pos.coords.longitude,
+            };
+
+            if (realMap && window.L) {
+                if (userMarker) {
+                    userMarker.setLatLng([userLocation.lat, userLocation.lng]);
+                } else {
+                    userMarker = L.marker([userLocation.lat, userLocation.lng]).addTo(realMap);
+                    userMarker.bindPopup("Tu ubicación");
+                }
+
+                realMap.setView([userLocation.lat, userLocation.lng], 14);
+            }
+
+            if (activeRouteSpot) {
+                drawInternalRoute();
+
+                const spotCoords = getSpotCoords(activeRouteSpot);
+                const distance = getDistanceKm(userLocation, spotCoords);
+
+                updateRouteStatus(`Ruta activa · ${formatDistance(distance)} desde tu ubicación.`);
+            } else {
+                updateRouteStatus("Ubicación activa. Seleccioná un spot para crear ruta.");
+            }
+
+            toast("Ubicación activada");
         },
         () => {
             hideBusy();
+            updateRouteStatus("No se pudo obtener tu ubicación. El mapa sigue funcionando.");
             toast("No se pudo obtener ubicación");
         },
-        { enableHighAccuracy: true, timeout: 8000 }
+        {
+            enableHighAccuracy: true,
+            timeout: 8000,
+        }
     );
 }
 
@@ -1888,14 +1927,13 @@ function activateRouteTarget(entity, type = "spot") {
 
 function renderActiveRouteOnMap() {
     const panel = $("#mapRoutePanel");
+    const target = state.routeTarget;
 
     if (!panel) return;
 
-    const target = state.routeTarget;
-
     if (!target?.route?.hasCoords) {
         panel.hidden = true;
-        panel.innerHTML = "";
+        renderRouteHud?.();
         return;
     }
 
@@ -1904,38 +1942,33 @@ function renderActiveRouteOnMap() {
     panel.hidden = false;
 
     panel.innerHTML = `
-    <div class="route-preview">
+      <div class="route-preview route-preview--internal">
+        <div class="route-preview__icon">↗</div>
 
-      <div class="route-preview__content">
-        <span class="map-route-panel__label">Ruta activa</span>
+        <div class="route-preview__content">
+          <span class="map-route-panel__label">Ruta activa</span>
+          <strong>${escapeHtml(route.title)}</strong>
+          <p class="muted">
+            ${escapeHtml(type || "spot")} · Callejeandola map
+          </p>
 
-        <strong>${escapeHtml(route.title)}</strong>
+          <div class="map-route-status" id="mapRouteStatus">
+            <span class="map-route-status__dot"></span>
+            <span id="mapRouteStatusText">Ruta activa dentro de Callejeandola.</span>
+          </div>
 
-        <div class="route-app-actions">
-          <button class="route-app-btn route-app-btn--waze" type="button" id="btnMapRouteWaze">
-            <span class="route-app-btn__icon">↗</span>
-            <span>Waze</span>
-          </button>
-
-          <button class="route-app-btn route-app-btn--maps" type="button" id="btnMapRouteGoogle">
-            <span class="route-app-btn__icon">⌖</span>
-            <span>Maps</span>
-          </button>
+          <div class="map-route-panel__coords" id="mapRouteCoords">
+            <span id="mapRouteLat">Lat: ${escapeHtml(String(route.lat))}</span>
+            <span id="mapRouteLng">Lng: ${escapeHtml(String(route.lng))}</span>
+          </div>
         </div>
       </div>
-    </div>
-  `;
+    `;
 
-    $("#btnMapRouteWaze")?.addEventListener("click", () => {
-        openExternalUrl(route.wazeUrl);
-    });
+    activeRouteSpot = target.entity || null;
 
-    $("#btnMapRouteGoogle")?.addEventListener("click", () => {
-        openExternalUrl(route.googleMapsUrl);
-    });
-
-    $("#mapRoutePanel")?.setAttribute("hidden", "");
     renderRouteHud?.();
+    drawInternalRoute?.();
 }
 
 function renderRouteHud() {
@@ -2023,6 +2056,47 @@ async function refreshEngagementUi() {
     renderSavedEvents();
     updateKpis();
     updateProfileCounts();
+}
+
+function updateRouteStatus(message) {
+    const status = document.getElementById("mapRouteStatusText");
+    if (status) status.textContent = message;
+}
+
+function updateRouteCoords(spot) {
+    const coordsBox = document.getElementById("mapRouteCoords");
+    const latEl = document.getElementById("mapRouteLat");
+    const lngEl = document.getElementById("mapRouteLng");
+
+    const lat = Number(spot?.lat);
+    const lng = Number(spot?.lng);
+
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+        if (coordsBox) coordsBox.hidden = true;
+        return;
+    }
+
+    if (latEl) latEl.textContent = `Lat: ${lat.toFixed(5)}`;
+    if (lngEl) lngEl.textContent = `Lng: ${lng.toFixed(5)}`;
+    if (coordsBox) coordsBox.hidden = false;
+}
+
+function buildWazeUrl(spot) {
+    const lat = Number(spot?.lat);
+    const lng = Number(spot?.lng);
+
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+
+    return `https://waze.com/ul?ll=${lat},${lng}&navigate=yes`;
+}
+
+function buildGoogleMapsUrl(spot) {
+    const lat = Number(spot?.lat);
+    const lng = Number(spot?.lng);
+
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+
+    return `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
 }
 
 /* =========================================
@@ -2117,4 +2191,144 @@ function closeMapView() {
     }
 
     setTab(state.currentTab || "spots");
+}
+
+function getSpotCoords(spot) {
+    const lat = Number(spot?.lat);
+    const lng = Number(spot?.lng);
+
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+        return null;
+    }
+
+    return { lat, lng };
+}
+
+function getDistanceKm(from, to) {
+    if (!from || !to) return null;
+
+    const earthRadiusKm = 6371;
+
+    const dLat = ((to.lat - from.lat) * Math.PI) / 180;
+    const dLng = ((to.lng - from.lng) * Math.PI) / 180;
+
+    const lat1 = (from.lat * Math.PI) / 180;
+    const lat2 = (to.lat * Math.PI) / 180;
+
+    const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.sin(dLng / 2) *
+        Math.sin(dLng / 2) *
+        Math.cos(lat1) *
+        Math.cos(lat2);
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    return earthRadiusKm * c;
+}
+
+function formatDistance(distanceKm) {
+    if (!Number.isFinite(distanceKm)) return "Distancia no disponible";
+
+    if (distanceKm < 1) {
+        return `${Math.round(distanceKm * 1000)} m aprox.`;
+    }
+
+    return `${distanceKm.toFixed(1)} km aprox.`;
+}
+
+function setActiveRouteSpot(spot) {
+    const coords = getSpotCoords(spot);
+
+    if (!coords) {
+        updateRouteStatus("Este spot no tiene coordenadas todavía.");
+        toast("Este spot no tiene coordenadas");
+        return;
+    }
+
+    activeRouteSpot = spot;
+
+    const hud = document.getElementById("routeHud");
+    const title = document.getElementById("routeHudTitle");
+    const mapRouteTitle = document.getElementById("mapRouteTitle");
+    const mapRouteMeta = document.getElementById("mapRouteMeta");
+    const mapRoutePanel = document.getElementById("mapRoutePanel");
+
+    if (hud) hud.hidden = false;
+    if (mapRoutePanel) mapRoutePanel.hidden = false;
+
+    if (title) title.textContent = spot.name || "Spot seleccionado";
+    if (mapRouteTitle) mapRouteTitle.textContent = spot.name || "Spot seleccionado";
+
+    const baseMeta = `${spot.city || spot.zone || "Costa Rica"} · ${spot.type || "Spot"}`;
+
+    if (mapRouteMeta) {
+        mapRouteMeta.textContent = baseMeta;
+    }
+
+    updateRouteCoords(spot);
+
+    if (userLocation) {
+        const distance = getDistanceKm(userLocation, coords);
+        updateRouteStatus(`Ruta activa · ${formatDistance(distance)} desde tu ubicación.`);
+    } else {
+        updateRouteStatus("Ruta activa. Activá tu ubicación para calcular distancia.");
+    }
+
+    drawInternalRoute();
+
+    if (realMap) {
+        realMap.setView([coords.lat, coords.lng], 15);
+        setTimeout(() => realMap.invalidateSize(), 80);
+    }
+
+    toast(`Ruta activa: ${spot.name}`);
+}
+
+function drawInternalRoute() {
+    if (!realMap || !window.L) return;
+
+    const route = state.routeTarget?.route;
+
+    if (!route?.hasCoords) return;
+
+    const spotCoords = {
+        lat: Number(route.lat),
+        lng: Number(route.lng),
+    };
+
+    if (!Number.isFinite(spotCoords.lat) || !Number.isFinite(spotCoords.lng)) return;
+
+    if (activeRouteLine) {
+        realMap.removeLayer(activeRouteLine);
+        activeRouteLine = null;
+    }
+
+    if (!userLocation) {
+        realMap.setView([spotCoords.lat, spotCoords.lng], 15);
+        updateRouteStatus?.("Ruta activa. Activá tu ubicación para calcular distancia.");
+        return;
+    }
+
+    activeRouteLine = L.polyline(
+        [
+            [userLocation.lat, userLocation.lng],
+            [spotCoords.lat, spotCoords.lng],
+        ],
+        {
+            color: "#22d3ee",
+            weight: 5,
+            opacity: 0.86,
+            dashArray: "10 10",
+        }
+    ).addTo(realMap);
+
+    const distance = getDistanceKm(userLocation, spotCoords);
+
+    updateRouteStatus?.(`Ruta activa · ${formatDistance(distance)} desde tu ubicación.`);
+
+    realMap.fitBounds(activeRouteLine.getBounds(), {
+        padding: [42, 42],
+        maxZoom: 15,
+    });
 }
