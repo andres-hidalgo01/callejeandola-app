@@ -8,8 +8,9 @@
     "start": "node src/server.js",
     "seed": "node prisma/seed.js",
     "load:register": "node scripts/load-register-users.js",
-    "db:push": "prisma db push",
     "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:deploy": "prisma db push && prisma generate",
     "prisma": "prisma"
   },
   "keywords": [],
