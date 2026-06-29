@@ -193,7 +193,6 @@ function normalizeSpots(spots) {
         type: (s.type && String(s.type).trim() !== "" ? String(s.type) : "street").toLowerCase(),
         obstacles: [],
         time: "—",
-        rating: 4,
         verified: false,
         safety: "safe",
         description: s.description || "",
@@ -481,7 +480,7 @@ function renderRealMapMarkers() {
       <div class="cj-map-popup">
         <strong>${safeTitle}</strong>
         <span>${safeSubtitle}</span>
-        <button type="button" id="${buttonId}">Route</button>
+        <button type="button" id="${buttonId}">Ruta</button>
       </div>
     `);
 
@@ -512,7 +511,7 @@ function activateRouteFromMap(item) {
     if (!item) return;
 
     if (typeof activateRouteTarget === "function") {
-        activateRouteTarget(item.mapType || "spot", item);
+        activateRouteTarget(item, item.mapType || "spot");
     } else {
         const lat = Number(item.lat);
         const lng = Number(item.lng);
@@ -1247,32 +1246,38 @@ function spotCard(s) {
 
     return `
     <article class="card spot-card">
-    ${renderMediaBlock(s, "spot")}      
+      ${renderMediaBlock(s, "spot")}
 
       <div class="card__body">
-        <div class="card__meta">
-          <span class="badge">${escapeHtml(cap(String(s.type || "Street")))}</span>
-          <span class="badge ${s.verified ? "badge--soft" : ""}">
-            ${s.verified ? "Verified" : "Unverified"}
-          </span>
-        </div>
-
         <h3 class="spot__name">${escapeHtml(s.name)}</h3>
 
-        <p class="muted">📍 ${escapeHtml(s.zone || s.city || "—")}</p>
+        <div class="entity-row">
+          <p class="muted entity-row__location">
+            <span class="entity-row__pin">📍</span>
+            <span>${escapeHtml(s.zone || s.city || "Costa Rica")}</span>
+          </p>
 
-        <p class="muted micro">
-          ${escapeHtml(s.description || "Spot disponible para explorar.")}
-        </p>
+          <div class="entity-row__actions">
+            <button
+              class="entity-icon-btn"
+              id="open_${s.id}"
+              type="button"
+              aria-label="Ver spot"
+              title="Ver spot"
+            >
+              👁
+            </button>
 
-        <div class="card__actions">
-          <button class="btn btn-secondary" id="open_${s.id}" type="button">
-            Ver detalle
-          </button>
-
-        <button class="icon-btn ${fav ? "is-active" : ""}" id="fav_${s.id}" type="button" aria-label="Favorito">
-          ${fav ? "♥" : "♡"}
-        </button>
+            <button
+              class="entity-icon-btn ${fav ? "is-active" : ""}"
+              id="fav_${s.id}"
+              type="button"
+              aria-label="Guardar favorito"
+              title="Favorito"
+            >
+              ${fav ? "♥" : "♡"}
+            </button>
+          </div>
         </div>
       </div>
     </article>
@@ -1285,14 +1290,16 @@ function eventCard(e) {
 
     const saveButton = token
         ? `
-      <button
-        class="btn btn-secondary ${saved ? "is-saved" : ""}"
-        type="button"
-        data-save-event="${e.id}"
-      >
-        ${saved ? "Quitar" : "Guardar"}
-        </button>
-    `
+          <button
+            class="entity-icon-btn ${saved ? "is-active" : ""}"
+            type="button"
+            data-save-event="${e.id}"
+            aria-label="${saved ? "Quitar evento guardado" : "Guardar evento"}"
+            title="${saved ? "Quitar guardado" : "Guardar evento"}"
+          >
+            ${saved ? "✓" : "＋"}
+          </button>
+        `
         : "";
 
     return `
@@ -1300,22 +1307,30 @@ function eventCard(e) {
       ${renderMediaBlock(e, "event")}
 
       <div class="card__body">
-        <div class="card__meta">
-          <span class="badge">${escapeHtml(e.month || "JUN")} ${escapeHtml(e.day || "20")}</span>
-          <span class="badge badge--soft">${Number(e.price || 0) === 0 ? "Free" : "Paid"}</span>
-        </div>
-
+        
         <h3 class="event__title">${escapeHtml(e.title || e.name || "Evento")}</h3>
 
-        <p class="muted">📍 ${escapeHtml(e.place || e.city || "-")}</p>
-        <p class="muted micro">⏱ ${escapeHtml(e.time || "-")}</p>
+        <div class="entity-row">
+          <div class="entity-row__text">
+            <p class="muted entity-row__location">
+              <span class="entity-row__pin">📍</span>
+              <span>${escapeHtml(e.place || e.city || "Costa Rica")}</span>
+            </p>
+          </div>
 
-        <div class="card__actions">
-          <button class="btn btn-primary" type="button" data-event="${e.id}">
-            Detalles
-          </button>
+          <div class="entity-row__actions">
+            <button
+              class="entity-icon-btn"
+              type="button"
+              data-event="${e.id}"
+              aria-label="Ver evento"
+              title="Ver evento"
+            >
+              👁
+            </button>
 
-          ${saveButton}
+            ${saveButton}
+          </div>
         </div>
       </div>
     </article>
@@ -1325,7 +1340,7 @@ function eventCard(e) {
 function shopCard(shop) {
     return `
     <article class="card shop-card">
-    ${renderMediaBlock(shop, "shop")}
+      ${renderMediaBlock(shop, "shop")}
 
       <div class="card__body">
         <div class="card__meta">
@@ -1336,12 +1351,23 @@ function shopCard(shop) {
 
         <h3 class="h3">${escapeHtml(shop.name)}</h3>
 
-        <p class="muted">📍 ${escapeHtml(shop.city || "—")}</p>
+        <div class="entity-row">
+          <p class="muted entity-row__location">
+            <span class="entity-row__pin">📍</span>
+            <span>${escapeHtml(shop.city || shop.zone || "Costa Rica")}</span>
+          </p>
 
-        <div class="card__actions">
-          <button class="btn btn-primary" type="button" data-shop="${shop.id}">
-            Ver shop
-          </button>
+          <div class="entity-row__actions">
+            <button
+              class="entity-icon-btn"
+              type="button"
+              data-shop="${shop.id}"
+              aria-label="Ver shop"
+              title="Ver shop"
+            >
+              👁
+            </button>
+          </div>
         </div>
       </div>
     </article>
@@ -1373,7 +1399,6 @@ function modalInfo(title, html) {
 
     $("#modalTitle").textContent = title;
     $("#modalBody").innerHTML = html;
-    $("#modalPrimary").textContent = "Ok";
     dlg.showModal();
 }
 
@@ -1391,23 +1416,14 @@ function openSpot(s) {
           ${renderMediaBlock(s, "spot")}
         </div>
 
-        <div class="detail-meta">
-          <span class="badge">${escapeHtml(cap(String(s.type || "Street")))}</span>
-          <span class="badge ${s.verified ? "badge--soft" : ""}">
-            ${s.verified ? "Verified" : "Unverified"}
-          </span>
-          <span class="badge">${escapeHtml(s.safety || "safe")}</span>
-        </div>
-
         <div class="detail-grid">
           <div><strong>Zona:</strong> ${escapeHtml(s.zone || s.city || "—")}</div>
           <div><strong>Descripción:</strong> ${escapeHtml(s.description || "Sin descripción")}</div>
-          <div><strong>Rating:</strong> ${Number(s.rating || 0).toFixed(1)} ${starText(Number(s.rating || 0))}</div>
         </div>
 
         <div class="detail-actions">
           <button class="btn btn-primary" type="button" id="btnRouteFromModal">
-            Route
+            Ruta
           </button>
         </div>
       </div>
@@ -1438,12 +1454,6 @@ function openEvent(e) {
             ${renderMediaBlock(e, "event")}
         </div>
 
-        <div class="detail-meta">
-          <span class="badge">${escapeHtml(e.month || "—")} ${escapeHtml(e.day || "")}</span>
-          <span class="badge badge--soft">${Number(e.price || 0) === 0 ? "Free" : "Paid"}</span>
-          <span class="badge">${escapeHtml(e.category || "Event")}</span>
-        </div>
-
         <div class="detail-grid">
           <div><strong>Lugar:</strong> ${escapeHtml(e.place || "—")}</div>
           <div><strong>Hora:</strong> ${escapeHtml(e.time || "—")}</div>
@@ -1451,12 +1461,8 @@ function openEvent(e) {
         </div>
 
         <div class="detail-actions">
-          <button class="btn btn-primary" type="button" id="btnSaveEventFromModal">
-            Guardar
-          </button>
-
           <button class="btn btn-secondary" type="button" id="btnRouteEventFromModal">
-            Route
+            Ruta
           </button>
         </div>
         </div>
@@ -1468,12 +1474,6 @@ function openEvent(e) {
         $("#btnRouteEventFromModal")?.addEventListener("click", () => {
             activateRouteTarget(e, "event");
         });
-
-        setTimeout(() => {
-            $("#btnRouteEventFromModal")?.addEventListener("click", () => {
-                openRoute(e);
-            });
-        }, 0);
 
         $$(".detail-thumb").forEach((btn) => {
             btn.addEventListener("click", () => {
@@ -1495,12 +1495,6 @@ function openShop(shop) {
           ${renderMediaBlock(shop, "shop")}
         </div>
 
-        <div class="detail-meta">
-          <span class="badge">${escapeHtml(shop.category || "Shop")}</span>
-          ${shop.verified ? `<span class="badge badge--soft">Verified</span>` : ""}
-          ${shop.promo ? `<span class="badge badge--soft">Promo</span>` : ""}
-        </div>
-
         <div class="detail-grid">
           <div><strong>Ciudad:</strong> ${escapeHtml(shop.city || "—")}</div>
           <div><strong>Descripción:</strong> ${escapeHtml(shop.description || "Sin descripción")}</div>
@@ -1518,12 +1512,8 @@ function openShop(shop) {
             : ""
         }
 
-          <button class="icon-btn" type="button" id="btnRouteFromModal" title="Route">
-            ◎
-          </button>
-
         <button class="btn btn-secondary" type="button" id="btnRouteShopFromModal">
-            Route
+            Ruta
         </button>
         </div>
       </div>
