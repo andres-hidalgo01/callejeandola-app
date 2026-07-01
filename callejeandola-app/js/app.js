@@ -2322,3 +2322,131 @@ function drawInternalRoute() {
         maxZoom: 15,
     });
 }
+
+/* =========================================
+   MOBILE ENTRY FLOW — QR / SPLASH / LOCATION
+========================================= */
+
+function isDesktopEntryDevice() {
+    return window.matchMedia("(min-width: 768px) and (pointer: fine)").matches;
+}
+
+function showDesktopQrGate() {
+    const gate = document.getElementById("desktopQrGate");
+    if (!gate) return;
+
+    gate.hidden = false;
+    document.body.classList.add("is-desktop-qr-mode");
+}
+
+function hideMobileSplash() {
+    const splash = document.getElementById("mobileSplash");
+    if (!splash) return;
+
+    splash.classList.add("is-leaving");
+
+    setTimeout(() => {
+        splash.hidden = true;
+        splash.classList.remove("is-leaving");
+    }, 280);
+}
+
+function showMobileSplash() {
+    const splash = document.getElementById("mobileSplash");
+    if (!splash) return;
+
+    splash.hidden = false;
+
+    setTimeout(() => {
+        hideMobileSplash();
+        showLocationGateIfNeeded();
+    }, 1600);
+}
+
+function showLocationGateIfNeeded() {
+    const alreadyAsked = localStorage.getItem("cj_location_prompt_seen") === "true";
+    const gate = document.getElementById("locationGate");
+
+    if (!gate || alreadyAsked) return;
+
+    gate.hidden = false;
+    document.body.classList.add("is-location-gate-open");
+}
+
+function closeLocationGate() {
+    const gate = document.getElementById("locationGate");
+    if (!gate) return;
+
+    gate.hidden = true;
+    document.body.classList.remove("is-location-gate-open");
+    localStorage.setItem("cj_location_prompt_seen", "true");
+}
+
+function requestEntryLocation() {
+    localStorage.setItem("cj_location_prompt_seen", "true");
+
+    if (typeof locateMe === "function") {
+        locateMe();
+        closeLocationGate();
+        return;
+    }
+
+    if (!navigator.geolocation) {
+        toast?.("Tu navegador no soporta ubicación.");
+        closeLocationGate();
+        return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+            localStorage.setItem(
+                "cj_user_location",
+                JSON.stringify({
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude,
+                    accuracy: position.coords.accuracy,
+                    savedAt: new Date().toISOString(),
+                })
+            );
+
+            toast?.("Ubicación activada.");
+            closeLocationGate();
+        },
+        () => {
+            toast?.("No se pudo activar ubicación.");
+            closeLocationGate();
+        },
+        {
+            enableHighAccuracy: true,
+            timeout: 12000,
+            maximumAge: 5000,
+        }
+    );
+}
+
+function bindMobileEntryFlow() {
+    document.getElementById("btnEnableLocation")?.addEventListener("click", () => {
+        requestEntryLocation();
+    });
+
+    document.getElementById("btnSkipLocation")?.addEventListener("click", () => {
+        closeLocationGate();
+    });
+}
+
+function initMobileEntryFlow() {
+    bindMobileEntryFlow();
+
+    if (isDesktopEntryDevice()) {
+        showDesktopQrGate();
+        return;
+    }
+
+    showMobileSplash();
+}
+
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initMobileEntryFlow);
+} else {
+    initMobileEntryFlow();
+}

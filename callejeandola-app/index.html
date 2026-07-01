@@ -546,6 +546,49 @@
     <span id="toastMsg">Listo</span>
   </div>
 
+  <!-- Mobile entry flow -->
+  <div class="desktop-qr-gate" id="desktopQrGate" hidden>
+    <div class="desktop-qr-gate__card">
+      <img class="desktop-qr-gate__logo" src="./assets/icons/logo.png" alt="Callejeandola" />
+
+      <h1>Abrí Callejeandola desde tu teléfono</h1>
+      <p>Esta demo está diseñada mobile-first. Escaneá el QR para entrar desde el celular.</p>
+
+      <div class="desktop-qr-gate__qr">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=https%3A%2F%2Fcallejeandola.com"
+          alt="QR Callejeandola" />
+      </div>
+
+      <strong>callejeandola.com</strong>
+    </div>
+  </div>
+
+  <div class="mobile-splash" id="mobileSplash" hidden>
+    <div class="mobile-splash__inner">
+      <img class="mobile-splash__gif" src="./assets/callejeandola-loader.gif" alt="Callejeandola loading" />
+      <p>Cargando...</p>
+    </div>
+  </div>
+
+  <div class="location-gate" id="locationGate" hidden>
+    <div class="location-gate__card">
+      <span class="location-gate__icon">📍</span>
+
+      <h2>Activá tu ubicación</h2>
+      <p>Usamos tu ubicación para mostrar spots, eventos y shops cerca de vos.</p>
+
+      <div class="location-gate__actions">
+        <button class="btn btn-primary" type="button" id="btnEnableLocation">
+          Activar ubicación
+        </button>
+
+        <button class="btn btn-secondary" type="button" id="btnSkipLocation">
+          Ahora no
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script src="./config.js"></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script type="module" src="./js/app.js"></script>
