@@ -758,10 +758,104 @@ function renderAll() {
     }
 }
 
+/* =========================================
+   PRELAUNCH — LIST / GRID VIEW MODE
+========================================= */
+
+function cjViewModeStorageKey(scope) {
+    return `cj_${scope}_view_mode`;
+}
+
+function cjGetViewMode(scope) {
+    const saved = localStorage.getItem(cjViewModeStorageKey(scope));
+    return saved === "grid" ? "grid" : "list";
+}
+
+function cjSetViewMode(scope, mode) {
+    localStorage.setItem(cjViewModeStorageKey(scope), mode === "grid" ? "grid" : "list");
+}
+
+function cjApplyViewMode(list, scope) {
+    if (!list) return;
+
+    const mode = cjGetViewMode(scope);
+
+    list.dataset.viewMode = mode;
+    list.classList.toggle("entity-list--grid", mode === "grid");
+    list.classList.toggle("entity-list--list", mode === "list");
+
+    document.querySelectorAll(`[data-view-toggle-scope="${scope}"] [data-view-mode]`)
+        .forEach((btn) => {
+            const active = btn.dataset.viewMode === mode;
+            btn.classList.toggle("is-active", active);
+            btn.setAttribute("aria-pressed", active ? "true" : "false");
+        });
+}
+
+function cjEnsureViewToggle(scope, list, label, renderFn) {
+    if (!list?.parentNode) return;
+
+    const existing = document.querySelector(`[data-view-toggle-scope="${scope}"]`);
+
+    if (existing) {
+        cjApplyViewMode(list, scope);
+        return;
+    }
+
+    const bar = document.createElement("div");
+    bar.className = "entity-view-toggle";
+    bar.dataset.viewToggleScope = scope;
+
+    bar.innerHTML = `
+      <div class="entity-view-toggle__label">${escapeHtml(label)}</div>
+
+      <div class="entity-view-toggle__actions" role="group" aria-label="Cambiar vista">
+        <button
+          class="entity-view-toggle__btn"
+          type="button"
+          data-view-mode="list"
+          aria-label="Vista lista"
+          title="Vista lista"
+          aria-pressed="false"
+        >
+          ☰
+        </button>
+        
+        <button
+          class="entity-view-toggle__btn"
+          type="button"
+          data-view-mode="grid"
+          aria-label="Vista grid"
+          title="Vista grid"
+          aria-pressed="false"
+        >
+          ▦
+        </button>
+      </div>
+    `;
+
+    list.parentNode.insertBefore(bar, list);
+
+    bar.addEventListener("click", (event) => {
+        const btn = event.target.closest("[data-view-mode]");
+
+        if (!btn) return;
+
+        cjSetViewMode(scope, btn.dataset.viewMode);
+        renderFn();
+    });
+
+    cjApplyViewMode(list, scope);
+}
+
+
 function renderSpots() {
     const list = $("#spotsList");
     const empty = $("#spotsEmpty");
     if (!list) return;
+
+    cjEnsureViewToggle("spots", list, "Spots", renderSpots);
+    cjApplyViewMode(list, "spots");
 
     const filtered = (state.data.spots || [])
         .filter((s) => {
@@ -799,6 +893,9 @@ function renderEvents() {
     const list = $("#eventsList");
     const empty = $("#eventsEmpty");
     if (!list) return;
+
+    cjEnsureViewToggle("events", list, "Events", renderEvents);
+    cjApplyViewMode(list, "events");
 
     const filtered = (state.data.events || []).filter((e) => {
         const hay = `${e.title} ${e.place} ${e.format}`.toLowerCase();
@@ -2450,3 +2547,4 @@ if (document.readyState === "loading") {
 } else {
     initMobileEntryFlow();
 }
+

@@ -4626,7 +4626,7 @@ textarea:focus {
 .mobile-splash {
   display: grid;
   place-items: center;
-  background:black;
+  background: black;
   transition: opacity 280ms ease, transform 280ms ease;
 }
 
@@ -4722,5 +4722,177 @@ textarea:focus {
   .mobile-splash,
   .location-gate {
     display: none !important;
+  }
+}
+
+/* =========================================
+   PRELAUNCH — LIST / GRID MODE
+========================================= */
+
+.entity-view-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 10px 0 12px;
+  padding: 8px;
+  border-radius: 18px;
+  background: rgba(15, 23, 42, 0.06);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.entity-view-toggle__label {
+  padding-left: 6px;
+  color: var(--text, #0f172a);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.entity-view-toggle__actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  padding: 4px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.66);
+}
+
+.entity-view-toggle__btn {
+  width: 42px;
+  min-width: 42px;
+  height: 32px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 11px;
+  background: transparent;
+  color: rgba(15, 23, 42, 0.62);
+  font-size: 17px;
+  font-weight: 950;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.entity-view-toggle__btn.is-active {
+  background: var(--accent, #22d3ee);
+  color: #020617;
+  box-shadow: 0 8px 22px rgba(34, 211, 238, 0.22);
+}
+
+/* LIST MODE */
+
+#spotsList[data-view-mode="list"],
+#eventsList[data-view-mode="list"] {
+  grid-template-columns: 1fr;
+}
+
+/* GRID MODE */
+
+#spotsList[data-view-mode="grid"],
+#eventsList[data-view-mode="grid"] {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  align-items: stretch;
+}
+
+#spotsList[data-view-mode="grid"] .card,
+#eventsList[data-view-mode="grid"] .card {
+  height: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+#spotsList[data-view-mode="grid"] .card__body,
+#eventsList[data-view-mode="grid"] .card__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+}
+
+#spotsList[data-view-mode="grid"] .spot__name,
+#eventsList[data-view-mode="grid"] .event__title {
+  min-height: 32px;
+  overflow: hidden;
+  font-size: 13px;
+  line-height: 1.2;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/* GRID: location arriba, acciones abajo */
+
+#spotsList[data-view-mode="grid"] .entity-row,
+#eventsList[data-view-mode="grid"] .entity-row {
+  width: 100%;
+  margin-top: auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 7px;
+  align-items: start;
+}
+
+#spotsList[data-view-mode="grid"] .entity-row__text,
+#eventsList[data-view-mode="grid"] .entity-row__text {
+  min-width: 0;
+  width: 100%;
+}
+
+#spotsList[data-view-mode="grid"] .entity-row__location,
+#eventsList[data-view-mode="grid"] .entity-row__location {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  overflow: hidden;
+  color: rgba(226, 232, 240, 0.72);
+  font-size: 11px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+#spotsList[data-view-mode="grid"] .entity-row__pin,
+#eventsList[data-view-mode="grid"] .entity-row__pin {
+  flex: 0 0 auto;
+  display: inline-flex;
+}
+
+#spotsList[data-view-mode="grid"] .entity-row__location span:last-child,
+#eventsList[data-view-mode="grid"] .entity-row__location span:last-child {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+#spotsList[data-view-mode="grid"] .entity-row__actions,
+#eventsList[data-view-mode="grid"] .entity-row__actions {
+  width: 100%;
+  display: flow;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 6px;
+}
+
+#spotsList[data-view-mode="grid"] .entity-icon-btn,
+#eventsList[data-view-mode="grid"] .entity-icon-btn {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+}
+
+/* TABLET / DESKTOP PREVIEW */
+
+@media (min-width: 768px) {
+  #spotsList[data-view-mode="grid"],
+  #eventsList[data-view-mode="grid"] {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
