@@ -1504,6 +1504,601 @@ function closeModal() {
     if (dlg && dlg.open) dlg.close();
 }
 
+/* =========================================
+   PRELAUNCH — WAZE-LIKE ROUTE CORE
+========================================= */
+
+let cjRouteMap = null;
+let cjRouteMapTiles = null;
+let cjRouteUserMarker = null;
+let cjRouteDestinationMarker = null;
+let cjRouteLine = null;
+let cjRouteWatchId = null;
+let cjRouteOverlayCreated = false;
+
+function cjGetMapInstance() {
+    if (cjRouteMap?.invalidateSize) return cjRouteMap;
+    return null;
+}
+
+function cjFormatRouteDistance(meters) {
+    const value = Number(meters || 0);
+
+    if (value >= 1000) return `${(value / 1000).toFixed(1)} km`;
+    return `${Math.round(value)} m`;
+}
+
+function cjFormatRouteDuration(seconds) {
+    const minutes = Math.max(1, Math.round(Number(seconds || 0) / 60));
+
+    if (minutes >= 60) {
+        const h = Math.floor(minutes / 60);
+        const m = minutes % 60;
+        return `${h} h ${m} min`;
+    }
+
+    return `${minutes} min`;
+}
+
+function cjGetRouteDestination() {
+    const entity = state?.routeTarget?.entity;
+
+    if (!entity || typeof getEntityCoords !== "function") return null;
+
+    const coords = getEntityCoords(entity);
+
+    if (!coords?.hasCoords) return null;
+
+    return {
+        lat: Number(coords.lat),
+        lng: Number(coords.lng),
+        title: state?.routeTarget?.route?.title || entity.name || entity.title || "Destino",
+        type: state?.routeTarget?.type || "spot",
+    };
+}
+
+function cjGetSavedUserLocation() {
+    try {
+        const raw = localStorage.getItem("cj_user_location");
+        if (!raw) return null;
+
+        const location = JSON.parse(raw);
+
+        if (!Number.isFinite(Number(location.lat)) || !Number.isFinite(Number(location.lng))) {
+            return null;
+        }
+
+        return {
+            lat: Number(location.lat),
+            lng: Number(location.lng),
+            accuracy: Number(location.accuracy || 0),
+            savedAt: location.savedAt || null,
+        };
+    } catch {
+        return null;
+    }
+}
+
+function cjRequestUserLocation() {
+    return new Promise((resolve, reject) => {
+        if (!navigator.geolocation) {
+            reject(new Error("Geolocalización no soportada"));
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                resolve(cjSaveUserLocation(position));
+            },
+            reject,
+            {
+                enableHighAccuracy: true,
+                timeout: 12000,
+                maximumAge: 5000,
+            }
+        );
+    });
+}
+
+async function cjFetchOsrmRoute(from, to) {
+    const url =
+        `https://router.project-osrm.org/route/v1/driving/` +
+        `${from.lng},${from.lat};${to.lng},${to.lat}` +
+        `?overview=full&geometries=geojson&steps=true`;
+
+    const response = await fetch(url);
+
+    if (!response.ok) {
+        throw new Error("No se pudo calcular ruta OSRM");
+    }
+
+    const data = await response.json();
+    const route = data?.routes?.[0];
+
+    if (!route) {
+        throw new Error("OSRM no devolvió ruta");
+    }
+
+    return route;
+}
+
+function cjRouteInstructionFromStep(step) {
+    const maneuver = step?.maneuver?.type || "";
+    const modifier = step?.maneuver?.modifier || "";
+    const road = step?.name || "la ruta";
+
+    if (maneuver === "depart") return `Salí hacia ${road}.`;
+    if (maneuver === "arrive") return "Llegás al destino.";
+    if (maneuver === "turn") return `Girás ${modifier ? modifier : ""} hacia ${road}.`;
+    if (maneuver === "roundabout") return `Entrás a la rotonda hacia ${road}.`;
+    if (maneuver === "merge") return `Incorporate hacia ${road}.`;
+    if (maneuver === "continue") return `Continuá por ${road}.`;
+
+    return `Seguí por ${road}.`;
+}
+
+function cjEnsureRouteOverlay() {
+    let overlay = document.getElementById("cjRouteOverlay");
+
+    if (!overlay) {
+        overlay = document.createElement("section");
+        overlay.id = "cjRouteOverlay";
+        overlay.className = "cj-route-overlay";
+        overlay.hidden = true;
+
+        overlay.innerHTML = `
+          <div class="cj-route-overlay__top">
+            <button class="cj-route-overlay__back" type="button" id="btnCjRouteBack" aria-label="Volver">
+              ‹
+            </button>
+
+            <div class="cj-route-overlay__title">
+              <span>Tu ubicación → destino</span>
+              <strong id="cjRouteOverlayTitle">Ruta activa</strong>
+            </div>
+
+            <button class="cj-route-overlay__close" type="button" id="btnCjRouteClose" aria-label="Cerrar ruta">
+              ×
+            </button>
+          </div>
+
+          <div class="cj-route-map-host" id="cjRouteMapHost"></div>
+
+          <div class="cj-route-sheet" id="cjRouteSheet">
+            <div class="cj-route-sheet__handle"></div>
+            <div class="cj-route-live-brand" id="cjRouteLiveBrand" hidden>
+                <span class="cj-route-live-brand__logo">
+                    <img src="../assets/icons/route-hub.ico" alt="Callejeandola" onerror="this.remove();" />
+                </span>
+            <div>
+                <strong>Callejeandola Nav</strong>
+                <small>Modo navegación activo</small>
+            </div>
+                </div>
+            <div class="cj-route-sheet__main">
+              <div>
+                <strong id="cjRouteEta">Calculando…</strong>
+                <small id="cjRouteDistance">Ruta activa</small>
+              </div>
+
+              <span class="cj-route-sheet__badge" id="cjRouteBadge">Preview</span>
+            </div>
+
+            <p id="cjRouteInstruction">Preparando ruta hacia el destino.</p>
+
+            <div class="cj-route-sheet__actions">
+              <button class="btn btn-secondary" type="button" id="btnCjRouteLater">
+                Salir más tarde
+              </button>
+
+              <button class="btn btn-primary" type="button" id="btnCjRouteStart">
+                Ir ahora
+              </button>
+            </div>
+          </div>
+        `;
+
+        document.body.appendChild(overlay);
+    }
+
+    if (!cjRouteOverlayCreated) {
+        cjRouteOverlayCreated = true;
+
+        document.addEventListener("click", (event) => {
+            if (event.target.closest("#btnCjRouteClose") || event.target.closest("#btnCjRouteBack")) {
+                cjCloseRouteOverlay();
+            }
+
+            if (event.target.closest("#btnCjRouteLater")) {
+                cjCloseRouteOverlay();
+            }
+
+            if (event.target.closest("#btnCjRouteStart")) {
+                cjStartLiveRoute();
+            }
+        });
+    }
+
+    return overlay;
+}
+
+function cjMountMapIntoRouteOverlay() {
+    const overlay = cjEnsureRouteOverlay();
+    const host = document.getElementById("cjRouteMapHost");
+
+    if (!host || !window.L) return;
+
+    let routeMapEl = document.getElementById("cjRouteLeafletMap");
+
+    if (!routeMapEl) {
+        host.innerHTML = `<div id="cjRouteLeafletMap" class="cj-route-leaflet-map"></div>`;
+        routeMapEl = document.getElementById("cjRouteLeafletMap");
+    }
+
+    overlay.hidden = false;
+    document.body.classList.add("is-cj-route-overlay-open");
+
+    if (!cjRouteMap) {
+        cjRouteMap = L.map(routeMapEl, {
+            zoomControl: true,
+            attributionControl: true,
+        }).setView([9.935, -84.09], 10);
+
+        cjRouteMapTiles = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            maxZoom: 19,
+            attribution: "&copy; OpenStreetMap",
+        }).addTo(cjRouteMap);
+    }
+
+    setTimeout(() => cjRouteMap.invalidateSize(), 80);
+    setTimeout(() => cjRouteMap.invalidateSize(), 280);
+    setTimeout(() => cjRouteMap.invalidateSize(), 700);
+}
+
+function cjCloseRouteOverlay() {
+    const overlay = document.getElementById("cjRouteOverlay");
+
+    if (cjRouteWatchId) {
+        navigator.geolocation.clearWatch(cjRouteWatchId);
+        cjRouteWatchId = null;
+    }
+
+    cjSetRouteLiveUi?.(false);
+    cjClearRouteLayers?.();
+
+    if (overlay) {
+        overlay.hidden = true;
+    }
+
+    document.body.classList.remove("is-cj-route-overlay-open");
+    document.body.classList.remove("is-map-open");
+    document.body.classList.remove("is-route-core");
+    document.body.classList.remove("is-route-experience");
+
+    state.isMapOpen = false;
+
+    const mapView = document.getElementById("mapView");
+    if (mapView) {
+        mapView.hidden = true;
+        mapView.classList.remove("is-open");
+        mapView.style.display = "none";
+    }
+
+    const routePanel = document.getElementById("mapRoutePanel");
+    if (routePanel) {
+        routePanel.hidden = true;
+    }
+
+    setTab?.("spots");
+    renderSpots?.();
+    renderRouteHud?.();
+
+    setTimeout(() => {
+        const mapViewAfter = document.getElementById("mapView");
+        if (mapViewAfter) {
+            mapViewAfter.hidden = true;
+            mapViewAfter.classList.remove("is-open");
+            mapViewAfter.style.display = "none";
+        }
+
+        document.body.classList.remove("is-map-open");
+    }, 80);
+}
+
+function cjUpdateRouteSheet({ title, distance, duration, instruction, mode = "Preview" }) {
+    const titleEl = document.getElementById("cjRouteOverlayTitle");
+    const etaEl = document.getElementById("cjRouteEta");
+    const distanceEl = document.getElementById("cjRouteDistance");
+    const instructionEl = document.getElementById("cjRouteInstruction");
+    const badgeEl = document.getElementById("cjRouteBadge");
+
+    if (titleEl && title) titleEl.textContent = title;
+    if (etaEl) etaEl.textContent = duration ? cjFormatRouteDuration(duration) : "Ruta activa";
+    if (distanceEl) distanceEl.textContent = distance ? cjFormatRouteDistance(distance) : "Distancia calculada";
+    if (instructionEl) instructionEl.textContent = instruction || "Seguí la ruta marcada en el mapa.";
+    if (badgeEl) badgeEl.textContent = mode;
+}
+
+function cjClearRouteLayers() {
+    const map = cjGetMapInstance();
+    if (!map) return;
+
+    if (cjRouteLine) {
+        map.removeLayer(cjRouteLine);
+        cjRouteLine = null;
+    }
+
+    if (cjRouteUserMarker) {
+        map.removeLayer(cjRouteUserMarker);
+        cjRouteUserMarker = null;
+    }
+
+    if (cjRouteDestinationMarker) {
+        map.removeLayer(cjRouteDestinationMarker);
+        cjRouteDestinationMarker = null;
+    }
+}
+
+function cjSetRouteLiveUi(isLive = false) {
+    const sheet = document.getElementById("cjRouteSheet");
+    const brand = document.getElementById("cjRouteLiveBrand");
+    const startBtn = document.getElementById("btnCjRouteStart");
+    const laterBtn = document.getElementById("btnCjRouteLater");
+
+    if (sheet) {
+        sheet.classList.toggle("is-live", isLive);
+    }
+
+    if (brand) {
+        brand.hidden = !isLive;
+    }
+
+    if (startBtn) {
+        startBtn.classList.toggle("is-live", isLive);
+        startBtn.disabled = isLive;
+
+        startBtn.innerHTML = isLive
+            ? `
+              <span class="cj-route-btn-logo">
+                <img src="../assets/icons/route-hub.ico" alt="" onerror="this.remove();" />
+              </span>
+              En ruta
+            `
+            : "Ir ahora";
+    }
+
+    if (laterBtn) {
+        laterBtn.textContent = isLive ? "Finalizar" : "Salir más tarde";
+    }
+}
+
+function cjDrawRoutePreview(userLocation, destination, route = null) {
+    const map = cjGetMapInstance();
+
+    if (!map || !window.L || !userLocation || !destination) return;
+
+    cjClearRouteLayers();
+
+    const userLatLng = [userLocation.lat, userLocation.lng];
+    const destLatLng = [destination.lat, destination.lng];
+
+    cjRouteUserMarker = L.marker(userLatLng, {
+        title: "Tu ubicación",
+    }).addTo(map);
+
+    cjRouteDestinationMarker = L.marker(destLatLng, {
+        title: destination.title,
+    }).addTo(map);
+
+    if (route?.geometry?.coordinates?.length) {
+        const points = route.geometry.coordinates.map(([lng, lat]) => [lat, lng]);
+
+        cjRouteLine = L.polyline(points, {
+            weight: 6,
+            opacity: 0.95,
+        }).addTo(map);
+
+        map.fitBounds(cjRouteLine.getBounds(), {
+            padding: [42, 42],
+            maxZoom: 16,
+        });
+
+        return;
+    }
+
+    cjRouteLine = L.polyline([userLatLng, destLatLng], {
+        weight: 5,
+        opacity: 0.9,
+        dashArray: "10, 8",
+    }).addTo(map);
+
+    map.fitBounds([userLatLng, destLatLng], {
+        padding: [42, 42],
+        maxZoom: 16,
+    });
+}
+
+async function cjBuildRoutePreview() {
+    const destination = cjGetRouteDestination();
+
+    if (!destination) {
+        toast?.("Este destino no tiene coordenadas.");
+        return;
+    }
+
+    let userLocation = cjGetSavedUserLocation();
+
+    if (!userLocation) {
+        try {
+            userLocation = await cjRequestUserLocation();
+        } catch {
+            toast?.("No se pudo activar ubicación.");
+            return;
+        }
+    }
+
+    cjMountMapIntoRouteOverlay();
+    cjSetRouteLiveUi(false);
+
+    cjUpdateRouteSheet({
+        title: destination.title,
+        instruction: "Calculando la mejor ruta disponible…",
+        mode: "Calculando",
+    });
+
+    try {
+        const route = await cjFetchOsrmRoute(userLocation, destination);
+        const firstStep = route?.legs?.[0]?.steps?.[0];
+
+        cjDrawRoutePreview(userLocation, destination, route);
+
+        cjUpdateRouteSheet({
+            title: destination.title,
+            distance: route.distance,
+            duration: route.duration,
+            instruction: cjRouteInstructionFromStep(firstStep),
+            mode: "Ruta",
+        });
+
+        toast?.("Ruta calculada.");
+    } catch (error) {
+        console.error("CJ ROUTE PREVIEW ERROR:", error);
+
+        cjDrawRoutePreview(userLocation, destination, null);
+
+        cjUpdateRouteSheet({
+            title: destination.title,
+            instruction: "Ruta aproximada. No se pudo calcular carretera exacta.",
+            mode: "Fallback",
+        });
+
+        toast?.("Ruta aproximada activa.");
+    }
+}
+
+function cjHideLegacyMapView() {
+    const mapView = document.getElementById("mapView");
+
+    state.isMapOpen = false;
+    document.body.classList.remove("is-map-open");
+
+    if (mapView) {
+        mapView.hidden = true;
+        mapView.classList.remove("is-open");
+    }
+
+    renderRouteHud?.();
+}
+
+function cjSetRouteTargetOnly(entity, type = "spot") {
+    const route = buildRouteUrls(entity);
+
+    if (!route.hasCoords) {
+        showRouteUnavailable(entity, route);
+        return false;
+    }
+
+    state.routeTarget = {
+        type,
+        entity,
+        route,
+    };
+
+    renderRouteHub?.();
+    renderRouteHud?.();
+
+    return true;
+}
+
+function cjOpenRouteCore(entity, type = "spot") {
+    if (!entity) {
+        toast?.("No se pudo activar la ruta.");
+        return;
+    }
+
+    const route = buildRouteUrls(entity);
+
+    if (!route.hasCoords) {
+        showRouteUnavailable(entity, route);
+        return;
+    }
+
+    closeModal?.();
+
+    state.routeTarget = {
+        type,
+        entity,
+        route,
+    };
+
+    state.isMapOpen = false;
+    document.body.classList.remove("is-map-open");
+
+    const mapView = document.getElementById("mapView");
+    if (mapView) {
+        mapView.hidden = true;
+        mapView.classList.remove("is-open");
+    }
+
+    setTimeout(cjBuildRoutePreview, 120);
+}
+
+function cjStartLiveRoute() {
+    const destination = cjGetRouteDestination();
+
+    if (!destination) {
+        toast?.("No hay destino activo.");
+        return;
+    }
+
+    if (!navigator.geolocation) {
+        toast?.("Geolocalización no soportada.");
+        return;
+    }
+
+    if (cjRouteWatchId) {
+        navigator.geolocation.clearWatch(cjRouteWatchId);
+        cjRouteWatchId = null;
+    }
+
+    cjUpdateRouteSheet({
+        title: destination.title,
+        instruction: "Navegación activa. Seguí la ruta marcada.",
+        mode: "En vivo",
+    });
+
+    cjSetRouteLiveUi(true);
+
+    cjRouteWatchId = navigator.geolocation.watchPosition(
+        (position) => {
+            const userLocation = cjSaveUserLocation(position);
+            const map = cjGetMapInstance();
+
+            if (!map || !window.L) return;
+
+            const userLatLng = [userLocation.lat, userLocation.lng];
+
+            if (cjRouteUserMarker) {
+                cjRouteUserMarker.setLatLng(userLatLng);
+            } else {
+                cjRouteUserMarker = L.marker(userLatLng, {
+                    title: "Tu ubicación",
+                }).addTo(map);
+            }
+        },
+        () => {
+            toast?.("No se pudo seguir tu ubicación en vivo.");
+        },
+        {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 3000,
+        }
+    );
+
+    toast?.("Navegación iniciada.");
+}
+
 function openSpot(s) {
     modalInfo(
         s.name,
@@ -1529,7 +2124,7 @@ function openSpot(s) {
 
     setTimeout(() => {
         $("#btnRouteFromModal")?.addEventListener("click", () => {
-            activateRouteTarget(s, "spot");
+            cjOpenRouteCore(s, "spot");
         });
 
         $$(".detail-thumb").forEach((btn) => {
@@ -1569,7 +2164,7 @@ function openEvent(e) {
 
     setTimeout(() => {
         $("#btnRouteEventFromModal")?.addEventListener("click", () => {
-            activateRouteTarget(e, "event");
+            cjOpenRouteCore(e, "event");
         });
 
         $$(".detail-thumb").forEach((btn) => {
@@ -2227,31 +2822,39 @@ function initLanguageMenu() {
    MAP VIEW
 ========================================= */
 
-function openMapView() {
-    showMapView();
+function cjOpenRouteOverlayFromCurrentTarget() {
+    if (!state?.routeTarget?.entity) {
+        toast?.("Seleccioná un spot para activar ruta.");
+        setTab?.("spots");
+        return;
+    }
+
+    state.isMapOpen = false;
+    document.body.classList.remove("is-map-open");
+
+    const mapView = document.getElementById("mapView");
+    if (mapView) {
+        mapView.hidden = true;
+        mapView.classList.remove("is-open");
+        mapView.style.display = "none";
+    }
+
+    const routePanel = document.getElementById("mapRoutePanel");
+    if (routePanel) {
+        routePanel.hidden = true;
+    }
 
     setTimeout(() => {
-        renderRealMapMarkers();
-    }, 120);
+        cjBuildRoutePreview();
+    }, 80);
+}
+
+function openMapView() {
+    cjOpenRouteOverlayFromCurrentTarget();
 }
 
 function showMapView() {
-    const mapView = $("#mapView");
-
-    state.isMapOpen = true;
-    document.body.classList.add("is-map-open");
-
-    if (mapView) {
-        mapView.hidden = false;
-    }
-
-    renderActiveRouteOnMap();
-    renderRouteHud();
-
-    setTimeout(() => {
-        renderRealMapMarkers();
-    }, 120);
-
+    cjOpenRouteOverlayFromCurrentTarget();
 }
 
 function hideMapView() {
@@ -2266,18 +2869,25 @@ function hideMapView() {
 }
 
 function closeMapView() {
-    const mapView = $("#mapView");
-
     state.isMapOpen = false;
 
     document.body.classList.remove("is-map-open");
+    document.body.classList.remove("is-route-core");
+    document.body.classList.remove("is-route-experience");
 
+    const mapView = document.getElementById("mapView");
     if (mapView) {
         mapView.hidden = true;
         mapView.classList.remove("is-open");
+        mapView.style.display = "none";
     }
 
-    setTab(state.currentTab || "spots");
+    const routePanel = document.getElementById("mapRoutePanel");
+    if (routePanel) {
+        routePanel.hidden = true;
+    }
+
+    setTab?.("spots");
 }
 
 function getSpotCoords(spot) {
@@ -2479,46 +3089,30 @@ function closeLocationGate() {
     localStorage.setItem("cj_location_prompt_seen", "true");
 }
 
+function cjSaveUserLocation(position) {
+    const location = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+        accuracy: position.coords.accuracy,
+        savedAt: new Date().toISOString(),
+    };
+
+    localStorage.setItem("cj_user_location", JSON.stringify(location));
+    return location;
+}
+
 function requestEntryLocation() {
     localStorage.setItem("cj_location_prompt_seen", "true");
 
-    if (typeof locateMe === "function") {
-        locateMe();
-        closeLocationGate();
-        return;
-    }
-
-    if (!navigator.geolocation) {
-        toast?.("Tu navegador no soporta ubicación.");
-        closeLocationGate();
-        return;
-    }
-
-    navigator.geolocation.getCurrentPosition(
-        (position) => {
-            localStorage.setItem(
-                "cj_user_location",
-                JSON.stringify({
-                    lat: position.coords.latitude,
-                    lng: position.coords.longitude,
-                    accuracy: position.coords.accuracy,
-                    savedAt: new Date().toISOString(),
-                })
-            );
-
+    cjRequestUserLocation()
+        .then(() => {
             toast?.("Ubicación activada.");
             closeLocationGate();
-        },
-        () => {
+        })
+        .catch(() => {
             toast?.("No se pudo activar ubicación.");
             closeLocationGate();
-        },
-        {
-            enableHighAccuracy: true,
-            timeout: 12000,
-            maximumAge: 5000,
-        }
-    );
+        });
 }
 
 function bindMobileEntryFlow() {
