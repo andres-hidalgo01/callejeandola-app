@@ -5237,3 +5237,580 @@ body.is-cj-route-overlay-open #locationGate {
     bottom: calc(env(safe-area-inset-bottom, 0px) + 10px);
   }
 }
+
+/* =========================================
+   LIVE NAVIGATION — COMPACT HUD + MARKER
+========================================= */
+
+.cj-route-live-hud {
+  position: fixed;
+  left: 50%;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 14px);
+  z-index: 8;
+  width: min(calc(100vw - 22px), 430px);
+  min-height: 72px;
+  transform: translateX(-50%);
+
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr) 52px;
+  align-items: center;
+  gap: 10px;
+
+  padding: 10px;
+  border-radius: 26px;
+  background: rgba(255, 255, 255, 0.97);
+  color: #0f172a;
+  box-shadow: 0 22px 80px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(18px);
+}
+
+.cj-route-live-hud[hidden] {
+  display: none !important;
+}
+
+.cj-route-live-hud__control {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+
+  border: 0;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.08);
+  color: #0f172a;
+
+  font-size: 24px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+#btnCjLiveStop {
+  background: rgba(239, 68, 68, 0.12);
+  color: #dc2626;
+}
+
+.cj-route-live-hud__summary {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  align-items: center;
+  gap: 9px;
+}
+
+.cj-route-live-hud__logo {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+
+  border-radius: 15px;
+  background: #020617;
+  color: #fff;
+}
+
+.cj-route-live-hud__logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.cj-route-live-hud__logo b {
+  font-size: 10px;
+  font-weight: 950;
+}
+
+.cj-route-live-hud__text {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.cj-route-live-hud__text strong {
+  overflow: hidden;
+  color: #020617;
+  font-size: 18px;
+  font-weight: 950;
+  line-height: 1;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.cj-route-live-hud__text small {
+  overflow: hidden;
+  color: rgba(15, 23, 42, 0.62);
+  font-size: 11px;
+  font-weight: 750;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* Live marker */
+
+.cj-live-user-marker-wrap {
+  border: 0 !important;
+  background: transparent !important;
+}
+
+.cj-live-user-marker {
+  position: relative;
+  width: 58px;
+  height: 58px;
+  display: grid;
+  place-items: center;
+}
+
+.cj-live-user-marker__pulse {
+  position: absolute;
+  inset: 5px;
+  border-radius: 999px;
+  background: rgba(34, 211, 238, 0.28);
+  animation: cj-live-marker-pulse 1.8s ease-out infinite;
+}
+
+.cj-live-user-marker__logo {
+  position: relative;
+  z-index: 2;
+
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+
+  border: 4px solid #fff;
+  border-radius: 999px;
+  background: #020617;
+  color: #fff;
+  box-shadow: 0 8px 24px rgba(2, 6, 23, 0.36);
+}
+
+.cj-live-user-marker__logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.cj-live-user-marker__logo b {
+  font-size: 9px;
+  font-weight: 950;
+}
+
+.cj-live-user-marker__arrow {
+  position: absolute;
+  z-index: 3;
+  bottom: 0;
+
+  color: #22d3ee;
+  font-size: 17px;
+  line-height: 1;
+
+  text-shadow:
+    -2px -2px 0 #fff,
+    2px -2px 0 #fff,
+    -2px 2px 0 #fff,
+    2px 2px 0 #fff;
+}
+
+@keyframes cj-live-marker-pulse {
+  0% {
+    opacity: 0.9;
+    transform: scale(0.75);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.5);
+  }
+}
+
+body.is-cj-live-navigation .cj-route-sheet {
+  display: none !important;
+}
+
+@media (max-width: 360px) {
+  .cj-route-live-hud {
+    width: calc(100vw - 16px);
+    grid-template-columns: 46px minmax(0, 1fr) 46px;
+    gap: 7px;
+    padding: 8px;
+  }
+
+  .cj-route-live-hud__control {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+
+
+/* =========================================
+   ROUTE START PROGRESS + RE-CENTER
+========================================= */
+
+#btnCjRouteStart {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+#btnCjRouteStart::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: rgba(255, 255, 255, 0.34);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+#btnCjRouteStart.is-loading::before {
+  animation: cj-route-start-progress 900ms ease forwards;
+}
+
+#btnCjRouteStart.is-loading {
+  cursor: wait;
+}
+
+@keyframes cj-route-start-progress {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.cj-route-recenter {
+  position: fixed;
+  right: 14px;
+  bottom: 104px;
+  z-index: 7;
+
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+
+  padding: 0 14px;
+  border: 0;
+  border-radius: 999px;
+
+  background: rgba(15, 23, 42, 0.9);
+  color: #f8fafc;
+
+  font-size: 13px;
+  font-weight: 900;
+
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.34);
+  backdrop-filter: blur(14px);
+  cursor: pointer;
+}
+
+.cj-route-recenter[hidden] {
+  display: none !important;
+}
+
+.cj-route-recenter>span {
+  white-space: nowrap;
+}
+
+/* =========================================
+   LIVE NAVIGATION — CLEAN HUD + FULL LOGO
+========================================= */
+
+/* Eliminados del HTML, pero ocultos por seguridad */
+.cj-route-live-hud__control {
+  display: none !important;
+}
+
+/* HUD inferior: solo logo + ETA/distancia */
+.cj-route-live-hud {
+  position: fixed;
+  left: 50%;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
+  z-index: 8;
+
+  width: min(calc(100vw - 20px), 430px);
+  min-height: 74px;
+  transform: translateX(-50%);
+
+  display: block;
+  padding: 10px 14px;
+
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.97);
+  color: #0f172a;
+
+  box-shadow: 0 22px 80px rgba(0, 0, 0, 0.30);
+  backdrop-filter: blur(18px);
+}
+
+.cj-route-live-hud[hidden] {
+  display: none !important;
+}
+
+.cj-route-live-hud__summary {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+}
+
+.cj-route-live-hud__logo {
+  width: 56px;
+  height: 56px;
+
+  display: grid;
+  place-items: center;
+
+  overflow: visible;
+  border-radius: 16px;
+  background: transparent;
+}
+
+.cj-route-live-hud__logo img {
+  width: 54px;
+  height: 54px;
+
+  display: block;
+  object-fit: contain;
+
+  filter: drop-shadow(0 7px 8px rgba(2, 6, 23, 0.28));
+}
+
+.cj-route-live-hud__logo b {
+  width: 44px;
+  height: 44px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 14px;
+  background: #020617;
+  color: #ffffff;
+
+  font-size: 11px;
+  font-weight: 950;
+}
+
+.cj-route-live-hud__text {
+  min-width: 0;
+  display: grid;
+  gap: 5px;
+}
+
+.cj-route-live-hud__text strong {
+  overflow: hidden;
+
+  color: #020617;
+  font-size: 19px;
+  font-weight: 950;
+  line-height: 1;
+
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.cj-route-live-hud__text small {
+  overflow: hidden;
+
+  color: rgba(15, 23, 42, 0.62);
+  font-size: 12px;
+  font-weight: 750;
+
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* Marcador completo, sin círculo que recorte el icono */
+
+.cj-live-user-marker-wrap {
+  border: 0 !important;
+  background: transparent !important;
+}
+
+.cj-live-user-marker {
+  position: relative;
+
+  width: 72px;
+  height: 72px;
+
+  display: grid;
+  place-items: center;
+}
+
+.cj-live-user-marker__pulse {
+  position: absolute;
+  inset: 10px;
+
+  border-radius: 999px;
+  background: rgba(34, 211, 238, 0.24);
+
+  animation: cj-live-marker-pulse 1.8s ease-out infinite;
+}
+
+.cj-live-user-marker__image {
+  position: relative;
+  z-index: 2;
+
+  width: 58px;
+  height: 58px;
+
+  display: block;
+  object-fit: contain;
+
+  filter: drop-shadow(0 8px 8px rgba(2, 6, 23, 0.40));
+}
+
+.cj-live-user-marker__fallback {
+  position: relative;
+  z-index: 2;
+
+  width: 44px;
+  height: 44px;
+
+  place-items: center;
+
+  border: 4px solid #ffffff;
+  border-radius: 999px;
+
+  background: linear-gradient(135deg, #22d3ee, #7c3aed);
+  color: #020617;
+
+  font-size: 10px;
+  font-weight: 950;
+}
+
+.cj-live-user-marker__fallback:not([hidden]) {
+  display: grid;
+}
+
+.cj-live-user-marker__arrow {
+  position: absolute;
+  z-index: 3;
+  bottom: 0;
+
+  color: #22d3ee;
+  font-size: 17px;
+  line-height: 1;
+
+  text-shadow:
+    -2px -2px 0 #ffffff,
+    2px -2px 0 #ffffff,
+    -2px 2px 0 #ffffff,
+    2px 2px 0 #ffffff;
+}
+
+@keyframes cj-live-marker-pulse {
+  0% {
+    opacity: 0.85;
+    transform: scale(0.75);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.5);
+  }
+}
+
+/* Re-center único */
+
+.cj-route-recenter {
+  right: 12px;
+  bottom: 98px;
+  z-index: 9;
+}
+
+@media (max-width: 360px) {
+  .cj-route-live-hud {
+    width: calc(100vw - 16px);
+    padding: 8px 12px;
+  }
+
+  .cj-route-live-hud__summary {
+    grid-template-columns: 50px minmax(0, 1fr);
+    gap: 9px;
+  }
+
+  .cj-route-live-hud__logo,
+  .cj-route-live-hud__logo img {
+    width: 48px;
+    height: 48px;
+  }
+}
+
+/* =========================================
+   LIVE NAVIGATION — INLINE RE-CENTER
+========================================= */
+
+.cj-route-live-hud {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+}
+
+.cj-route-live-hud[hidden] {
+  display: none !important;
+}
+
+.cj-route-live-hud .cj-route-recenter {
+  position: static !important;
+  inset: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+
+  min-width: 48px;
+  min-height: 48px;
+  margin: 0;
+  padding: 0 12px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  border: 0;
+  border-radius: 16px;
+
+  background: rgba(15, 23, 42, 0.09);
+  color: #0f172a;
+
+  font-size: 18px;
+  font-weight: 950;
+
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.cj-route-live-hud .cj-route-recenter[hidden] {
+  display: none !important;
+}
+
+.cj-route-live-hud .cj-route-recenter span {
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+@media (max-width: 360px) {
+  .cj-route-live-hud {
+    grid-template-columns: minmax(0, 1fr) 46px;
+    gap: 7px;
+  }
+
+  .cj-route-live-hud .cj-route-recenter {
+    width: 46px;
+    min-width: 46px;
+    height: 46px;
+    min-height: 46px;
+    padding: 0;
+    border-radius: 15px;
+  }
+
+  .cj-route-live-hud .cj-route-recenter span {
+    display: none;
+  }
+}
