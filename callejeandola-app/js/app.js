@@ -2052,6 +2052,24 @@ function cjCreateLiveUserIcon() {
     });
 }
 
+function cjCreateDestinationIcon() {
+    return L.divIcon({
+        className: "cj-route-destination-marker-wrap",
+        html: `
+          <div
+            class="cj-route-destination-marker"
+            aria-label="Destino"
+            title="Destino"
+          >
+            🏁
+          </div>
+        `,
+        iconSize: [46, 46],
+        iconAnchor: [23, 42],
+        popupAnchor: [0, -40],
+    });
+}
+
 function cjDrawRoutePreview(userLocation, destination, route = null) {
     const map = cjGetMapInstance();
 
@@ -2068,6 +2086,8 @@ function cjDrawRoutePreview(userLocation, destination, route = null) {
 
     cjRouteDestinationMarker = L.marker(destLatLng, {
         title: destination.title,
+        icon: cjCreateDestinationIcon(),
+        zIndexOffset: 900,
     }).addTo(map);
 
     if (route?.geometry?.coordinates?.length) {
@@ -2369,7 +2389,6 @@ function cjRecenterLiveRoute() {
         animate: true,
     });
 }
-
 
 function cjStartLiveRoute() {
     const destination =
