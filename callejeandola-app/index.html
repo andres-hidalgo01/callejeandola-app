@@ -19,37 +19,8 @@
       <a class="brand" href="#main" aria-label="Callejeandola">
         <img src="assets/icons/logo.png" alt="Callejeandola logo" class="brand__logo">
       </a>
-      <!-- <div class="appbar__actions">
-        <div class="lang-wrap">
-          <button class="icon-btn" id="btnLanguage" type="button" aria-label="Cambiar idioma" aria-expanded="false">
-            🌐
-          </button>
-          <div class="lang-menu-global" id="langMenu" hidden>
-            <button class="lang-option" type="button" data-lang="es">🇨🇷 Español</button>
-            <button class="lang-option" type="button" data-lang="en">🇺🇸 English</button>
-          </div>
-        </div>
-
-        <button class="icon-btn" id="btnTheme" type="button" aria-label="Cambiar apariencia">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M21 12.3A8.2 8.2 0 1 1 11.7 3a6.8 6.8 0 0 0 9.3 9.3Z" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" />
-          </svg>
-        </button>
-      </div> -->
-
-
     </div>
   </header>
-
-  <!-- <section class="sponsors" aria-label="Patrocinadores">
-    <div class="container sponsors__inner">
-      <span class="badge sponsors__badge">Sponsors</span>
-      <div class="marquee" aria-label="Cintillo de marcas">
-        <div class="marquee__track" id="sponsorsMarquee"></div>
-      </div>
-    </div>
-  </section> -->
 
   <main id="main" class="main">
     <section class="container shell">
@@ -71,52 +42,88 @@
             </div>
           </div>
 
-          <div class="toolbar">
-            <div class="search">
-              <label class="sr-only" for="qSpots">Buscar spots</label>
-              <input id="qSpots" type="search" placeholder="Buscar: nombre, zona, obstáculo…" autocomplete="off" />
+          <div class="toolbar toolbar--spots beta-spots-toolbar">
+            <div class="search beta-spots-search">
+              <label class="sr-only" for="qSpots">
+                Buscar spots
+              </label>
+
+              <input id="qSpots" type="search" placeholder="Buscar: nombre, zona, obstáculo..." autocomplete="off"
+                spellcheck="false" />
             </div>
 
-            <div class="mobile-filters">
-              <select id="spotsFilterMobile" class="filter-select">
-                <option value="all">Todos</option>
-                <option value="street">Street</option>
-                <option value="park">Park</option>
-                <option value="bowl">Bowl</option>
-                <option value="verified">Verified</option>
-                <option value="safe">Safe</option>
-              </select>
+            <div class="beta-spots-control-row">
+              <div class="mobile-filters beta-spots-filter">
+                <label class="sr-only" for="spotsFilterMobile">
+                  Filtrar spots
+                </label>
+
+                <select id="spotsFilterMobile" class="filter-select" aria-label="Filtrar spots">
+                  <option value="all">Todos</option>
+                  <option value="street">Street</option>
+                  <option value="park">Park</option>
+                  <option value="bowl">Bowl</option>
+                </select>
+              </div>
+
+              <div class="beta-spots-mini-kpis" aria-label="Resumen rápido de spots">
+                <article class="beta-spots-mini-kpi">
+                  <strong id="kpiSpots">0</strong>
+
+                  <span>
+                    <b aria-hidden="true">👁</b>
+                    visibles
+                  </span>
+                </article>
+
+                <article class="beta-spots-mini-kpi">
+                  <strong id="kpiFavs">0</strong>
+
+                  <span>
+                    <b aria-hidden="true">♡</b>
+                    favoritos
+                  </span>
+                </article>
+              </div>
             </div>
 
-            <div class="chips" aria-label="Filtros de spots">
-              <button class="chip chip-btn is-active" type="button" data-filter="all">All</button>
-              <button class="chip chip-btn" type="button" data-filter="street">Street</button>
-              <button class="chip chip-btn" type="button" data-filter="park">Park</button>
-              <button class="chip chip-btn" type="button" data-filter="bowl">Bowl</button>
-              <button class="chip chip-btn" type="button" data-filter="verified">Verified</button>
-              <button class="chip chip-btn" type="button" data-filter="safe">Safe</button>
-            </div>
+            <div class="chips beta-spots-chips" aria-label="Filtros rápidos de spots">
+              <button class="chip chip-btn is-active" type="button" data-filter="all">
+                Todos
+              </button>
 
+              <button class="chip chip-btn" type="button" data-filter="street">
+                Street
+              </button>
+
+              <button class="chip chip-btn" type="button" data-filter="park">
+                Park
+              </button>
+
+              <button class="chip chip-btn" type="button" data-filter="bowl">
+                Bowl
+              </button>
+            </div>
           </div>
 
-          <div class="status-row" aria-live="polite" aria-atomic="true">
-            <span class="status" id="spotsStatus">Mostrando spots…</span>
+          <div class="status-row beta-spots-status-row">
+            <span class="status" id="spotsStatus" aria-live="polite" aria-atomic="true"></span>
           </div>
 
-          <div class="kpis">
-            <div class="kpi">
-              <div class="kpi__num" id="kpiSpots">—</div>
-              <div class="kpi__label">spots visibles</div>
-            </div>
-            <div class="kpi">
-              <div class="kpi__num" id="kpiFavs">—</div>
-              <div class="kpi__label">favoritos</div>
-            </div>
-            <div class="kpi">
-              <div class="kpi__num" id="kpiVerified">—</div>
-              <div class="kpi__label">verificados</div>
-            </div>
+          <div class="cards flashable" id="spotsList" aria-label="Listado de spots"></div>
+
+          <div class="empty" id="spotsEmpty" hidden>
+            <div class="empty__icon">🛹</div>
+
+            <h3>
+              No encontramos spots con ese filtro
+            </h3>
+
+            <p class="muted">
+              Probá otro filtro o agregá un nuevo spot.
+            </p>
           </div>
+
 
           <div class="cards flashable" id="spotsList" aria-label="Listado de spots"></div>
 
@@ -546,7 +553,6 @@
     <span id="toastMsg">Listo</span>
   </div>
 
-  <!-- Mobile entry flow -->
   <div class="desktop-qr-gate" id="desktopQrGate" hidden>
     <div class="desktop-qr-gate__card">
       <img class="desktop-qr-gate__logo" src="./assets/icons/logo.png" alt="Callejeandola" />

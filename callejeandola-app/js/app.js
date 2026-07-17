@@ -627,12 +627,34 @@ function bindFilters() {
 }
 
 function bindMobileFilters() {
+    // $("#spotsFilterMobile")?.addEventListener("change", (e) => {
+    //     state.spotsFilter = e.target.value;
+    //     syncChipState("[data-filter]", state.spotsFilter, "filter");
+    //     renderSpots();
+    //     flash("#spotsList");
+    // });
     $("#spotsFilterMobile")?.addEventListener("change", (e) => {
         state.spotsFilter = e.target.value;
-        syncChipState("[data-filter]", state.spotsFilter, "filter");
+
+        syncChipState(
+            "[data-filter]",
+            state.spotsFilter,
+            "filter"
+        );
+
         renderSpots();
         flash("#spotsList");
+
+        /*
+         * Chrome mantiene el foco en el select después
+         * de cerrar el dropdown. Esto hace que la flecha
+         * vuelva a su estado normal.
+         */
+        window.requestAnimationFrame(() => {
+            e.target.blur();
+        });
     });
+
 
     $("#eventsFilterMobile")?.addEventListener("change", (e) => {
         state.eventsFilter = e.target.value;
@@ -2870,7 +2892,6 @@ function renderMediaBlock(entity, type = "spot") {
     if (!image) {
         return `
       <div class="entity-media entity-media--${type} is-fallback">
-        <div class="entity-media__mark">CJ</div>
         <span>${escapeHtml(title)}</span>
       </div>
     `;
@@ -2884,7 +2905,6 @@ function renderMediaBlock(entity, type = "spot") {
         loading="lazy"
         onerror="this.remove(); this.parentElement.classList.add('is-fallback');"
       >
-      <div class="entity-media__mark">CJ</div>
       <span>${escapeHtml(title)}</span>
     </div>
   `;

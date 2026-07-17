@@ -5853,3 +5853,1982 @@ body.is-cj-live-navigation .cj-route-sheet {
     transform: translateY(-3px) rotate(3deg);
   }
 }
+
+/* =========================================
+   BETA FINAL POLISH — ENTITY TOOLBAR
+   Spots first · Events/Shops compatible
+========================================= */
+
+/* -----------------------------------------
+   Search and filters container
+----------------------------------------- */
+
+.entity-toolbar {
+  width: 100%;
+  min-width: 0;
+
+  display: grid;
+  grid-template-columns:
+    minmax(220px, 1fr) auto;
+
+  align-items: center;
+  gap: 12px;
+
+  margin: 16px 0;
+}
+
+.entity-toolbar__search {
+  position: relative;
+
+  width: 100%;
+  min-width: 0;
+}
+
+.entity-toolbar__search-icon {
+  position: absolute;
+  top: 50%;
+  left: 17px;
+  z-index: 2;
+
+  transform: translateY(-50%);
+
+  color: rgba(226, 232, 240, 0.62);
+
+  font-size: 20px;
+  line-height: 1;
+
+  pointer-events: none;
+}
+
+.entity-toolbar__search input {
+  width: 100%;
+  min-width: 0;
+  min-height: 52px;
+
+  display: block;
+
+  padding:
+    0 18px 0 48px;
+
+  border:
+    1px solid rgba(148, 163, 184, 0.18);
+
+  border-radius: 18px;
+
+  outline: 0;
+
+  background:
+    rgba(7, 15, 29, 0.86);
+
+  color: #f8fafc;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.035);
+
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    background 160ms ease;
+}
+
+.entity-toolbar__search input::placeholder {
+  color: rgba(203, 213, 225, 0.52);
+}
+
+.entity-toolbar__search input:focus {
+  border-color:
+    rgba(34, 211, 238, 0.64);
+
+  background:
+    rgba(8, 18, 34, 0.98);
+
+  box-shadow:
+    0 0 0 4px rgba(34, 211, 238, 0.09);
+}
+
+/* -----------------------------------------
+   Mobile select
+----------------------------------------- */
+
+.entity-toolbar__mobile-filter {
+  min-width: 174px;
+}
+
+.filter-select-wrap {
+  position: relative;
+  width: 100%;
+}
+
+.filter-select {
+  width: 100%;
+  min-height: 52px;
+
+  appearance: none;
+  -webkit-appearance: none;
+
+  padding:
+    0 44px 0 16px;
+
+  border:
+    1px solid rgba(148, 163, 184, 0.18);
+
+  border-radius: 18px;
+
+  outline: 0;
+
+  background:
+    rgba(7, 15, 29, 0.9);
+
+  color: #f8fafc;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 800;
+
+  cursor: pointer;
+}
+
+.filter-select:focus {
+  border-color:
+    rgba(34, 211, 238, 0.64);
+
+  box-shadow:
+    0 0 0 4px rgba(34, 211, 238, 0.09);
+}
+
+.filter-select-wrap__arrow {
+  position: absolute;
+  top: 50%;
+  right: 16px;
+
+  transform:
+    translateY(-52%) rotate(0deg);
+
+  color: #e2e8f0;
+
+  font-size: 18px;
+  font-weight: 900;
+  line-height: 1;
+
+  pointer-events: none;
+}
+
+/*
+ * El listado desplegado internamente por Chrome/Windows
+ * seguirá usando parcialmente estilos del sistema.
+ * El control cerrado sí mantiene el diseño de la app.
+ */
+.filter-select option {
+  background: #0c1524;
+  color: #f8fafc;
+}
+
+/* -----------------------------------------
+   Desktop chips
+----------------------------------------- */
+
+.entity-toolbar__chips {
+  grid-column: 1 / -1;
+
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  margin: 0;
+}
+
+.entity-toolbar__chips .chip-btn {
+  min-height: 38px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0 14px;
+
+  border:
+    1px solid rgba(148, 163, 184, 0.16);
+
+  border-radius: 999px;
+
+  background:
+    rgba(15, 23, 42, 0.68);
+
+  color:
+    rgba(226, 232, 240, 0.78);
+
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 850;
+
+  cursor: pointer;
+
+  transition:
+    transform 150ms ease,
+    color 150ms ease,
+    border-color 150ms ease,
+    background 150ms ease;
+}
+
+.entity-toolbar__chips .chip-btn:hover {
+  color: #f8fafc;
+
+  border-color:
+    rgba(34, 211, 238, 0.34);
+
+  background:
+    rgba(34, 211, 238, 0.08);
+}
+
+.entity-toolbar__chips .chip-btn:active {
+  transform: scale(0.96);
+}
+
+.entity-toolbar__chips .chip-btn.is-active {
+  border-color:
+    rgba(34, 211, 238, 0.55);
+
+  background:
+    rgba(34, 211, 238, 0.14);
+
+  color: #67e8f9;
+}
+
+/* -----------------------------------------
+   KPIs
+----------------------------------------- */
+
+.entity-kpis {
+  width: 100%;
+
+  display: grid;
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  gap: 10px;
+
+  margin:
+    0 0 12px;
+}
+
+.entity-kpi {
+  min-width: 0;
+  min-height: 76px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  padding: 12px 13px;
+
+  border:
+    1px solid rgba(148, 163, 184, 0.14);
+
+  border-radius: 18px;
+
+  background:
+    linear-gradient(180deg,
+      rgba(17, 28, 47, 0.88),
+      rgba(9, 18, 33, 0.88));
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.035);
+}
+
+.entity-kpi .kpi__num {
+  color: #f8fafc;
+
+  font-size: 22px;
+  font-weight: 950;
+  line-height: 1;
+}
+
+.entity-kpi .kpi__label {
+  overflow: hidden;
+
+  margin-top: 7px;
+
+  color:
+    rgba(203, 213, 225, 0.6);
+
+  font-size: 11px;
+  font-weight: 750;
+  line-height: 1.2;
+
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* -----------------------------------------
+   Status
+----------------------------------------- */
+
+.entity-status-row {
+  width: 100%;
+
+  margin:
+    0 0 16px;
+}
+
+.entity-status {
+  margin: 0;
+
+  color:
+    rgba(203, 213, 225, 0.66);
+
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+/* =========================================
+   BETA FINAL POLISH — LIST/GRID SWITCH
+========================================= */
+
+.entity-view-toggle {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  margin:
+    8px 0 12px;
+}
+
+.entity-view-toggle__label {
+  min-width: 0;
+
+  color: #f8fafc;
+
+  font-size: 18px;
+  font-weight: 950;
+  letter-spacing: -0.025em;
+}
+
+.entity-view-toggle__actions {
+  flex: 0 0 auto;
+
+  display: inline-grid;
+  grid-template-columns:
+    repeat(2, 42px);
+
+  gap: 5px;
+
+  padding: 4px;
+
+  border:
+    1px solid rgba(148, 163, 184, 0.13);
+
+  border-radius: 15px;
+
+  background:
+    rgba(8, 16, 30, 0.78);
+}
+
+.entity-view-toggle__btn {
+  width: 42px;
+  height: 38px;
+
+  display: grid;
+  place-items: center;
+
+  padding: 0;
+
+  border: 0;
+  border-radius: 11px;
+
+  background: transparent;
+  color:
+    rgba(203, 213, 225, 0.58);
+
+  font-family: inherit;
+  font-size: 18px;
+  font-weight: 900;
+  line-height: 1;
+
+  cursor: pointer;
+}
+
+.entity-view-toggle__btn.is-active {
+  background:
+    rgba(34, 211, 238, 0.14);
+
+  color: #67e8f9;
+
+  box-shadow:
+    inset 0 0 0 1px rgba(34, 211, 238, 0.22);
+}
+
+/* =========================================
+   BETA FINAL POLISH — SPOT CARDS
+========================================= */
+
+#spotsList {
+  width: 100%;
+  min-width: 0;
+}
+
+/* -----------------------------------------
+   List mode
+----------------------------------------- */
+
+#spotsList[data-view-mode="list"] {
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+#spotsList[data-view-mode="list"] .spot-card {
+  min-width: 0;
+
+  display: grid;
+  grid-template-columns:
+    minmax(126px, 32%) minmax(0, 1fr);
+
+  align-items: stretch;
+  gap: 0;
+
+  padding: 0;
+
+  overflow: hidden;
+
+  border:
+    1px solid rgba(148, 163, 184, 0.14);
+
+  border-radius: 22px;
+
+  background:
+    linear-gradient(145deg,
+      rgba(15, 26, 44, 0.95),
+      rgba(7, 15, 28, 0.96));
+}
+
+#spotsList[data-view-mode="list"] .spot-card>.entity-media {
+  width: 100%;
+  height: 100%;
+  min-height: 150px;
+
+  margin: 0;
+
+  border: 0;
+  border-radius: 0;
+
+  aspect-ratio: auto;
+}
+
+#spotsList[data-view-mode="list"] .spot-card .card__body {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 16px;
+}
+
+#spotsList[data-view-mode="list"] .spot__name {
+  display: -webkit-box;
+  overflow: hidden;
+
+  margin: 0 0 14px;
+
+  color: #f8fafc;
+
+  font-size: 18px;
+  font-weight: 950;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+#spotsList[data-view-mode="list"] .entity-row {
+  width: 100%;
+  min-width: 0;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 10px;
+
+  margin-top: auto;
+}
+
+/* -----------------------------------------
+   Grid mode
+----------------------------------------- */
+
+#spotsList[data-view-mode="grid"] {
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  align-items: stretch;
+  gap: 14px;
+}
+
+#spotsList[data-view-mode="grid"] .spot-card {
+  min-width: 0;
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 0;
+
+  overflow: hidden;
+
+  border:
+    1px solid rgba(148, 163, 184, 0.14);
+
+  border-radius: 21px;
+
+  background:
+    linear-gradient(145deg,
+      rgba(15, 26, 44, 0.95),
+      rgba(7, 15, 28, 0.98));
+}
+
+#spotsList[data-view-mode="grid"] .spot-card>.entity-media {
+  width: 100%;
+  height: auto;
+
+  margin: 0;
+
+  border: 0;
+  border-radius: 0;
+
+  aspect-ratio: 4 / 3;
+}
+
+#spotsList[data-view-mode="grid"] .spot-card .card__body {
+  min-width: 0;
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 13px;
+}
+
+#spotsList[data-view-mode="grid"] .spot__name {
+  display: -webkit-box;
+  overflow: hidden;
+
+  min-height: 2.3em;
+
+  margin: 0 0 13px;
+
+  color: #f8fafc;
+
+  font-size: 16px;
+  font-weight: 950;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+#spotsList[data-view-mode="grid"] .entity-row {
+  width: 100%;
+  min-width: 0;
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 12px;
+
+  margin-top: auto;
+}
+
+#spotsList[data-view-mode="grid"] .entity-row__location {
+  min-width: 0;
+
+  display: flex;
+  align-items: flex-start;
+  gap: 5px;
+
+  margin: 0;
+
+  font-size: 11px;
+  line-height: 1.3;
+}
+
+#spotsList[data-view-mode="grid"] .entity-row__location span:last-child {
+  display: -webkit-box;
+  overflow: hidden;
+
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+#spotsList[data-view-mode="grid"] .entity-row__actions {
+  width: 100%;
+
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 8px;
+}
+
+/* -----------------------------------------
+   Shared card media
+----------------------------------------- */
+
+#spotsList .entity-media {
+  position: relative;
+  overflow: hidden;
+
+  background:
+    linear-gradient(135deg,
+      rgba(34, 211, 238, 0.13),
+      rgba(124, 58, 237, 0.15));
+}
+
+#spotsList .entity-media img {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+}
+
+#spotsList .entity-media__mark {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+
+  min-width: 34px;
+  height: 30px;
+
+  display: grid;
+  place-items: center;
+
+  padding: 0 8px;
+
+  border:
+    1px solid rgba(255, 255, 255, 0.18);
+
+  border-radius: 10px;
+
+  background:
+    rgba(2, 6, 23, 0.66);
+
+  color: #ffffff;
+
+  font-size: 10px;
+  font-weight: 950;
+
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+#spotsList .entity-media>span {
+  position: absolute;
+  right: 10px;
+  bottom: 9px;
+  left: 10px;
+
+  overflow: hidden;
+
+  color: #ffffff;
+
+  font-size: 11px;
+  font-weight: 850;
+
+  white-space: nowrap;
+  text-overflow: ellipsis;
+
+  text-shadow:
+    0 2px 7px rgba(0, 0, 0, 0.78);
+}
+
+/* -----------------------------------------
+   Location and action buttons
+----------------------------------------- */
+
+#spotsList .entity-row__location {
+  color:
+    rgba(203, 213, 225, 0.65);
+}
+
+#spotsList .entity-row__pin {
+  flex: 0 0 auto;
+}
+
+#spotsList .entity-row__actions {
+  flex: 0 0 auto;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#spotsList .entity-icon-btn {
+  min-width: 42px;
+  min-height: 42px;
+
+  display: inline-grid;
+  place-items: center;
+
+  padding: 0;
+
+  border:
+    1px solid rgba(148, 163, 184, 0.14);
+
+  border-radius: 13px;
+
+  background:
+    rgba(15, 23, 42, 0.78);
+
+  color: #e2e8f0;
+
+  font-size: 16px;
+  line-height: 1;
+
+  cursor: pointer;
+
+  transition:
+    transform 150ms ease,
+    color 150ms ease,
+    border-color 150ms ease,
+    background 150ms ease;
+}
+
+#spotsList .entity-icon-btn:hover {
+  border-color:
+    rgba(34, 211, 238, 0.38);
+
+  background:
+    rgba(34, 211, 238, 0.1);
+
+  color: #67e8f9;
+}
+
+#spotsList .entity-icon-btn:active {
+  transform: scale(0.94);
+}
+
+#spotsList .entity-icon-btn.is-active {
+  border-color:
+    rgba(244, 63, 94, 0.32);
+
+  background:
+    rgba(244, 63, 94, 0.12);
+
+  color: #fb7185;
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (min-width: 769px) {
+  .entity-toolbar__mobile-filter {
+    display: none;
+  }
+}
+
+@media (max-width: 900px) {
+  #spotsList[data-view-mode="grid"] {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .entity-toolbar {
+    grid-template-columns: 1fr;
+    gap: 10px;
+
+    margin:
+      14px 0;
+  }
+
+  .entity-toolbar__mobile-filter {
+    display: block;
+    min-width: 0;
+  }
+
+  .entity-toolbar__chips {
+    display: none;
+  }
+
+  .entity-toolbar__search input,
+  .filter-select {
+    min-height: 50px;
+    border-radius: 17px;
+  }
+
+  .entity-kpis {
+    gap: 8px;
+  }
+
+  .entity-kpi {
+    min-height: 70px;
+    padding: 11px;
+  }
+
+  .entity-kpi .kpi__num {
+    font-size: 20px;
+  }
+
+  .entity-kpi .kpi__label {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 560px) {
+  #spotsList[data-view-mode="list"] .spot-card {
+    grid-template-columns:
+      112px minmax(0, 1fr);
+
+    border-radius: 19px;
+  }
+
+  #spotsList[data-view-mode="list"] .spot-card>.entity-media {
+    min-height: 134px;
+  }
+
+  #spotsList[data-view-mode="list"] .spot-card .card__body {
+    padding: 13px;
+  }
+
+  #spotsList[data-view-mode="list"] .spot__name {
+    margin-bottom: 10px;
+    font-size: 16px;
+  }
+
+  #spotsList[data-view-mode="list"] .entity-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  #spotsList[data-view-mode="grid"] {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+
+    gap: 10px;
+  }
+
+  #spotsList[data-view-mode="grid"] .spot-card {
+    border-radius: 18px;
+  }
+
+  #spotsList[data-view-mode="grid"] .spot-card .card__body {
+    padding: 10px;
+  }
+
+  #spotsList[data-view-mode="grid"] .spot__name {
+    min-height: 2.35em;
+
+    margin-bottom: 10px;
+
+    font-size: 14px;
+  }
+
+  #spotsList[data-view-mode="grid"] .entity-row {
+    gap: 10px;
+  }
+
+  #spotsList[data-view-mode="grid"] .entity-row__actions {
+    gap: 6px;
+  }
+
+  #spotsList[data-view-mode="grid"] .entity-icon-btn {
+    width: 100%;
+    min-width: 0;
+    min-height: 38px;
+
+    border-radius: 11px;
+  }
+}
+
+@media (max-width: 340px) {
+  .entity-toolbar__search input {
+    padding-right: 13px;
+    padding-left: 43px;
+
+    font-size: 13px;
+  }
+
+  .entity-kpi {
+    padding:
+      10px 8px;
+  }
+
+  .entity-kpi .kpi__num {
+    font-size: 18px;
+  }
+
+  .entity-kpi .kpi__label {
+    font-size: 9px;
+  }
+
+  #spotsList[data-view-mode="grid"] {
+    gap: 8px;
+  }
+
+  #spotsList[data-view-mode="grid"] .spot-card .card__body {
+    padding: 9px;
+  }
+
+  #spotsList[data-view-mode="grid"] .spot__name {
+    font-size: 13px;
+  }
+}
+
+/* =========================================
+   BETA FINAL POLISH — LIST/GRID SWITCH
+========================================= */
+
+.entity-view-toggle {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  margin:
+    8px 0 12px;
+}
+
+.entity-view-toggle__label {
+  min-width: 0;
+
+  color: #f8fafc;
+
+  font-size: 18px;
+  font-weight: 950;
+  letter-spacing: -0.025em;
+}
+
+.entity-view-toggle__actions {
+  flex: 0 0 auto;
+
+  display: inline-grid;
+  grid-template-columns:
+    repeat(2, 42px);
+
+  gap: 5px;
+
+  padding: 4px;
+
+  border:
+    1px solid rgba(148, 163, 184, 0.13);
+
+  border-radius: 15px;
+
+  background:
+    rgba(8, 16, 30, 0.78);
+}
+
+.entity-view-toggle__btn {
+  width: 42px;
+  height: 38px;
+
+  display: grid;
+  place-items: center;
+
+  padding: 0;
+
+  border: 0;
+  border-radius: 11px;
+
+  background: transparent;
+  color:
+    rgba(203, 213, 225, 0.58);
+
+  font-family: inherit;
+  font-size: 18px;
+  font-weight: 900;
+  line-height: 1;
+
+  cursor: pointer;
+}
+
+.entity-view-toggle__btn.is-active {
+  background:
+    rgba(34, 211, 238, 0.14);
+
+  color: #67e8f9;
+
+  box-shadow:
+    inset 0 0 0 1px rgba(34, 211, 238, 0.22);
+}
+
+/* =========================================
+   BETA FINAL POLISH — SPOT CARDS
+========================================= */
+
+#spotsList {
+  width: 100%;
+  min-width: 0;
+}
+
+/* -----------------------------------------
+   List mode
+----------------------------------------- */
+
+#spotsList[data-view-mode="list"] {
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+#spotsList[data-view-mode="list"] .spot-card {
+  min-width: 0;
+
+  display: grid;
+  grid-template-columns:
+    minmax(126px, 32%) minmax(0, 1fr);
+
+  align-items: stretch;
+  gap: 0;
+
+  padding: 0;
+
+  overflow: hidden;
+
+  border:
+    1px solid rgba(148, 163, 184, 0.14);
+
+  border-radius: 22px;
+
+  background:
+    linear-gradient(145deg,
+      rgba(15, 26, 44, 0.95),
+      rgba(7, 15, 28, 0.96));
+}
+
+#spotsList[data-view-mode="list"] .spot-card>.entity-media {
+  width: 100%;
+  height: 100%;
+  min-height: 150px;
+
+  margin: 0;
+
+  border: 0;
+  border-radius: 0;
+
+  aspect-ratio: auto;
+}
+
+#spotsList[data-view-mode="list"] .spot-card .card__body {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 16px;
+}
+
+#spotsList[data-view-mode="list"] .spot__name {
+  display: -webkit-box;
+  overflow: hidden;
+
+  margin: 0 0 14px;
+
+  color: #f8fafc;
+
+  font-size: 18px;
+  font-weight: 950;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+#spotsList[data-view-mode="list"] .entity-row {
+  width: 100%;
+  min-width: 0;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 10px;
+
+  margin-top: auto;
+}
+
+/* -----------------------------------------
+   Grid mode
+----------------------------------------- */
+
+#spotsList[data-view-mode="grid"] {
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  align-items: stretch;
+  gap: 14px;
+}
+
+#spotsList[data-view-mode="grid"] .spot-card {
+  min-width: 0;
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 0;
+
+  overflow: hidden;
+
+  border:
+    1px solid rgba(148, 163, 184, 0.14);
+
+  border-radius: 21px;
+
+  background:
+    linear-gradient(145deg,
+      rgba(15, 26, 44, 0.95),
+      rgba(7, 15, 28, 0.98));
+}
+
+#spotsList[data-view-mode="grid"] .spot-card>.entity-media {
+  width: 100%;
+  height: auto;
+
+  margin: 0;
+
+  border: 0;
+  border-radius: 0;
+
+  aspect-ratio: 4 / 3;
+}
+
+#spotsList[data-view-mode="grid"] .spot-card .card__body {
+  min-width: 0;
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 13px;
+}
+
+#spotsList[data-view-mode="grid"] .spot__name {
+  display: -webkit-box;
+  overflow: hidden;
+
+  min-height: 2.3em;
+
+  margin: 0 0 13px;
+
+  color: #f8fafc;
+
+  font-size: 16px;
+  font-weight: 950;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+#spotsList[data-view-mode="grid"] .entity-row {
+  width: 100%;
+  min-width: 0;
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 12px;
+
+  margin-top: auto;
+}
+
+#spotsList[data-view-mode="grid"] .entity-row__location {
+  min-width: 0;
+
+  display: flex;
+  align-items: flex-start;
+  gap: 5px;
+
+  margin: 0;
+
+  font-size: 11px;
+  line-height: 1.3;
+}
+
+#spotsList[data-view-mode="grid"] .entity-row__location span:last-child {
+  display: -webkit-box;
+  overflow: hidden;
+
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+#spotsList[data-view-mode="grid"] .entity-row__actions {
+  width: 100%;
+
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 8px;
+}
+
+/* -----------------------------------------
+   Shared card media
+----------------------------------------- */
+
+#spotsList .entity-media {
+  position: relative;
+  overflow: hidden;
+
+  background:
+    linear-gradient(135deg,
+      rgba(34, 211, 238, 0.13),
+      rgba(124, 58, 237, 0.15));
+}
+
+#spotsList .entity-media img {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+}
+
+#spotsList .entity-media__mark {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+
+  min-width: 34px;
+  height: 30px;
+
+  display: grid;
+  place-items: center;
+
+  padding: 0 8px;
+
+  border:
+    1px solid rgba(255, 255, 255, 0.18);
+
+  border-radius: 10px;
+
+  background:
+    rgba(2, 6, 23, 0.66);
+
+  color: #ffffff;
+
+  font-size: 10px;
+  font-weight: 950;
+
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+#spotsList .entity-media>span {
+  position: absolute;
+  right: 10px;
+  bottom: 9px;
+  left: 10px;
+
+  overflow: hidden;
+
+  color: #ffffff;
+
+  font-size: 11px;
+  font-weight: 850;
+
+  white-space: nowrap;
+  text-overflow: ellipsis;
+
+  text-shadow:
+    0 2px 7px rgba(0, 0, 0, 0.78);
+}
+
+/* -----------------------------------------
+   Location and action buttons
+----------------------------------------- */
+
+#spotsList .entity-row__location {
+  color:
+    rgba(203, 213, 225, 0.65);
+}
+
+#spotsList .entity-row__pin {
+  flex: 0 0 auto;
+}
+
+#spotsList .entity-row__actions {
+  flex: 0 0 auto;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#spotsList .entity-icon-btn {
+  min-width: 42px;
+  min-height: 42px;
+
+  display: inline-grid;
+  place-items: center;
+
+  padding: 0;
+
+  border:
+    1px solid rgba(148, 163, 184, 0.14);
+
+  border-radius: 13px;
+
+  background:
+    rgba(15, 23, 42, 0.78);
+
+  color: #e2e8f0;
+
+  font-size: 16px;
+  line-height: 1;
+
+  cursor: pointer;
+
+  transition:
+    transform 150ms ease,
+    color 150ms ease,
+    border-color 150ms ease,
+    background 150ms ease;
+}
+
+#spotsList .entity-icon-btn:hover {
+  border-color:
+    rgba(34, 211, 238, 0.38);
+
+  background:
+    rgba(34, 211, 238, 0.1);
+
+  color: #67e8f9;
+}
+
+#spotsList .entity-icon-btn:active {
+  transform: scale(0.94);
+}
+
+#spotsList .entity-icon-btn.is-active {
+  border-color:
+    rgba(244, 63, 94, 0.32);
+
+  background:
+    rgba(244, 63, 94, 0.12);
+
+  color: #fb7185;
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (min-width: 769px) {
+  .entity-toolbar__mobile-filter {
+    display: none;
+  }
+}
+
+@media (max-width: 900px) {
+  #spotsList[data-view-mode="grid"] {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .entity-toolbar {
+    grid-template-columns: 1fr;
+    gap: 10px;
+
+    margin:
+      14px 0;
+  }
+
+  .entity-toolbar__mobile-filter {
+    display: block;
+    min-width: 0;
+  }
+
+  .entity-toolbar__chips {
+    display: none;
+  }
+
+  .entity-toolbar__search input,
+  .filter-select {
+    min-height: 50px;
+    border-radius: 17px;
+  }
+
+  .entity-kpis {
+    gap: 8px;
+  }
+
+  .entity-kpi {
+    min-height: 70px;
+    padding: 11px;
+  }
+
+  .entity-kpi .kpi__num {
+    font-size: 20px;
+  }
+
+  .entity-kpi .kpi__label {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 560px) {
+  #spotsList[data-view-mode="list"] .spot-card {
+    grid-template-columns:
+      112px minmax(0, 1fr);
+
+    border-radius: 19px;
+  }
+
+  #spotsList[data-view-mode="list"] .spot-card>.entity-media {
+    min-height: 134px;
+  }
+
+  #spotsList[data-view-mode="list"] .spot-card .card__body {
+    padding: 13px;
+  }
+
+  #spotsList[data-view-mode="list"] .spot__name {
+    margin-bottom: 10px;
+    font-size: 16px;
+  }
+
+  #spotsList[data-view-mode="list"] .entity-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  #spotsList[data-view-mode="grid"] {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+
+    gap: 10px;
+  }
+
+  #spotsList[data-view-mode="grid"] .spot-card {
+    border-radius: 18px;
+  }
+
+  #spotsList[data-view-mode="grid"] .spot-card .card__body {
+    padding: 10px;
+  }
+
+  #spotsList[data-view-mode="grid"] .spot__name {
+    min-height: 2.35em;
+
+    margin-bottom: 10px;
+
+    font-size: 14px;
+  }
+
+  #spotsList[data-view-mode="grid"] .entity-row {
+    gap: 10px;
+  }
+
+  #spotsList[data-view-mode="grid"] .entity-row__actions {
+    gap: 6px;
+  }
+
+  #spotsList[data-view-mode="grid"] .entity-icon-btn {
+    width: 100%;
+    min-width: 0;
+    min-height: 38px;
+
+    border-radius: 11px;
+  }
+}
+
+@media (max-width: 340px) {
+  .entity-toolbar__search input {
+    padding-right: 13px;
+    padding-left: 43px;
+
+    font-size: 13px;
+  }
+
+  .entity-kpi {
+    padding:
+      10px 8px;
+  }
+
+  .entity-kpi .kpi__num {
+    font-size: 18px;
+  }
+
+  .entity-kpi .kpi__label {
+    font-size: 9px;
+  }
+
+  #spotsList[data-view-mode="grid"] {
+    gap: 8px;
+  }
+
+  #spotsList[data-view-mode="grid"] .spot-card .card__body {
+    padding: 9px;
+  }
+
+  #spotsList[data-view-mode="grid"] .spot__name {
+    font-size: 13px;
+  }
+}
+
+/* =========================================
+   BETA POLISH — SPOTS TOOLBAR FINAL
+   Search + Filter + Compact KPIs + Help
+========================================= */
+
+.beta-spots-toolbar,
+.beta-spots-toolbar * {
+  box-sizing: border-box;
+}
+
+.beta-spots-toolbar {
+  width: 100%;
+  min-width: 0;
+  display: grid;
+  gap: 9px;
+  margin: 13px 0 11px;
+}
+
+/* -----------------------------------------
+   Search
+----------------------------------------- */
+
+.beta-spots-search {
+  width: 100%;
+  min-width: 0;
+}
+
+.beta-spots-search input {
+  width: 100%;
+  min-width: 0;
+  height: 48px;
+  display: block;
+  padding: 0 15px;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 17px;
+  outline: none;
+  background: rgba(7, 15, 29, 0.88);
+  color: #f8fafc;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 750;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 12px 26px rgba(2, 6, 23, 0.12);
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    background 160ms ease;
+}
+
+.beta-spots-search input::placeholder {
+  color: rgba(203, 213, 225, 0.5);
+}
+
+.beta-spots-search input:focus {
+  border-color: rgba(34, 211, 238, 0.58);
+  background: rgba(9, 19, 36, 0.98);
+  box-shadow:
+    0 0 0 4px rgba(34, 211, 238, 0.09),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* -----------------------------------------
+   Filter + mini KPIs
+   3 columnas iguales: filtro, visibles, favoritos
+----------------------------------------- */
+
+.beta-spots-control-row {
+  width: 100%;
+  min-width: 0;
+
+  display: grid;
+  grid-template-columns:
+    minmax(138px, 1.45fr) minmax(70px, 0.78fr) minmax(70px, 0.78fr);
+
+  align-items: stretch;
+  gap: 7px;
+}
+
+.beta-spots-filter {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+
+.beta-spots-filter .filter-select {
+  width: 100%;
+  height: 50px;
+  min-height: 50px;
+
+  display: block;
+  padding: 0 34px 0 17px;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 18px;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: rgba(8, 17, 32, 0.96);
+  color: #f8fafc;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.beta-spots-filter::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 17px;
+  width: 9px;
+  height: 9px;
+  border-right: 2.5px solid #e2e8f0;
+  border-bottom: 2.5px solid #e2e8f0;
+  transform: translateY(-72%) rotate(45deg);
+  pointer-events: none;
+  opacity: 0.95;
+
+  transition:
+    opacity 160ms ease;
+}
+
+.beta-spots-filter .filter-select:focus {
+  border-color: rgba(34, 211, 238, 0.58);
+  box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.09);
+}
+
+.beta-spots-filter .filter-select option {
+  background: #0b1423;
+  color: #f8fafc;
+}
+
+.beta-spots-mini-kpis {
+  display: contents;
+}
+
+.beta-spots-filter {
+  width: 100%;
+  min-width: 0;
+}
+
+.beta-spots-filter .filter-select {
+  width: 100%;
+  height: 50px;
+  min-height: 50px;
+
+  display: block;
+
+  padding: 0 30px 0 14px;
+
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 15px;
+
+  outline: none;
+
+  appearance: none;
+  -webkit-appearance: none;
+
+  background-color: rgba(8, 17, 32, 0.96);
+  background-image:
+    url("data:image/svg+xml,%3Csvg width='14' height='14' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5 7.5L10 12.5L15 7.5' stroke='%23E2E8F0' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 11px center;
+  background-size: 14px 14px;
+
+  color: #f8fafc;
+
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 850;
+
+  cursor: pointer;
+}
+
+.beta-spots-filter .filter-select:focus {
+  border-color: rgba(34, 211, 238, 0.58);
+
+  box-shadow:
+    0 0 0 4px rgba(34, 211, 238, 0.09);
+}
+
+.beta-spots-filter .filter-select option {
+  background: #0b1423;
+  color: #f8fafc;
+}
+
+
+
+
+.beta-spots-mini-kpi {
+  width: 100%;
+  min-width: 0;
+  height: 50px;
+  min-height: 50px;
+  display: grid;
+  align-content: center;
+  gap: 3px;
+  padding: 7px 8px;
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  border-radius: 15px;
+  background:
+    linear-gradient(180deg,
+      rgba(17, 28, 47, 0.92),
+      rgba(8, 16, 31, 0.94));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.035);
+}
+
+.beta-spots-mini-kpi strong {
+  color: #f8fafc;
+  font-size: 17px;
+  font-weight: 950;
+  line-height: 1;
+}
+
+.beta-spots-mini-kpi span {
+  min-width: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: rgba(203, 213, 225, 0.68);
+  font-size: 9px;
+  font-weight: 760;
+  line-height: 1.1;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.beta-spots-mini-kpi b {
+  color: rgba(34, 211, 238, 0.9);
+  font-size: 10px;
+  line-height: 1;
+}
+
+/* -----------------------------------------
+   Filtros rápidos paralelos
+----------------------------------------- */
+
+.beta-spots-chips {
+  width: 100%;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  margin: 0;
+}
+
+.beta-spots-chips .chip-btn {
+  min-width: 0;
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 6px;
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.72);
+  color: rgba(226, 232, 240, 0.72);
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 850;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    transform 150ms ease,
+    color 150ms ease,
+    border-color 150ms ease,
+    background 150ms ease;
+}
+
+.beta-spots-chips .chip-btn:hover {
+  color: #f8fafc;
+  border-color: rgba(34, 211, 238, 0.36);
+  background: rgba(34, 211, 238, 0.08);
+}
+
+.beta-spots-chips .chip-btn:active {
+  transform: scale(0.95);
+}
+
+.beta-spots-chips .chip-btn.is-active {
+  color: #67e8f9;
+  border-color: rgba(34, 211, 238, 0.52);
+  background: rgba(34, 211, 238, 0.14);
+}
+
+/* -----------------------------------------
+   Status
+----------------------------------------- */
+
+.beta-spots-status-row {
+  margin: 0 0 13px;
+}
+
+.beta-spots-status-row .status {
+  display: block;
+  color: rgba(226, 232, 240, 0.82);
+  font-size: 12px;
+  font-weight: 850;
+  line-height: 1.35;
+}
+
+/* =========================================
+   BETA POLISH — HELP BUTTON FINAL
+========================================= */
+
+#btnOnboardingHelp.tour-help-btn {
+  position: fixed !important;
+  top: calc(env(safe-area-inset-top, 0px) + 14px) !important;
+  right: 14px !important;
+  bottom: auto !important;
+  left: auto !important;
+  z-index: 12000 !important;
+
+  width: 46px !important;
+  height: 46px !important;
+  min-width: 46px !important;
+  min-height: 46px !important;
+
+  display: grid !important;
+  place-items: center !important;
+
+  padding: 0 !important;
+
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  border-radius: 16px !important;
+
+  background:
+    radial-gradient(circle at 30% 20%,
+      rgba(255, 255, 255, 0.18),
+      transparent 34%),
+    linear-gradient(135deg,
+      rgba(34, 211, 238, 0.96),
+      rgba(124, 58, 237, 0.94)) !important;
+
+  color: #ffffff !important;
+
+  font-size: 18px !important;
+  font-weight: 950 !important;
+  line-height: 1 !important;
+
+  box-shadow:
+    0 14px 34px rgba(34, 211, 238, 0.28),
+    0 8px 22px rgba(2, 6, 23, 0.34) !important;
+
+  transform: none !important;
+  cursor: pointer !important;
+}
+
+/* El botón de ayuda no debe tapar la navegación inferior */
+#btnOnboardingHelp.tour-help-btn.is-bottom,
+#btnOnboardingHelp.tour-help-btn[data-placement="bottom"] {
+  top: calc(env(safe-area-inset-top, 0px) + 14px) !important;
+  right: 14px !important;
+  bottom: auto !important;
+  left: auto !important;
+}
+
+/* -----------------------------------------
+   Responsive fino para 320px
+----------------------------------------- */
+
+@media (max-width: 340px) {
+  .beta-spots-toolbar {
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .beta-spots-search input {
+    height: 46px;
+    font-size: 12px;
+    border-radius: 15px;
+  }
+
+  .beta-spots-control-row {
+    grid-template-columns:
+      minmax(132px, 1.42fr) minmax(66px, 0.79fr) minmax(66px, 0.79fr);
+
+    gap: 6px;
+  }
+
+  .beta-spots-filter .filter-select {
+    height: 48px;
+    min-height: 48px;
+
+    padding-left: 15px;
+    padding-right: 32px;
+
+    font-size: 13px;
+
+    border-radius: 17px;
+  }
+
+  .beta-spots-filter::after {
+    right: 16px;
+
+    width: 8px;
+    height: 8px;
+
+    border-right-width: 2.3px;
+    border-bottom-width: 2.3px;
+  }
+
+  .beta-spots-mini-kpi {
+    height: 48px;
+    min-height: 48px;
+    padding: 7px 6px;
+    border-radius: 14px;
+  }
+
+  .beta-spots-mini-kpi strong {
+    font-size: 16px;
+  }
+
+  .beta-spots-mini-kpi span {
+    gap: 3px;
+    font-size: 8.5px;
+  }
+
+  .beta-spots-chips {
+    gap: 5px;
+  }
+
+  .beta-spots-chips .chip-btn {
+    min-height: 34px;
+    padding: 0 4px;
+    font-size: 9.5px;
+    border-radius: 11px;
+  }
+
+  #btnOnboardingHelp.tour-help-btn {
+    top: 12px !important;
+    right: 12px !important;
+
+    width: 42px !important;
+    height: 42px !important;
+    min-width: 42px !important;
+    min-height: 42px !important;
+
+    border-radius: 14px !important;
+  }
+}
