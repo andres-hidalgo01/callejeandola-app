@@ -38,7 +38,7 @@
           <div class="view__head">
             <div>
               <h1 class="h1">Encuentra spots cerca</h1>
-              <p class="sub">Mapa, filtros rápidos y spots útiles para patinar hoy.</p>
+              <p class="sub">Mapa, filtros rápidos y spots para patinar.</p>
             </div>
           </div>
 
@@ -143,53 +143,87 @@
             </div>
           </div>
 
-          <div class="toolbar">
-            <div class="search">
-              <label class="sr-only" for="qEvents">Buscar eventos</label>
-              <input id="qEvents" type="search" placeholder="Buscar: evento, ciudad, organizer…" autocomplete="off" />
+
+          <div class="toolbar toolbar--events beta-events-toolbar">
+            <div class="search beta-events-search">
+              <label class="sr-only" for="qEvents">
+                Buscar eventos
+              </label>
+
+              <input id="qEvents" type="search" placeholder="Buscar: evento, lugar, formato..." autocomplete="off"
+                spellcheck="false" />
             </div>
 
-            <div class="mobile-filters">
-              <select id="eventsFilterMobile" class="filter-select">
-                <option value="all">Todos</option>
-                <option value="upcoming">Upcoming</option>
-                <option value="contest">Contest</option>
-                <option value="jam">Jam</option>
-                <option value="free">Free</option>
-              </select>
+            <div class="beta-events-control-row">
+              <div class="mobile-filters beta-events-filter">
+                <label class="sr-only" for="eventsFilterMobile">
+                  Filtrar eventos
+                </label>
+
+                <select id="eventsFilterMobile" class="filter-select" aria-label="Filtrar eventos">
+                  <option value="all">Todos</option>
+                  <option value="upcoming">Próximos</option>
+                  <option value="contest">Contest</option>
+                  <option value="jam">Jam</option>
+                  <option value="free">Gratis</option>
+                </select>
+              </div>
+
+              <div class="beta-events-mini-kpis" aria-label="Resumen rápido de eventos">
+                <article class="beta-events-mini-kpi">
+                  <strong id="kpiEvents">0</strong>
+
+                  <span>
+                    <b aria-hidden="true">🏁</b>
+                    eventos
+                  </span>
+                </article>
+
+                <article class="beta-events-mini-kpi">
+                  <strong id="kpiUpcoming">0</strong>
+
+                  <span>
+                    <b aria-hidden="true">＋</b>
+                    próximos
+                  </span>
+                </article>
+              </div>
             </div>
 
-            <div class="chips" aria-label="Filtros de eventos">
-              <button class="chip chip-btn is-active" type="button" data-eventfilter="all">All</button>
-              <button class="chip chip-btn" type="button" data-eventfilter="upcoming">Upcoming</button>
-              <button class="chip chip-btn" type="button" data-eventfilter="contest">Contest</button>
-              <button class="chip chip-btn" type="button" data-eventfilter="jam">Jam</button>
-              <button class="chip chip-btn" type="button" data-eventfilter="free">Free</button>
+            <div class="chips beta-events-chips" aria-label="Filtros rápidos de eventos">
+              <button class="chip chip-btn is-active" type="button" data-eventfilter="all">
+                Todos
+              </button>
+
+              <button class="chip chip-btn" type="button" data-eventfilter="upcoming">
+                Próximos
+              </button>
+
+              <button class="chip chip-btn" type="button" data-eventfilter="contest">
+                Contest
+              </button>
+
+              <button class="chip chip-btn" type="button" data-eventfilter="jam">
+                Jam
+              </button>
+
+              <button class="chip chip-btn" type="button" data-eventfilter="free">
+                Gratis
+              </button>
             </div>
           </div>
 
-          <div class="kpis">
-            <div class="kpi">
-              <div class="kpi__num" id="kpiEvents">—</div>
-              <div class="kpi__label">eventos visibles</div>
-            </div>
-            <div class="kpi">
-              <div class="kpi__num" id="kpiUpcoming">—</div>
-              <div class="kpi__label">próximos</div>
-            </div>
-            <div class="kpi">
-              <div class="kpi__num" id="kpiRegistrations">—</div>
-              <div class="kpi__label">inscritos</div>
-            </div>
-          </div>
+          <div class="status-row beta-events-status-row">
+            <span class="status" id="eventsStatus" aria-live="polite" aria-atomic="true"></span>
 
-          <div class="cards flashable" id="eventsList" aria-label="Listado de eventos"></div>
 
-          <div class="empty" id="eventsEmpty" hidden>
-            <div class="empty__icon">🏁</div>
-            <h3>No hay eventos disponibles</h3>
-            <p class="muted">Pronto aparecerán sesiones, competencias y jams.</p>
-          </div>
+            <div class="cards flashable" id="eventsList" aria-label="Listado de eventos"></div>
+
+            <div class="empty" id="eventsEmpty" hidden>
+              <div class="empty__icon">🏁</div>
+              <h3>No hay eventos disponibles</h3>
+              <p class="muted">Pronto aparecerán sesiones, competencias y jams.</p>
+            </div>
 
         </section>
 
@@ -197,58 +231,73 @@
           <div class="view__head">
             <div>
               <h1 class="h1">Skateshops</h1>
-              <p class="sub">Tiendas locales, marcas, promos y puntos clave de la escena.</p>
+              <p class="sub">
+                Tiendas locales, marcas, promos.
+              </p>
+            </div>
+          </div>
+          
+          <div class="toolbar toolbar--shops beta-shops-toolbar">
+            <div class="search beta-shops-search">
+              <label class="sr-only" for="qShops">
+                Buscar shops
+              </label>
+
+              <input id="qShops" type="search" placeholder="Buscar: shop, ciudad, marca..." autocomplete="off"
+                spellcheck="false" />
+            </div>
+
+            <div class="beta-shops-control-row">
+              <div class="mobile-filters beta-shops-filter">
+                <label class="sr-only" for="shopsFilterMobile">
+                  Filtrar shops
+                </label>
+
+                <select id="shopsFilterMobile" class="filter-select" aria-label="Filtrar shops">
+                  <option value="all">Todas</option>
+                  <option value="promo">Promos</option>
+                </select>
+              </div>
+
+              <article class="beta-shops-mini-kpi">
+                <strong id="kpiShops">0</strong>
+
+                <span>
+                  <b aria-hidden="true">👁</b>
+                  shops
+                </span>
+              </article>
+
+              <article class="beta-shops-mini-kpi">
+                <strong id="kpiPromos">0</strong>
+
+                <span>
+                  <b aria-hidden="true">⚡</b>
+                  promos
+                </span>
+              </article>
             </div>
           </div>
 
-          <div class="toolbar">
-            <div class="search">
-              <label class="sr-only" for="qShops">Buscar shops</label>
-              <input id="qShops" type="search" placeholder="Buscar: shop, ciudad, marca…" autocomplete="off" />
-            </div>
-
-            <div class="mobile-filters">
-              <select id="shopsFilterMobile" class="filter-select">
-                <option value="all">Todas</option>
-                <option value="verified">Verified</option>
-                <option value="promo">Promo</option>
-                <option value="parts">Parts</option>
-                <option value="boards">Boards</option>
-              </select>
-            </div>
-
-            <div class="chips" aria-label="Filtros de shops">
-              <button class="chip chip-btn is-active" type="button" data-shopfilter="all">All</button>
-              <button class="chip chip-btn" type="button" data-shopfilter="verified">Verified</button>
-              <button class="chip chip-btn" type="button" data-shopfilter="promo">Promo</button>
-              <button class="chip chip-btn" type="button" data-shopfilter="parts">Parts</button>
-              <button class="chip chip-btn" type="button" data-shopfilter="boards">Boards</button>
-            </div>
+          <div class="status-row beta-shops-status-row">
+            <span class="status" id="shopsStatus" aria-live="polite" aria-atomic="true"></span>
           </div>
 
-          <div class="kpis">
-            <div class="kpi">
-              <div class="kpi__num" id="kpiShops">—</div>
-              <div class="kpi__label">shops visibles</div>
-            </div>
-            <div class="kpi">
-              <div class="kpi__num" id="kpiVerifiedShops">—</div>
-              <div class="kpi__label">verificadas</div>
-            </div>
-            <div class="kpi">
-              <div class="kpi__num" id="kpiPromos">—</div>
-              <div class="kpi__label">promos activas</div>
-            </div>
-          </div>
+          <h2 class="beta-shops-section-title">
+            Shops
+          </h2>
 
           <div class="cards flashable" id="shopsList" aria-label="Listado de shops"></div>
 
           <div class="empty" id="shopsEmpty" hidden>
             <div class="empty__icon">🛹</div>
-            <h3>No hay shops disponibles</h3>
-            <p class="muted">Pronto verás tiendas locales, promos y aliados de la escena.</p>
-          </div>
 
+            <h3>No hay shops disponibles</h3>
+
+            <p class="muted">
+              Pronto verás tiendas locales, promos y aliados de la escena.
+            </p>
+          </div>
         </section>
 
         <section class="view" data-view="profile" id="profileView">
