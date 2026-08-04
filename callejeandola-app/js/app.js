@@ -627,12 +627,6 @@ function bindFilters() {
 }
 
 function bindMobileFilters() {
-    // $("#spotsFilterMobile")?.addEventListener("change", (e) => {
-    //     state.spotsFilter = e.target.value;
-    //     syncChipState("[data-filter]", state.spotsFilter, "filter");
-    //     renderSpots();
-    //     flash("#spotsList");
-    // });
     $("#spotsFilterMobile")?.addEventListener("change", (e) => {
         state.spotsFilter = e.target.value;
 
@@ -739,25 +733,6 @@ function bindActions() {
 
     $$(".js-open-map").forEach((btn) => {
         btn.addEventListener("click", openMapView);
-    });
-
-    //Código para bloquear si no se ha iniciado sesión.
-    $("#btnLoginMock")?.addEventListener("click", () => {
-        state.session.isLoggedIn = true;
-        state.session.user = { id: 1, name: "Andres" };
-        toast("Sesión iniciada (demo)");
-        renderProfile();
-        renderFavorites();
-        updateProfileCounts();
-    });
-
-    $("#btnLogoutMock")?.addEventListener("click", () => {
-        state.session.isLoggedIn = false;
-        state.session.user = null;
-        toast("Sesión cerrada");
-        renderProfile();
-        renderFavorites();
-        updateProfileCounts();
     });
 
     document.getElementById("btnMapLocateMe")?.addEventListener("click", locateMe);
@@ -1085,19 +1060,88 @@ function renderSponsors() {
 }
 
 function renderProfile() {
-    const locked = $("#profileLocked");
-    const privateBox = $("#profilePrivate");
+    /*
+     * Compatible con el Profile nuevo y con el viejo.
+     * Nuevo:
+     * - profileGuestCard
+     * - profileUserCard
+     *
+     * Viejo:
+     * - profileLocked
+     * - profilePrivate
+     */
+    const locked =
+        $("#profileGuestCard") ||
+        $("#profileLocked");
+
+    const privateBox =
+        $("#profileUserCard") ||
+        $("#profilePrivate");
 
     if (!locked || !privateBox) return;
 
-    if (state.session.isLoggedIn) {
-        locked.hidden = true;
-        privateBox.hidden = false;
-    } else {
-        locked.hidden = false;
-        privateBox.hidden = true;
+    const isLoggedIn =
+        Boolean(state?.session?.isLoggedIn);
+
+    locked.hidden = isLoggedIn;
+    privateBox.hidden = !isLoggedIn;
+
+    if (isLoggedIn) {
+        const user =
+            state?.session?.user ||
+            state?.user ||
+            {};
+
+        const email =
+            user.email ||
+            state?.session?.email ||
+            $("#profileLoginEmail")?.value ||
+            $("#profileRegisterEmail")?.value ||
+            "";
+
+        const fullName =
+            user.name ||
+            user.fullName ||
+            $("#profileRegisterName")?.value ||
+            "";
+
+        const phone =
+            user.phone ||
+            $("#profileRegisterPhone")?.value ||
+            "";
+
+        const profileEmailReadonly =
+            $("#profileEmailReadonly");
+
+        const profileFullName =
+            $("#profileFullName");
+
+        const profilePhone =
+            $("#profilePhone");
+
+        const profileCountry =
+            $("#profileCountry");
+
+        if (profileEmailReadonly) {
+            profileEmailReadonly.value = email;
+        }
+
+        if (profileFullName && !profileFullName.value) {
+            profileFullName.value = fullName;
+        }
+
+        if (profilePhone && !profilePhone.value) {
+            profilePhone.value = phone;
+        }
+
+        if (profileCountry) {
+            profileCountry.value = "Costa Rica";
+        }
     }
-    applyViewMode();
+
+    if (typeof applyViewMode === "function") {
+        applyViewMode();
+    }
 }
 
 function renderFavorites() {
@@ -1109,53 +1153,66 @@ function renderFavorites() {
     );
 
     const favs = token ? state.favoriteSpots : localFavoriteSpots;
+    const visibleFavs = favs.slice(0, 3);
+    const remainingFavs = Math.max(0, favs.length - visibleFavs.length);
 
-    $("#kpiFavs") && ($("#kpiFavs").textContent = String(state.favorites.size));
-    $("#pFavs") && ($("#pFavs").textContent = String(state.favorites.size));
+    $("#kpiFavs") && ($("#kpiFavs").textContent = String(favs.length));
+    $("#pFavs") && ($("#pFavs").textContent = String(favs.length));
 
     if (!box) return;
 
     if (!token) {
         box.innerHTML = `
-      <div class="mini-item">
-        <span class="muted">Iniciá sesión para guardar favoritos en tu perfil.</span>
-        <span>♡</span>
-      </div>
-    `;
+            <div class="mini-item">
+                <span class="muted">Iniciá sesión para guardar favoritos en tu perfil.</span>
+                <span>♡</span>
+            </div>
+        `;
         return;
     }
 
     if (!favs.length) {
         box.innerHTML = `
-      <div class="mini-item">
-        <span class="muted">Aún no tenés spots favoritos.</span>
-        <span>♡</span>
-      </div>
-    `;
+            <div class="mini-item">
+                <span class="muted">Aún no tenés spots favoritos.</span>
+                <span>♡</span>
+            </div>
+        `;
         return;
     }
 
-    box.innerHTML = favs
-        .map((spot) => {
-            return `
-        <div class="mini-item">
-          <span>
-            <strong>${escapeHtml(spot.name || "Spot")}</strong>
-            <span class="muted"> · ${escapeHtml(spot.zone || spot.city || "—")}</span>
-          </span>
+    box.innerHTML =
+        visibleFavs
+            .map((spot) => {
+                return `
+                    <div class="mini-item">
+                        <span>
+                            <strong>${escapeHtml(spot.name || "Spot")}</strong>
+                            <span class="muted"> · ${escapeHtml(spot.zone || spot.city || "—")}</span>
+                        </span>
 
-          <button
-            class="icon-btn is-active"
-            type="button"
-            data-unfav="${spot.id}"
-            aria-label="Quitar favorito"
-          >
-            ♥
-          </button>
-        </div>
-      `;
-        })
-        .join("");
+                        <button
+                            class="icon-btn is-active"
+                            type="button"
+                            data-unfav="${spot.id}"
+                            aria-label="Quitar favorito"
+                        >
+                            ♥
+                        </button>
+                    </div>
+                `;
+            })
+            .join("") +
+        (
+            remainingFavs > 0
+                ? `
+                    <div class="mini-item mini-item--more">
+                        <span class="muted">+${remainingFavs} spot(s) más</span>
+                        <span>…</span>
+                    </div>
+                `
+                : ""
+        );
 
     $$("[data-unfav]").forEach((button) => {
         button.addEventListener("click", () => toggleFav(button.dataset.unfav));
@@ -1166,6 +1223,11 @@ function renderSavedEvents() {
     const box = $("#savedEventsList");
     const token = getAuthToken();
     const savedEvents = state.savedEventsList || [];
+    const visibleSavedEvents = savedEvents.slice(0, 3);
+    const remainingSavedEvents = Math.max(
+        0,
+        savedEvents.length - visibleSavedEvents.length
+    );
 
     $("#pSavedEvents") &&
         ($("#pSavedEvents").textContent = String(savedEvents.length));
@@ -1174,45 +1236,56 @@ function renderSavedEvents() {
 
     if (!token) {
         box.innerHTML = `
-      <div class="mini-item mini-item--empty">
-        <span class="muted">Iniciá sesión para guardar eventos.</span>
-        <span>＋</span>
-      </div>
-    `;
+            <div class="mini-item mini-item--empty">
+                <span class="muted">Iniciá sesión para guardar eventos.</span>
+                <span>＋</span>
+            </div>
+        `;
         return;
     }
 
     if (!savedEvents.length) {
         box.innerHTML = `
-      <div class="mini-item mini-item--empty">
-        <span class="muted">Aún no tenés eventos guardados.</span>
-        <span>＋</span>
-      </div>
-    `;
+            <div class="mini-item mini-item--empty">
+                <span class="muted">Aún no tenés eventos guardados.</span>
+                <span>＋</span>
+            </div>
+        `;
         return;
     }
 
-    box.innerHTML = savedEvents
-        .map((event) => {
-            return `
-        <div class="mini-item">
-          <span>
-            <strong>${escapeHtml(event.title || event.name || "Evento")}</strong>
-            <span class="muted"> · ${escapeHtml(event.place || event.city || "—")}</span>
-          </span>
+    box.innerHTML =
+        visibleSavedEvents
+            .map((event) => {
+                return `
+                    <div class="mini-item">
+                        <span>
+                            <strong>${escapeHtml(event.title || event.name || "Evento")}</strong>
+                            <span class="muted"> · ${escapeHtml(event.place || event.city || "—")}</span>
+                        </span>
 
-          <button
-            class="icon-btn is-active"
-            type="button"
-            data-remove-saved-event="${event.id}"
-            aria-label="Quitar evento guardado"
-          >
-            ✓
-          </button>
-        </div>
-      `;
-        })
-        .join("");
+                        <button
+                            class="icon-btn is-active"
+                            type="button"
+                            data-remove-saved-event="${event.id}"
+                            aria-label="Quitar evento guardado"
+                        >
+                            ✓
+                        </button>
+                    </div>
+                `;
+            })
+            .join("") +
+        (
+            remainingSavedEvents > 0
+                ? `
+                    <div class="mini-item mini-item--more">
+                        <span class="muted">+${remainingSavedEvents} evento(s) más</span>
+                        <span>…</span>
+                    </div>
+                `
+                : ""
+        );
 
     $$("[data-remove-saved-event]").forEach((button) => {
         button.addEventListener("click", async (event) => {
@@ -2196,8 +2269,6 @@ async function cjBuildRoutePreview() {
 
         cjRouteActiveStepIndex = 0;
 
-        // const firstStep = route?.legs?.[0]?.steps?.[0];
-
         const firstStep = cjRouteSteps[0] || null;
 
         cjDrawRoutePreview(userLocation, destination, route);
@@ -2210,7 +2281,8 @@ async function cjBuildRoutePreview() {
             mode: "Ruta",
         });
 
-        toast?.("Ruta calculada.");
+        // toast?.("Ruta calculada.");
+
     } catch (error) {
         console.error("CJ ROUTE PREVIEW ERROR:", error);
 
@@ -2397,20 +2469,6 @@ function cjFocusLiveRoute(location, {
     return true;
 }
 
-// function cjRecenterLiveRoute() {
-//     const location = cjGetSavedUserLocation();
-//     const map = cjGetMapInstance();
-
-//     if (!location || !map) {
-//         toast?.("Ubicación no disponible.");
-//         return;
-//     }
-
-//     cjRouteFollowUser = true;
-
-//     map.setView([location.lat, location.lng], 17, { animate: true, });
-// }
-
 function cjRecenterLiveRoute() {
     const location = cjGetSavedUserLocation();
 
@@ -2481,25 +2539,6 @@ function cjStartLiveRoute() {
     if (recenterButton) {
         recenterButton.hidden = false;
     }
-
-    // const savedLocation =
-    //     cjGetSavedUserLocation();
-
-    // const map = cjGetMapInstance();
-
-    // if (savedLocation && map) {
-    //     map.flyTo(
-    //         [
-    //             savedLocation.lat,
-    //             savedLocation.lng,
-    //         ],
-    //         17,
-    //         {
-    //             animate: true,
-    //             duration: 0.8,
-    //         }
-    //     );
-    // }
 
     const savedLocation = cjGetSavedUserLocation();
 
@@ -2591,50 +2630,6 @@ function cjStartLiveRoute() {
 
     return true;
 }
-
-/* =========================================
-            MAIN MENU
-========================================= */
-
-// function openSpot(s) {
-//     modalInfo(
-//         s.name,
-//         `
-//       <div class="detail-modal">
-//         <div class="detail-hero">
-//           ${renderMediaBlock(s, "spot")}
-//         </div>
-
-//         <div class="detail-grid">
-//           <div><strong>Zona:</strong> ${escapeHtml(s.zone || s.city || "—")}</div>
-//           <div><strong>Descripción:</strong> ${escapeHtml(s.description || "Sin descripción")}</div>
-//         </div>
-
-//         <div class="detail-actions">
-//           <button class="btn btn-primary" type="button" id="btnRouteFromModal">
-//             Ruta
-//           </button>
-//         </div>
-//       </div>
-//     `
-//     );
-
-//     setTimeout(() => {
-//         $("#btnRouteFromModal")?.addEventListener("click", () => {
-//             cjOpenRouteCore(s, "spot");
-//         });
-
-//         $$(".detail-thumb").forEach((btn) => {
-//             btn.addEventListener("click", () => {
-//                 const img = btn.dataset.img;
-//                 const hero = document.querySelector(".detail-hero img");
-//                 if (hero && img) hero.src = img;
-//             });
-//         });
-//     }, 0);
-// }
-
-
 
 /* =========================================
    BETA DETAIL — SHARED HELPERS + CAROUSEL
@@ -3065,174 +3060,6 @@ function openShop(shop) {
 }
 
 
-// function openSpot(s) {
-//     const title = escapeHtml(s.name || "Spot");
-//     const zone = escapeHtml(s.zone || s.city || "—");
-//     const type = escapeHtml(s.type || s.category || "Spot");
-//     const description = escapeHtml(
-//         s.description || "Sin descripción disponible."
-//     );
-
-//     modalInfo(
-//         s.name || "Spot",
-//         `
-//         <div class="entity-detail-view entity-detail-view--spot">
-//             <div class="entity-detail-hero">
-//                 ${renderMediaBlock(s, "spot")}
-//             </div>
-
-//             <div class="entity-detail-main">
-//                 <span class="entity-detail-badge">
-//                     ${type}
-//                 </span>
-
-//                 <h3 class="entity-detail-title">
-//                     ${title}
-//                 </h3>
-
-//                 <div class="entity-detail-grid">
-//                     <div class="entity-detail-row">
-//                         <span class="entity-detail-label">
-//                             Zona
-//                         </span>
-
-//                         <strong class="entity-detail-value">
-//                             ${zone}
-//                         </strong>
-//                     </div>
-
-//                     <div class="entity-detail-row">
-//                         <span class="entity-detail-label">
-//                             Tipo
-//                         </span>
-
-//                         <strong class="entity-detail-value">
-//                             ${type}
-//                         </strong>
-//                     </div>
-//                 </div>
-
-//                 <p class="entity-detail-description">
-//                     ${description}
-//                 </p>
-
-//                 <div class="entity-detail-actions">
-//                     <button
-//                         class="btn btn-primary entity-detail-route"
-//                         type="button"
-//                         id="btnRouteFromModal"
-//                     >
-//                         Ruta
-//                     </button>
-//                 </div>
-//             </div>
-//         </div>
-//         `
-//     );
-
-//     setTimeout(() => {
-//         $("#btnRouteFromModal")?.addEventListener("click", () => {
-//             cjOpenRouteCore(s, "spot");
-//         });
-
-//         $$(".detail-thumb").forEach((btn) => {
-//             btn.addEventListener("click", () => {
-//                 const img = btn.dataset.img;
-//                 const hero = document.querySelector(".detail-hero img");
-
-//                 if (hero && img) {
-//                     hero.src = img;
-//                 }
-//             });
-//         });
-//     }, 0);
-// }
-
-// function openEvent(e) {
-//     modalInfo(
-//         e.title,
-//         `
-//       <div class="detail-modal">
-//         <div class="detail-hero event-detail-hero">          
-//             ${renderMediaBlock(e, "event")}
-//         </div>
-
-//         <div class="detail-grid">
-//           <div><strong>Lugar:</strong> ${escapeHtml(e.place || "—")}</div>
-//           <div><strong>Hora:</strong> ${escapeHtml(e.time || "—")}</div>
-//           <div><strong>Descripción:</strong> ${escapeHtml(e.description || e.format || "Sin descripción")}</div>
-//         </div>
-
-//         <div class="detail-actions">
-//           <button class="btn btn-secondary" type="button" id="btnRouteEventFromModal">
-//             Ruta
-//           </button>
-//         </div>
-//         </div>
-//       </div>
-//     `
-//     );
-
-//     setTimeout(() => {
-//         $("#btnRouteEventFromModal")?.addEventListener("click", () => {
-//             cjOpenRouteCore(e, "event");
-//         });
-
-//         $$(".detail-thumb").forEach((btn) => {
-//             btn.addEventListener("click", () => {
-//                 const img = btn.dataset.img;
-//                 const hero = document.querySelector(".detail-hero img");
-//                 if (hero && img) hero.src = img;
-//             });
-//         });
-//     }, 0);
-// }
-
-// function openShop(shop) {
-
-//     modalInfo(
-//         shop.name,
-//         `
-//       <div class="detail-modal">
-//         <div class="detail-hero shop-detail-hero">
-//           ${renderMediaBlock(shop, "shop")}
-//         </div>
-
-//         <div class="detail-grid">
-//           <div><strong>Ciudad:</strong> ${escapeHtml(shop.city || "—")}</div>
-//           <div><strong>Descripción:</strong> ${escapeHtml(shop.description || "Sin descripción")}</div>
-//           <div><strong>Dirección:</strong> ${escapeHtml(shop.address || "—")}</div>
-//         </div>
-
-//         <div class="detail-actions detail-actions--icons">
-//           ${shop.website
-//             ? `<a class="icon-btn" href="${shop.website}" target="_blank" rel="noopener" title="Website">🌐</a>`
-//             : ""
-//         }
-
-//           ${shop.instagram
-//             ? `<a class="icon-btn" href="${shop.instagram}" target="_blank" rel="noopener" title="Instagram">📷</a>`
-//             : ""
-//         }
-
-//         <button class="btn btn-secondary" type="button" id="btnRouteShopFromModal">
-//             Ruta
-//         </button>
-//         </div>
-//       </div>
-//     `
-//     );
-
-//     setTimeout(() => {
-//         $("#btnRouteShopFromModal")?.addEventListener("click", () => {
-//             activateRouteTarget(shop, "shop");
-//         });
-//     }, 0);
-// }
-
-
-
-
 function openAddSpot() {
     modalInfo("Add spot", "Conecta aquí un formulario real para crear spots.");
 }
@@ -3320,18 +3147,44 @@ async function shareProfile() {
 ========================================= */
 let toastTimer = null;
 
-function toast(msg) {
-    const t = $("#toast");
-    if (!t) return;
+function toast(message, type = "info") {
+    let toastElement = document.getElementById("toast");
 
-    $("#toastMsg").textContent = msg;
-    t.hidden = false;
+    if (!toastElement) {
+        toastElement = document.createElement("div");
+        toastElement.id = "toast";
+        toastElement.className = "toast";
+        toastElement.setAttribute("role", "status");
+        toastElement.setAttribute("aria-live", "polite");
+        toastElement.hidden = true;
+        document.body.appendChild(toastElement);
+    }
+
+    const toastMessage =
+        document.getElementById("toastMsg") ||
+        toastElement.querySelector("[data-toast-message]");
+
+    if (toastMessage) {
+        toastMessage.textContent = message;
+    } else {
+        toastElement.textContent = message;
+    }
+
+    toastElement.dataset.type = type;
+    toastElement.hidden = false;
+    toastElement.classList.add("is-visible");
 
     clearTimeout(toastTimer);
+
     toastTimer = setTimeout(() => {
-        t.hidden = true;
-    }, 1600);
+        toastElement.classList.remove("is-visible");
+        toastElement.hidden = true;
+    }, 1500);
 }
+
+globalThis.toast = toast;
+globalThis.showAppMessage = toast;
+
 
 function pulseBusy(title, sub) {
     const b = $("#busy");
@@ -4065,7 +3918,6 @@ function cjOpenEntityDetail(entity, type) {
     }
 }
 
-/* Wrappers para reutilizar el mismo diseño en los 3 */
 function openSpotDetail(spot) {
     cjOpenEntityDetail(spot, "spots");
 }
@@ -4437,4 +4289,285 @@ if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", initMobileEntryFlow);
 } else {
     initMobileEntryFlow();
+}
+
+/* =========================================
+   CJ PROFILE — SKATER CORE DATA
+========================================= */
+
+const CJ_PROFILE_SKATER_KEY =
+    "cj_profile_skater_core_v1";
+
+function cjProfileField(id) {
+    return document.getElementById(id);
+}
+
+function cjProfileValue(id) {
+    return String(cjProfileField(id)?.value || "").trim();
+}
+
+function cjProfileChecked(id) {
+    return Boolean(cjProfileField(id)?.checked);
+}
+
+function cjProfileSetValue(id, value) {
+    const field = cjProfileField(id);
+
+    if (field) {
+        field.value = value ?? "";
+    }
+}
+
+function cjProfileSetChecked(id, value) {
+    const field = cjProfileField(id);
+
+    if (field) {
+        field.checked = Boolean(value);
+    }
+}
+
+function cjProfileIsInsideCostaRica(lat, lng) {
+    return (
+        lat >= 8.0 &&
+        lat <= 11.3 &&
+        lng >= -86.2 &&
+        lng <= -82.5
+    );
+}
+
+function cjProfileSetCountryStatus(message, ok = true) {
+    const status = cjProfileField("profileCountryStatus");
+
+    if (!status) return;
+
+    status.textContent = message;
+    status.dataset.valid = ok ? "true" : "false";
+}
+
+function cjProfileDetectCountry() {
+    if (!navigator.geolocation) {
+        cjProfileSetCountryStatus(
+            "Tu navegador no soporta geolocalización.",
+            false
+        );
+
+        toast?.("Geolocalización no soportada.");
+        return;
+    }
+
+    cjProfileSetCountryStatus("Validando ubicación...");
+
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+            const lat = Number(position.coords.latitude);
+            const lng = Number(position.coords.longitude);
+
+            if (cjProfileIsInsideCostaRica(lat, lng)) {
+                cjProfileSetValue("profileCountry", "Costa Rica");
+
+                cjProfileSetCountryStatus(
+                    "Ubicación compatible con Costa Rica."
+                );
+
+                toast?.("Ubicación validada para Costa Rica.");
+                return;
+            }
+
+            cjProfileSetCountryStatus(
+                "Ubicación fuera de Costa Rica. Requiere aprobación admin.",
+                false
+            );
+
+            toast?.("Fuera de zona inicial. Requiere aprobación admin.");
+        },
+        () => {
+            cjProfileSetCountryStatus(
+                "No se pudo validar ubicación. Se mantiene Costa Rica por ahora.",
+                false
+            );
+
+            toast?.("No se pudo validar ubicación.");
+        },
+        {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 30000,
+        }
+    );
+}
+
+function cjProfileCollectSkaterData() {
+    return {
+        fullName: cjProfileValue("profileFullName"),
+        country: "Costa Rica",
+        phone: cjProfileValue("profilePhone"),
+        email: cjProfileValue("profileEmailReadonly"),
+        stance: cjProfileValue("profileStance"),
+        termsAccepted: cjProfileChecked("profileTermsAccepted"),
+        updatedAt: new Date().toISOString(),
+    };
+}
+
+function cjProfileSaveSkaterData() {
+    const data = cjProfileCollectSkaterData();
+
+    localStorage.setItem(
+        CJ_PROFILE_SKATER_KEY,
+        JSON.stringify(data)
+    );
+
+    return data;
+}
+
+function cjProfileLoadSkaterData() {
+    try {
+        const raw = localStorage.getItem(CJ_PROFILE_SKATER_KEY);
+
+        if (!raw) return;
+
+        const data = JSON.parse(raw);
+
+        cjProfileSetValue("profileFullName", data.fullName);
+        cjProfileSetValue("profileCountry", "Costa Rica");
+        cjProfileSetValue("profilePhone", data.phone);
+        cjProfileSetValue("profileEmailReadonly", data.email);
+        cjProfileSetValue("profileStance", data.stance);
+        cjProfileSetChecked("profileTermsAccepted", data.termsAccepted);
+    } catch (error) {
+        console.warn("Error de carga de datos del patinador del perfil Callejeandola:", error);
+    }
+}
+
+function cjProfileOpenLegalPage(type) {
+    if (typeof modalInfo !== "function") {
+        return;
+    }
+
+    if (type === "privacy") {
+        modalInfo(
+            "Política de Privacidad",
+            `
+            <div class="legal-modal-content">
+              <p>
+                Callejeandola usa datos básicos de perfil para permitir
+                registro, favoritos, eventos guardados y futuras inscripciones.
+              </p>
+
+              <p>
+                La ubicación se usa para validar disponibilidad regional.
+                La versión inicial está enfocada en Costa Rica.
+              </p>
+            </div>
+            `
+        );
+
+        return;
+    }
+
+    modalInfo(
+        "Términos y Condiciones",
+        `
+        <div class="legal-modal-content">
+          <p>
+            Al usar Callejeandola aceptás que la información de spots,
+            eventos, shops y rutas puede cambiar.
+          </p>
+
+          <p>
+            Los datos de perfil pueden usarse para prellenar futuras
+            inscripciones a eventos. Los datos sensibles de competencia
+            se solicitarán únicamente al inscribirse a un evento.
+          </p>
+
+          <p>
+            La versión inicial está limitada a Costa Rica. Usuarios fuera
+            del país pueden requerir aprobación administrativa.
+          </p>
+        </div>
+        `
+    );
+}
+
+function cjProfileBindSkaterFields() {
+    if (document.body.dataset.cjProfileSkaterBound === "true") {
+        return;
+    }
+
+    document.body.dataset.cjProfileSkaterBound = "true";
+
+    cjProfileSetValue("profileRegisterCountry", "Costa Rica");
+    cjProfileSetValue("profileCountry", "Costa Rica");
+
+    cjProfileLoadSkaterData();
+
+    cjProfileField("btnDetectProfileCountry")
+        ?.addEventListener("click", cjProfileDetectCountry);
+
+    cjProfileField("btnProfileSave")
+        ?.addEventListener(
+            "click",
+            (event) => {
+                if (!cjProfileChecked("profileTermsAccepted")) {
+                    event.preventDefault();
+                    event.stopImmediatePropagation();
+
+                    toast?.(
+                        "Aceptá los términos para guardar la ficha."
+                    );
+
+                    return;
+                }
+
+                cjProfileSaveSkaterData();
+            },
+            true
+        );
+
+    document
+        .querySelectorAll("[data-legal-page]")
+        .forEach((link) => {
+            link.addEventListener("click", (event) => {
+                event.preventDefault();
+
+                cjProfileOpenLegalPage(
+                    link.dataset.legalPage
+                );
+            });
+        });
+}
+
+if (document.readyState === "loading") {
+    document.addEventListener(
+        "DOMContentLoaded",
+        cjProfileBindSkaterFields
+    );
+} else {
+    cjProfileBindSkaterFields();
+}
+
+/* =========================================
+   CJ PROFILE — REGISTER FLOW HELPERS
+========================================= */
+
+function showLoginFormAfterRegister(email = "") {
+    const loginForm = document.getElementById("profileLoginForm");
+    const registerForm = document.getElementById("profileRegisterForm");
+    const loginEmail = document.getElementById("profileLoginEmail");
+    const btnShowLogin = document.getElementById("btnShowLogin");
+    const btnShowRegister = document.getElementById("btnShowRegister");
+
+    if (registerForm) {
+        registerForm.hidden = true;
+    }
+
+    if (loginForm) {
+        loginForm.hidden = false;
+    }
+
+    if (loginEmail) {
+        loginEmail.value = email;
+    }
+
+    btnShowLogin?.classList.add("is-active");
+    btnShowRegister?.classList.remove("is-active");
 }

@@ -19,9 +19,82 @@ import {
 let currentUser = null;
 let currentProfile = null;
 
+/* =========================================
+   PROFILE — USER MESSAGES   
+========================================= */
+
+function profileMessage(message, type = "info") {
+    if (typeof globalThis.showAppMessage === "function") {
+        globalThis.showAppMessage(message, type);
+        return;
+    }
+
+    if (typeof globalThis.toast === "function") {
+        globalThis.toast(message, type);
+        return;
+    }
+
+    console[type === "error" ? "error" : "log"](message);
+}
+
 export function initProfileView() {
     bindProfileActions();
+    bindCostaRicaPhoneMask();
     bootstrapProfileSession();
+}
+
+function formatCostaRicaPhone(value) {
+    const digits = String(value || "")
+        .replace(/\D/g, "")
+        .replace(/^506/, "")
+        .slice(0, 8);
+
+    if (!digits) return "";
+
+    if (digits.length <= 4) {
+        return `+(506) ${digits}`;
+    }
+
+    if (digits.length <= 6) {
+        return `+(506) ${digits.slice(0, 4)}-${digits.slice(4)}`;
+    }
+
+    return `+(506) ${digits.slice(0, 4)}-${digits.slice(4, 6)}-${digits.slice(6, 8)}`;
+}
+
+function bindCostaRicaPhoneMask() {
+    [
+        "profileRegisterPhone",
+        "profilePhone",
+    ].forEach((id) => {
+        const input = document.getElementById(id);
+
+        if (!input) return;
+
+        input.addEventListener("input", () => {
+            input.value = formatCostaRicaPhone(input.value);
+        });
+    });
+}
+
+function validateProfilePassword(password) {
+    if (password.length < 8) {
+        return "El password debe tener mínimo 8 caracteres.";
+    }
+
+    if (!/[A-Z]/.test(password)) {
+        return "El password debe incluir al menos una mayúscula.";
+    }
+
+    if (!/[a-z]/.test(password)) {
+        return "El password debe incluir al menos una minúscula.";
+    }
+
+    if (!/\d/.test(password)) {
+        return "El password debe incluir al menos un número.";
+    }
+
+    return "";
 }
 
 function bindProfileActions() {
@@ -132,13 +205,62 @@ async function bootstrapProfileSession() {
     }
 }
 
+function getPendingSkaterProfile(email) {
+    try {
+        const raw = localStorage.getItem(
+            `cj_skater_profile_pending_${email}`
+        );
+
+        return raw ? JSON.parse(raw) : null;
+    } catch {
+        return null;
+    }
+}
+
+function mergePendingProfile(email) {
+    const pendingProfile = getPendingSkaterProfile(email);
+
+    if (!pendingProfile) return;
+
+    currentProfile = {
+        ...(currentProfile || {}),
+        fullName:
+            currentProfile?.fullName ||
+            pendingProfile.fullName ||
+            currentUser?.name ||
+            "",
+        displayName:
+            currentProfile?.displayName ||
+            pendingProfile.fullName ||
+            currentUser?.name ||
+            "",
+        email:
+            currentProfile?.email ||
+            pendingProfile.email ||
+            currentUser?.email ||
+            email,
+        country:
+            currentProfile?.country ||
+            pendingProfile.country ||
+            "Costa Rica",
+        phone:
+            currentProfile?.phone ||
+            pendingProfile.phone ||
+            "",
+        stance:
+            currentProfile?.stance ||
+            pendingProfile.stance ||
+            "",
+    };
+}
+
 async function handleProfileLogin() {
     try {
         const email = getValue("profileLoginEmail");
         const password = getValue("profileLoginPassword");
 
         if (!email || !password) {
-            alert("Email y password son obligatorios");
+            profileMessage("Correo o contraseña incorrectos.Revisá  e intentá de nuevo.");
             return;
         }
 
@@ -154,6 +276,30 @@ async function handleProfileLogin() {
         const profileResult = await getMyProfile();
         currentProfile = profileResult.data || null;
 
+        try {
+            const raw = localStorage.getItem(
+                `cj_skater_profile_pending_${currentUser?.email || email}`
+            );
+
+            if (raw) {
+                const pending = JSON.parse(raw);
+
+                currentProfile = {
+                    ...(currentProfile || {}),
+                    fullName: pending.fullName || currentProfile?.displayName || currentUser?.name || "",
+                    displayName: pending.fullName || currentProfile?.displayName || currentUser?.name || "",
+                    email: pending.email || currentUser?.email || email,
+                    country: "Costa Rica",
+                    phone: pending.phone || "",
+                    stance: pending.stance || "",
+                };
+            }
+        } catch (error) {
+            console.warn("Pending profile load error:", error);
+        }
+
+
+        mergePendingProfile(currentUser?.email || email);
         showUserProfile();
         renderUserMeta();
         renderProfileForm();
@@ -161,7 +307,7 @@ async function handleProfileLogin() {
         notifySessionChanged();
     } catch (error) {
         console.error("Profile login error:", error);
-        alert(error.message || "Error iniciando sesión");
+        profileMessage(error.message || "Error iniciando sesión");
     }
 }
 
@@ -171,66 +317,179 @@ async function handleProfileRegister() {
         const email = getValue("profileRegisterEmail");
         const password = getValue("profileRegisterPassword");
         const country = getValue("profileRegisterCountry") || "Costa Rica";
+        const phone = getValue("profileRegisterPhone");
+        const stance = getValue("profileRegisterStance");
 
         if (!name || !email || !password) {
-            alert("Nombre, email y password son obligatorios");
+            profileMessage(
+                "Nombre completo, correo y password son obligatorios.",
+                "error"
+            );
             return;
         }
 
-        if (password.length < 6) {
-            alert("El password debe tener mínimo 6 caracteres");
+        if (!phone) {
+            profileMessage(
+                "Agregá tu celular para completar el registro.",
+                "error"
+            );
             return;
         }
 
-        const result = await register({
+        if (!stance) {
+            profileMessage(
+                "Seleccioná tu stance: Regular o Goofy.",
+                "error"
+            );
+            return;
+        }
+
+        const passwordError = validateProfilePassword(password);
+
+        if (passwordError) {
+            profileMessage(passwordError, "error");
+            return;
+        }
+
+
+        await register({
             name,
             email,
             password,
             country,
         });
 
-        setSession(result.token, result.user);
+        localStorage.setItem(
+            `cj_skater_profile_pending_${email}`,
+            JSON.stringify({
+                fullName: name,
+                email,
+                country,
+                phone,
+                stance,
+                termsAccepted: true,
+                createdAt: new Date().toISOString(),
+            })
+        );
 
-        currentUser = result.user;
+        currentUser = null;
+        currentProfile = null;
 
-        const profileResult = await getMyProfile();
-        currentProfile = profileResult.data || null;
+        if (typeof clearSession === "function") {
+            clearSession();
+        }
 
-        showUserProfile();
-        renderUserMeta();
-        renderProfileForm();
-        renderEmailVerificationState(currentUser);
+        const loginForm = document.getElementById("profileLoginForm");
+        const registerForm = document.getElementById("profileRegisterForm");
+        const loginEmail = document.getElementById("profileLoginEmail");
+        const loginPassword = document.getElementById("profileLoginPassword");
+        const btnShowLogin = document.getElementById("btnShowLogin");
+        const btnShowRegister = document.getElementById("btnShowRegister");
 
-        alert("Cuenta skater creada correctamente");
+        if (registerForm) {
+            registerForm.hidden = true;
+        }
+
+        if (loginForm) {
+            loginForm.hidden = false;
+        }
+
+        if (loginEmail) {
+            loginEmail.value = email;
+        }
+
+        if (loginPassword) {
+            loginPassword.value = "";
+        }
+
+        [
+            "profileRegisterName",
+            "profileRegisterPhone",
+            "profileRegisterEmail",
+            "profileRegisterPassword",
+            "profileRegisterStance",
+        ].forEach((id) => {
+            const field = document.getElementById(id);
+
+            if (field) {
+                field.value = "";
+            }
+        });
+
+        const registerCountry =
+            document.getElementById("profileRegisterCountry");
+
+        if (registerCountry) {
+            registerCountry.value = "Costa Rica";
+        }
+
+        btnShowLogin?.classList.add("is-active");
+        btnShowRegister?.classList.remove("is-active");
+
+        profileMessage(
+            "Cuenta creada. Revisá tu correo para verificarla antes de iniciar sesión.",
+            "success"
+        );
     } catch (error) {
         console.error("Profile register error:", error);
-        alert(error.message || "Error creando cuenta");
+
+        profileMessage(
+            error.message || "No se pudo crear la cuenta.",
+            "error"
+        );
     }
 }
 
 async function handleProfileSave() {
     try {
+        const fullName = getValue("profileFullName");
+        const phone = getValue("profilePhone");
+        const stance = getValue("profileStance");
+        const email =
+            getValue("profileEmailReadonly") ||
+            currentUser?.email ||
+            "";
+
         const payload = {
-            displayName: getValue("profileDisplayName"),
-            city: getValue("profileCity"),
-            stance: getValue("profileStance"),
-            level: getValue("profileLevel"),
-            instagram: getValue("profileInstagram"),
-            bio: getValue("profileBio"),
+            displayName: fullName,
+            stance,
             avatar: "",
         };
 
         const result = await updateMyProfile(payload);
 
-        currentProfile = result.data || null;
+        currentProfile = {
+            ...(result.data || {}),
+            fullName,
+            displayName: fullName,
+            email,
+            country: "Costa Rica",
+            phone,
+            stance,
+        };
+
+        localStorage.setItem(
+            `cj_skater_profile_pending_${email}`,
+            JSON.stringify({
+                fullName,
+                email,
+                country: "Costa Rica",
+                phone,
+                stance,
+                updatedAt: new Date().toISOString(),
+            })
+        );
 
         renderUserMeta();
         renderProfileForm();
 
-        alert("Perfil guardado correctamente");
+        profileMessage("Perfil guardado correctamente.", "success");
     } catch (error) {
         console.error("Profile save error:", error);
-        alert(error.message || "Error guardando perfil");
+        profileMessage(
+            error.message || "Error guardando perfil.",
+            "error"
+        );
     }
 }
 
@@ -317,16 +576,22 @@ function renderUserMeta() {
 }
 
 function renderProfileForm() {
-    setValue(
-        "profileDisplayName",
-        currentProfile?.displayName || currentUser?.name || ""
-    );
+    const email =
+        currentProfile?.email ||
+        currentUser?.email ||
+        "";
 
-    setValue("profileCity", currentProfile?.city || "");
+    const fullName =
+        currentProfile?.fullName ||
+        currentProfile?.displayName ||
+        currentUser?.name ||
+        "";
+
+    setValue("profileFullName", fullName);
+    setValue("profileCountry", "Costa Rica");
+    setValue("profilePhone", currentProfile?.phone || "");
+    setValue("profileEmailReadonly", email);
     setValue("profileStance", currentProfile?.stance || "");
-    setValue("profileLevel", currentProfile?.level || "");
-    setValue("profileInstagram", currentProfile?.instagram || "");
-    setValue("profileBio", currentProfile?.bio || "");
 }
 
 function setupPasswordToggle(inputId, button) {
@@ -426,7 +691,7 @@ async function handleVerifyEmailCode() {
         const email = currentUser?.email;
 
         if (!email || !code) {
-            alert("Ingresá el código de verificación");
+            profileMessage("Ingresá el código de verificación");
             return;
         }
 
@@ -446,11 +711,11 @@ async function handleVerifyEmailCode() {
         renderUserMeta();
         renderEmailVerificationState(currentUser);
 
-        alert("Email verificado correctamente");
+        profileMessage("Email verificado correctamente");
         notifySessionChanged();
     } catch (error) {
         console.error("Verify email error:", error);
-        alert(error.message || "No se pudo verificar el email");
+        profileMessage(error.message || "No se pudo verificar el email");
     }
 }
 
@@ -459,15 +724,15 @@ async function handleResendEmailCode() {
         const email = currentUser?.email;
 
         if (!email) {
-            alert("No hay email de usuario activo");
+            profileMessage("No hay email de usuario activo");
             return;
         }
 
         await resendVerificationCode({ email });
 
-        alert("Código reenviado. Revisá la consola local.");
+        profileMessage("Código reenviado. Revisá la consola local.");
     } catch (error) {
         console.error("Resend verification code error:", error);
-        alert(error.message || "No se pudo reenviar el código");
+        profileMessage(error.message || "No se pudo reenviar el código");
     }
 }

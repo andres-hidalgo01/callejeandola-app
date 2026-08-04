@@ -91,7 +91,7 @@ async function loginUser({ email, password }) {
     const cleanPassword = String(password || "").trim();
 
     if (!cleanEmail || !cleanPassword) {
-        const error = new Error("Email and password are required");
+        const error = new Error("Correo electrónico y contraseña son necesarios.", "error");
         error.statusCode = 400;
         throw error;
     }
@@ -103,21 +103,23 @@ async function loginUser({ email, password }) {
     });
 
     if (!user) {
-        const error = new Error("Invalid credentials");
+        const error = new Error("Credenciales Inválidas.Revisá los datos e intentá de nuevo.", "error");
         error.statusCode = 401;
         throw error;
     }
 
     if (!user.active) {
-        const error = new Error("User is inactive");
+        const error =
+
+        new Error("User is inactive");
         error.statusCode = 403;
         throw error;
     }
-
     const passwordMatches = await bcrypt.compare(cleanPassword, user.password);
 
     if (!passwordMatches) {
-        const error = new Error("Invalid credentials");
+        const error = new Error("Credenciales Inválidas.Revisá los datos e intentá de nuevo.", "error");
+
         error.statusCode = 401;
         throw error;
     }

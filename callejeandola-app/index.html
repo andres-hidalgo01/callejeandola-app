@@ -124,7 +124,6 @@
             </p>
           </div>
 
-
           <div class="cards flashable" id="spotsList" aria-label="Listado de spots"></div>
 
           <div class="empty" id="spotsEmpty" hidden>
@@ -142,7 +141,6 @@
 
             </div>
           </div>
-
 
           <div class="toolbar toolbar--events beta-events-toolbar">
             <div class="search beta-events-search">
@@ -215,8 +213,6 @@
 
           <div class="status-row beta-events-status-row">
             <span class="status" id="eventsStatus" aria-live="polite" aria-atomic="true"></span>
-
-
             <div class="cards flashable" id="eventsList" aria-label="Listado de eventos"></div>
 
             <div class="empty" id="eventsEmpty" hidden>
@@ -236,7 +232,7 @@
               </p>
             </div>
           </div>
-          
+
           <div class="toolbar toolbar--shops beta-shops-toolbar">
             <div class="search beta-shops-search">
               <label class="sr-only" for="qShops">
@@ -303,12 +299,7 @@
         <section class="view" data-view="profile" id="profileView">
           <div class="profile-shell">
             <div class="profile-card" id="profileGuestCard">
-              <div class="profile-avatar">CJ</div>
-
               <h2>Tu perfil Callejeandola</h2>
-              <p class="muted">
-                Creá tu cuenta skater o iniciá sesión para guardar tu perfil, spots y eventos.
-              </p>
 
               <div class="auth-switch">
                 <button class="auth-switch__btn is-active" type="button" id="btnShowLogin">
@@ -323,22 +314,19 @@
               <form id="profileLoginForm" action="javascript:void(0);" onsubmit="return false;" novalidate>
                 <div class="form-field">
                   <label for="profileLoginEmail">Email</label>
+
                   <input id="profileLoginEmail" type="email" placeholder="skater@callejeandola.com"
-                    autocomplete="email">
+                    autocomplete="email" />
                 </div>
 
                 <div class="form-field">
                   <label for="profileLoginPassword">Password</label>
 
-                  <div class="password-field">
-                    <input id="profileLoginPassword" type="password" placeholder="••••••••"
-                      autocomplete="current-password">
+                  <div class="password-field"><input id="profileLoginPassword" type="password" placeholder="••••••••"
+                      autocomplete="current-password" />
 
                     <button class="password-toggle" type="button" id="btnToggleProfilePassword"
-                      aria-label="Mostrar contraseña">
-                      👁
-                    </button>
-
+                      aria-label="Mostrar contraseña">👁</button>
                   </div>
                 </div>
 
@@ -349,29 +337,43 @@
 
               <form id="profileRegisterForm" action="javascript:void(0);" onsubmit="return false;" novalidate hidden>
                 <div class="form-field">
-                  <label for="profileRegisterName">Nombre</label>
-                  <input id="profileRegisterName" type="text" placeholder="Ej: Andres Hidalgo" autocomplete="name">
+                  <label for="profileRegisterName">Nombre Completo:</label>
+                  <input id="profileRegisterName" type="text" placeholder="Nombre del skater" autocomplete="name" />
+                </div>
+
+                <div class="form-field">
+                  <label for="profileRegisterCountry">País:</label>
+                  <input id="profileRegisterCountry" type="text" value="Costa Rica" readonly aria-readonly="true"
+                    autocomplete="country-name" />
+                </div>
+
+                <div class="form-field">
+                  <label for="profileRegisterPhone">Celular</label>
+
+                  <input id="profileRegisterPhone" type="tel" placeholder="+(506)" autocomplete="tel" />
+                </div>
+
+                <div class="form-field">
+                  <label for="profileRegisterStance">Stance</label>
+
+                  <select id="profileRegisterStance">
+                    <option value="">Seleccionar</option>
+                    <option value="Regular">Regular</option>
+                    <option value="Goofy">Goofy</option>
+                  </select>
                 </div>
 
                 <div class="form-field">
                   <label for="profileRegisterEmail">Email</label>
                   <input id="profileRegisterEmail" type="email" placeholder="skater@callejeandola.com"
-                    autocomplete="email">
-                </div>
-
-                <div class="form-field">
-                  <label for="profileRegisterCountry">País</label>
-                  <input id="profileRegisterCountry" type="text" value="Costa Rica" placeholder="Costa Rica"
-                    autocomplete="country-name">
+                    autocomplete="email" />
                 </div>
 
                 <div class="form-field">
                   <label for="profileRegisterPassword">Password</label>
-
                   <div class="password-field">
                     <input id="profileRegisterPassword" type="password" placeholder="Mínimo 6 caracteres"
-                      autocomplete="new-password">
-
+                      autocomplete="new-password" />
                     <button class="password-toggle" type="button" id="btnToggleProfileRegisterPassword"
                       aria-label="Mostrar contraseña">
                       👁
@@ -379,24 +381,33 @@
                   </div>
                 </div>
 
+                <p class="terms-inline">
+                  Al crear cuenta aceptás los
+                  <a href="#terms" data-legal-page="terms">Términos y Condiciones</a>
+                  y la
+                  <a href="#privacy" data-legal-page="privacy">Política de Privacidad</a>.
+                </p>
+
                 <button class="btn btn-primary" type="button" id="btnProfileRegister">
                   Crear cuenta skater
                 </button>
               </form>
             </div>
+
             <div class="profile-card" id="profileUserCard" hidden>
               <div class="profile-head">
-                <div class="profile-avatar" id="profileAvatar">CJ</div>
+                <!-- <div class="profile-avatar" id="profileAvatar">CJ</div> -->
 
                 <div>
                   <h2 id="profileUserName">Perfil</h2>
-                  <p class="muted" id="profileUserMeta">Sin datos</p>
+                  <p class="muted" id="profileUserMeta">SKATER · Costa Rica · Email pendiente</p>
                 </div>
               </div>
 
               <div class="email-verify-box" id="emailVerifyBox" hidden>
                 <div>
                   <strong>Email pendiente de verificación</strong>
+
                   <p class="muted micro">
                     Ingresá el código de 6 dígitos generado para tu correo.
                   </p>
@@ -416,38 +427,53 @@
                 </div>
               </div>
 
-              <div class="profile-grid">
-                <div class="form-field">
-                  <label for="profileDisplayName">Nombre público</label>
-                  <input id="profileDisplayName" type="text" placeholder="Ej: Andres Hidalgo">
+              <section class="profile-competition-panel">
+                <div class="profile-section-head">
+                  <div>
+                    <h3>Ficha skater</h3>
+                    <p class="muted">
+                      Datos base para tu cuenta y futuras inscripciones.
+                    </p>
+                  </div>
                 </div>
 
-                <div class="form-field">
-                  <label for="profileCity">Ciudad</label>
-                  <input id="profileCity" type="text" placeholder="Ej: San José">
-                </div>
+                <div class="profile-grid">
+                  <div class="form-field profile-grid-full">
+                    <label for="profileFullName">Nombre completo</label>
 
-                <div class="form-field">
-                  <label for="profileStance">Stance</label>
-                  <input id="profileStance" type="text" placeholder="Regular / Goofy">
-                </div>
+                    <input id="profileFullName" type="text" placeholder="Ej: Andrés Hidalgo" autocomplete="name" />
+                  </div>
 
-                <div class="form-field">
-                  <label for="profileLevel">Nivel</label>
-                  <input id="profileLevel" type="text" placeholder="Beginner / Intermediate / Advanced">
-                </div>
+                  <div class="form-field">
+                    <label for="profileCountry">País</label>
 
-                <div class="form-field profile-grid-full">
-                  <label for="profileInstagram">Instagram</label>
-                  <input id="profileInstagram" type="url" placeholder="https://instagram.com/...">
-                </div>
+                    <input id="profileCountry" type="text" value="Costa Rica" readonly aria-readonly="true" />
+                  </div>
 
-                <div class="form-field profile-grid-full">
-                  <label for="profileBio">Bio</label>
-                  <textarea id="profileBio" rows="4"
-                    placeholder="Contá algo sobre tu estilo, spots favoritos o crew."></textarea>
+                  <div class="form-field">
+                    <label for="profilePhone">Celular</label>
+
+                    <input id="profilePhone" type="tel" placeholder="+(506)" autocomplete="tel" />
+                  </div>
+
+                  <div class="form-field profile-grid-full">
+                    <label for="profileEmailReadonly">Correo electrónico</label>
+
+                    <input id="profileEmailReadonly" type="email" readonly aria-readonly="true"
+                      placeholder="correo@ejemplo.com" />
+                  </div>
+
+                  <div class="form-field profile-grid-full">
+                    <label for="profileStance">Stance</label>
+
+                    <select id="profileStance">
+                      <option value="">Seleccionar</option>
+                      <option value="Regular">Regular</option>
+                      <option value="Goofy">Goofy</option>
+                    </select>
+                  </div>
                 </div>
-              </div>
+              </section>
 
               <div class="profile-actions">
                 <button class="btn btn-primary" type="button" id="btnProfileSave">
@@ -463,7 +489,9 @@
                 <div class="profile-activity__head">
                   <div>
                     <h3>Tu actividad</h3>
-                    <p class="muted">Spots favoritos y eventos guardados.</p>
+                    <p class="muted">
+                      Spots favoritos y eventos guardados.
+                    </p>
                   </div>
                 </div>
 
@@ -476,7 +504,7 @@
 
                     <div class="mini-list" id="favoritesList">
                       <div class="mini-item">
-                        <span class="muted">Aún no tenés favoritos.</span>
+                        <span class="muted">Aún no tenés spots favoritos.</span>
                         <span>♡</span>
                       </div>
                     </div>
@@ -497,8 +525,8 @@
                   </section>
                 </div>
               </div>
-
             </div>
+
           </div>
         </section>
 
