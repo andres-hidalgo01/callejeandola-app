@@ -854,9 +854,81 @@ function cjEnsureViewToggle(scope, list, label, renderFn) {
     cjApplyViewMode(list, scope);
 }
 
+const SPOTS_PAGE_SIZE = 6;
+
+function getSpotsPage() {
+    return Number(state.spotsPage || 1);
+}
+
+function setSpotsPage(page) {
+    state.spotsPage = Math.max(1, Number(page || 1));
+}
+
+function renderSpotsPager(totalItems, currentPage, totalPages) {
+    const list = $("#spotsList");
+
+    if (!list) return;
+
+    let pager = $("#spotsPager");
+
+    if (!pager) {
+        pager = document.createElement("div");
+        pager.id = "spotsPager";
+        pager.className = "spots-pager";
+        list.insertAdjacentElement("afterend", pager);
+    }
+
+    if (totalItems <= SPOTS_PAGE_SIZE) {
+        pager.innerHTML = "";
+        pager.hidden = true;
+        return;
+    }
+
+    pager.hidden = false;
+
+    pager.innerHTML = `
+        <button
+            class="spots-pager__btn"
+            type="button"
+            data-spots-page-prev
+            ${currentPage <= 1 ? "disabled" : ""}
+        >
+            Anterior
+        </button>
+
+        <span class="spots-pager__status">
+            ${currentPage} / ${totalPages}
+        </span>
+
+        <button
+            class="spots-pager__btn"
+            type="button"
+            data-spots-page-next
+            ${currentPage >= totalPages ? "disabled" : ""}
+        >
+            Siguiente
+        </button>
+    `;
+
+    pager
+        .querySelector("[data-spots-page-prev]")
+        ?.addEventListener("click", () => {
+            setSpotsPage(currentPage - 1);
+            renderSpots();
+        });
+
+    pager
+        .querySelector("[data-spots-page-next]")
+        ?.addEventListener("click", () => {
+            setSpotsPage(currentPage + 1);
+            renderSpots();
+        });
+}
+
 function renderSpots() {
     const list = $("#spotsList");
     const empty = $("#spotsEmpty");
+
     if (!list) return;
 
     cjEnsureViewToggle("spots", list, "Spots", renderSpots);
@@ -865,33 +937,72 @@ function renderSpots() {
     const filtered = (state.data.spots || [])
         .filter((s) => {
             const f = state.spotsFilter;
+
             if (f === "all") return true;
-            if (["street", "park", "bowl"].includes(f)) return String(s.type).toLowerCase() === f;
+            if (["street", "park", "bowl"].includes(f)) {
+                return String(s.type || "").toLowerCase() === f;
+            }
             if (f === "verified") return !!s.verified;
-            if (f === "safe") return String(s.safety || "").toLowerCase() === "safe";
+            if (f === "safe") {
+                return String(s.safety || "").toLowerCase() === "safe";
+            }
+
             return false;
         })
         .filter((s) => {
             if (!state.spotsQuery) return true;
+
             const hay = `${s.name} ${s.zone || ""} ${s.type}`.toLowerCase();
+
             return hay.includes(state.spotsQuery);
         });
 
     const isEmpty = filtered.length === 0;
-    if (empty) empty.hidden = !isEmpty;
-    list.style.display = isEmpty ? "none" : "grid";
-    list.innerHTML = filtered.map(spotCard).join("");
 
-    filtered.forEach((s) => {
+    if (empty) {
+        empty.hidden = !isEmpty;
+    }
+
+    list.style.display = isEmpty ? "none" : "grid";
+
+    const totalPages = Math.max(
+        1,
+        Math.ceil(filtered.length / SPOTS_PAGE_SIZE)
+    );
+
+    if (getSpotsPage() > totalPages) {
+        setSpotsPage(totalPages);
+    }
+
+    const currentPage = getSpotsPage();
+    const startIndex = (currentPage - 1) * SPOTS_PAGE_SIZE;
+    const endIndex = startIndex + SPOTS_PAGE_SIZE;
+    const visibleSpots = filtered.slice(startIndex, endIndex);
+
+    list.innerHTML = visibleSpots.map(spotCard).join("");
+
+    visibleSpots.forEach((s) => {
         $(`#open_${s.id}`)?.addEventListener("click", () => openSpot(s));
-        $(`#fav_${s.id}`)?.addEventListener("click", () => toggleFav(String(s.id)));
+        $(`#fav_${s.id}`)?.addEventListener("click", () =>
+            toggleFav(String(s.id))
+        );
     });
 
-    $("#kpiSpots") && ($("#kpiSpots").textContent = String(filtered.length));
-    $("#kpiVerified") && ($("#kpiVerified").textContent = String(filtered.filter((s) => s.verified).length));
+    $("#kpiSpots") &&
+        ($("#kpiSpots").textContent = String(filtered.length));
+
+    $("#kpiVerified") &&
+        ($("#kpiVerified").textContent = String(
+            filtered.filter((s) => s.verified).length
+        ));
 
     const st = $("#spotsStatus");
-    if (st) st.textContent = `Mostrando ${filtered.length} spot(s) · Favoritos: ${state.favorites.size}`;
+
+    if (st) {
+        st.textContent = `Mostrando ${filtered.length} spot(s) · Favoritos: ${state.favorites.size}`;
+    }
+
+    renderSpotsPager(filtered.length, currentPage, totalPages);
 }
 
 function renderEvents() {
@@ -4503,37 +4614,12 @@ function cjProfileBindSkaterFields() {
     cjProfileField("btnDetectProfileCountry")
         ?.addEventListener("click", cjProfileDetectCountry);
 
-    cjProfileField("btnProfileSave")
-        ?.addEventListener(
-            "click",
-            (event) => {
-                if (!cjProfileChecked("profileTermsAccepted")) {
-                    event.preventDefault();
-                    event.stopImmediatePropagation();
-
-                    toast?.(
-                        "Aceptá los términos para guardar la ficha."
-                    );
-
-                    return;
-                }
-
-                cjProfileSaveSkaterData();
-            },
-            true
-        );
-
-    document
-        .querySelectorAll("[data-legal-page]")
-        .forEach((link) => {
-            link.addEventListener("click", (event) => {
-                event.preventDefault();
-
-                cjProfileOpenLegalPage(
-                    link.dataset.legalPage
-                );
-            });
-        });
+    /*
+      PRELAUNCH:
+      El guardado real del profile lo maneja js/views/profile.view.js.
+      No validar términos aquí porque esa validación pertenece al registro
+      o a inscripción de eventos, no a "Guardar perfil".
+    */
 }
 
 if (document.readyState === "loading") {

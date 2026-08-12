@@ -26,7 +26,7 @@ const steps = [
     {
         title: "Eventos",
         eyebrow: "Competencias",
-        text: "Aquí vas a ver jams, competencias y actividades. Luego entra el registro de competidores.",
+        text: "Aquí vas a ver jams, competencias y actividades.",
         targetSelectors: ["#tourTabEvents", '[data-tab="events"]'],
         position: "top",
     },

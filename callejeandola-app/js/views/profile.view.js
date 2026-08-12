@@ -312,6 +312,8 @@ async function handleProfileLogin() {
 }
 
 async function handleProfileRegister() {
+    const btnRegister = document.getElementById("btnProfileRegister");
+
     try {
         const name = getValue("profileRegisterName");
         const email = getValue("profileRegisterEmail");
@@ -351,19 +353,27 @@ async function handleProfileRegister() {
             return;
         }
 
+        if (btnRegister) {
+            btnRegister.disabled = true;
+            btnRegister.dataset.originalText =
+                btnRegister.textContent || "Crear cuenta skater";
+            btnRegister.textContent = "Creando cuenta...";
+        }
+
+        const cleanEmail = email.trim().toLowerCase();
 
         await register({
             name,
-            email,
+            email: cleanEmail,
             password,
             country,
         });
 
         localStorage.setItem(
-            `cj_skater_profile_pending_${email}`,
+            `cj_skater_profile_pending_${cleanEmail}`,
             JSON.stringify({
                 fullName: name,
-                email,
+                email: cleanEmail,
                 country,
                 phone,
                 stance,
@@ -395,7 +405,7 @@ async function handleProfileRegister() {
         }
 
         if (loginEmail) {
-            loginEmail.value = email;
+            loginEmail.value = cleanEmail;
         }
 
         if (loginPassword) {
@@ -437,6 +447,12 @@ async function handleProfileRegister() {
             error.message || "No se pudo crear la cuenta.",
             "error"
         );
+    } finally {
+        if (btnRegister) {
+            btnRegister.disabled = false;
+            btnRegister.textContent =
+                btnRegister.dataset.originalText || "Crear cuenta skater";
+        }
     }
 }
 
@@ -449,6 +465,21 @@ async function handleProfileSave() {
             getValue("profileEmailReadonly") ||
             currentUser?.email ||
             "";
+
+        if (!fullName) {
+            profileMessage("Agregá tu nombre completo.", "error");
+            return;
+        }
+
+        if (!phone) {
+            profileMessage("Agregá tu celular.", "error");
+            return;
+        }
+
+        if (!stance) {
+            profileMessage("Seleccioná tu stance.", "error");
+            return;
+        }
 
         const payload = {
             displayName: fullName,
@@ -483,11 +514,12 @@ async function handleProfileSave() {
         renderUserMeta();
         renderProfileForm();
 
-        profileMessage("Perfil guardado correctamente.", "success");
+        profileMessage("Perfil actualizado correctamente.", "success");
     } catch (error) {
         console.error("Profile save error:", error);
+
         profileMessage(
-            error.message || "Error guardando perfil.",
+            error.message || "No se pudo actualizar el perfil.",
             "error"
         );
     }
@@ -730,7 +762,7 @@ async function handleResendEmailCode() {
 
         await resendVerificationCode({ email });
 
-        profileMessage("Código reenviado. Revisá la consola local.");
+        profileMessage("Código reenviado. Revisá tu correo.");
     } catch (error) {
         console.error("Resend verification code error:", error);
         profileMessage(error.message || "No se pudo reenviar el código");

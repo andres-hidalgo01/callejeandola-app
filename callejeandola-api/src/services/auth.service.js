@@ -3,6 +3,7 @@ const prisma = require("../config/prisma");
 const crypto = require("crypto");
 const { generateToken } = require("../utils/jwt");
 const { VALID_ROLES } = require("../config/roles");
+const { sendVerificationEmail } = require("./email.service");
 
 function sanitizeUser(user) {
     if (!user) return null;
@@ -70,8 +71,10 @@ async function registerUser({ name, email, password, role, country }) {
         },
     });
 
-    logVerificationCode(user, emailVerificationCode);
-
+    sendVerificationCodeSafe(user, emailVerificationCode).catch((error) => {
+        console.error("Async email verification send error:", error.message);
+    });
+    
     const safeUser = sanitizeUser(user);
 
     const token = generateToken({
@@ -111,7 +114,7 @@ async function loginUser({ email, password }) {
     if (!user.active) {
         const error =
 
-        new Error("User is inactive");
+            new Error("User is inactive");
         error.statusCode = 403;
         throw error;
     }
@@ -165,6 +168,21 @@ function logVerificationCode(user, code) {
     console.log("Expires in: 15 minutes");
     console.log("====================================");
     console.log("");
+}
+
+async function sendVerificationCodeSafe(user, code) {
+    logVerificationCode(user, code);
+
+    try {
+        await sendVerificationEmail({
+            to: user.email,
+            name: user.name,
+            code,
+        });
+    } catch (error) {
+        console.error("Email send error:", error.message);
+        console.warn("El código quedó disponible en consola local.");
+    }
 }
 
 async function verifyEmail({ email, code }) {
@@ -264,10 +282,11 @@ async function resendVerificationCode({ email }) {
         },
     });
 
-    logVerificationCode(updatedUser, emailVerificationCode);
+    await sendVerificationCodeSafe(updatedUser, emailVerificationCode);
 
     return {
-        message: "Verification code sent",
+        message: "Verification code resent successfully",
+        user: sanitizeUser(updatedUser),
     };
 }
 
