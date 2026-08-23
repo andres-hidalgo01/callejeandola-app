@@ -1,11 +1,3 @@
-const isLocal =
-    window.location.hostname === "localhost" ||
-    window.location.hostname === "127.0.0.1";
-
-window.__API__ = isLocal
-    ? "https://callejeandola-api.onrender.com/api"
-    : "https://api.callejeandola.com/api";
-
 window.CALLEJEANDOLA_CONFIG = {
-    API_URL: window.__API__,
+  API_BASE_URL: "https://callejeandola-api.onrender.com/api",
 };
