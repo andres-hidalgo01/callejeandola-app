@@ -317,6 +317,61 @@ td img {
     color: #fff;
 }
 
+.form-field select {
+    width: 100%;
+    min-height: 44px;
+    padding: 0 42px 0 14px;
+
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    border-radius: 14px;
+
+    background-color: rgba(15, 23, 42, 0.72);
+    color: #f8fafc;
+
+    font: inherit;
+    font-size: 14px;
+    line-height: 1.2;
+
+    outline: none;
+    appearance: none;
+    cursor: pointer;
+
+    transition:
+        border-color 160ms ease,
+        box-shadow 160ms ease,
+        background-color 160ms ease;
+
+    background-image:
+        linear-gradient(45deg, transparent 50%, #cbd5e1 50%),
+        linear-gradient(135deg, #cbd5e1 50%, transparent 50%);
+    background-position:
+        calc(100% - 20px) 50%,
+        calc(100% - 14px) 50%;
+    background-size:
+        6px 6px,
+        6px 6px;
+    background-repeat: no-repeat;
+}
+
+.form-field select:hover {
+    border-color: rgba(34, 211, 238, 0.38);
+    background-color: rgba(15, 23, 42, 0.9);
+}
+
+.form-field select:focus {
+    border-color: rgba(34, 211, 238, 0.72);
+    box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.12);
+}
+
+.form-field select option {
+    background-color: #0f172a;
+    color: #f8fafc;
+}
+
+.form-grid-2 .form-field select {
+    height: 44px;
+}
+
 .form-check {
     display: flex;
     align-items: center;

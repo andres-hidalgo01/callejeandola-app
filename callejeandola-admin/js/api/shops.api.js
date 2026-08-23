@@ -1,4 +1,4 @@
-// const API_URL = "http://localhost:4000/api/shops";
+// const API_URL = "https://callejeandola-api.onrender.com/api/shops";
 
 // export async function getShops() {
 //     const response = await fetch(API_URL);

@@ -19,37 +19,8 @@
       <a class="brand" href="#main" aria-label="Callejeandola">
         <img src="assets/icons/logo.png" alt="Callejeandola logo" class="brand__logo">
       </a>
-      <!-- <div class="appbar__actions">
-        <div class="lang-wrap">
-          <button class="icon-btn" id="btnLanguage" type="button" aria-label="Cambiar idioma" aria-expanded="false">
-            🌐
-          </button>
-          <div class="lang-menu-global" id="langMenu" hidden>
-            <button class="lang-option" type="button" data-lang="es">🇨🇷 Español</button>
-            <button class="lang-option" type="button" data-lang="en">🇺🇸 English</button>
-          </div>
-        </div>
-
-        <button class="icon-btn" id="btnTheme" type="button" aria-label="Cambiar apariencia">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M21 12.3A8.2 8.2 0 1 1 11.7 3a6.8 6.8 0 0 0 9.3 9.3Z" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" />
-          </svg>
-        </button>
-      </div> -->
-
-
     </div>
   </header>
-
-  <!-- <section class="sponsors" aria-label="Patrocinadores">
-    <div class="container sponsors__inner">
-      <span class="badge sponsors__badge">Sponsors</span>
-      <div class="marquee" aria-label="Cintillo de marcas">
-        <div class="marquee__track" id="sponsorsMarquee"></div>
-      </div>
-    </div>
-  </section> -->
 
   <main id="main" class="main">
     <section class="container shell">
@@ -67,55 +38,90 @@
           <div class="view__head">
             <div>
               <h1 class="h1">Encuentra spots cerca</h1>
-              <p class="sub">Mapa, filtros rápidos y spots útiles para patinar hoy.</p>
+              <p class="sub">Mapa, filtros rápidos y spots para patinar.</p>
             </div>
           </div>
 
-          <div class="toolbar">
-            <div class="search">
-              <label class="sr-only" for="qSpots">Buscar spots</label>
-              <input id="qSpots" type="search" placeholder="Buscar: nombre, zona, obstáculo…" autocomplete="off" />
+          <div class="toolbar toolbar--spots beta-spots-toolbar">
+            <div class="search beta-spots-search">
+              <label class="sr-only" for="qSpots">
+                Buscar spots
+              </label>
+
+              <input id="qSpots" type="search" placeholder="Buscar: nombre, zona, obstáculo..." autocomplete="off"
+                spellcheck="false" />
             </div>
 
-            <div class="mobile-filters">
-              <select id="spotsFilterMobile" class="filter-select">
-                <option value="all">Todos</option>
-                <option value="street">Street</option>
-                <option value="park">Park</option>
-                <option value="bowl">Bowl</option>
-                <option value="verified">Verified</option>
-                <option value="safe">Safe</option>
-              </select>
+            <div class="beta-spots-control-row">
+              <div class="mobile-filters beta-spots-filter">
+                <label class="sr-only" for="spotsFilterMobile">
+                  Filtrar spots
+                </label>
+
+                <select id="spotsFilterMobile" class="filter-select" aria-label="Filtrar spots">
+                  <option value="all">Todos</option>
+                  <option value="street">Street</option>
+                  <option value="park">Park</option>
+                  <option value="bowl">Bowl</option>
+                </select>
+              </div>
+
+              <div class="beta-spots-mini-kpis" aria-label="Resumen rápido de spots">
+                <article class="beta-spots-mini-kpi">
+                  <strong id="kpiSpots">0</strong>
+
+                  <span>
+                    <b aria-hidden="true">👁</b>
+                    visibles
+                  </span>
+                </article>
+
+                <article class="beta-spots-mini-kpi">
+                  <strong id="kpiFavs">0</strong>
+
+                  <span>
+                    <b aria-hidden="true">♡</b>
+                    favoritos
+                  </span>
+                </article>
+              </div>
             </div>
 
-            <div class="chips" aria-label="Filtros de spots">
-              <button class="chip chip-btn is-active" type="button" data-filter="all">All</button>
-              <button class="chip chip-btn" type="button" data-filter="street">Street</button>
-              <button class="chip chip-btn" type="button" data-filter="park">Park</button>
-              <button class="chip chip-btn" type="button" data-filter="bowl">Bowl</button>
-              <button class="chip chip-btn" type="button" data-filter="verified">Verified</button>
-              <button class="chip chip-btn" type="button" data-filter="safe">Safe</button>
-            </div>
+            <div class="chips beta-spots-chips" aria-label="Filtros rápidos de spots">
+              <button class="chip chip-btn is-active" type="button" data-filter="all">
+                Todos
+              </button>
 
+              <button class="chip chip-btn" type="button" data-filter="street">
+                Street
+              </button>
+
+              <button class="chip chip-btn" type="button" data-filter="park">
+                Park
+              </button>
+
+              <button class="chip chip-btn" type="button" data-filter="bowl">
+                Bowl
+              </button>
+            </div>
           </div>
 
-          <div class="status-row" aria-live="polite" aria-atomic="true">
-            <span class="status" id="spotsStatus">Mostrando spots…</span>
+          <div class="status-row beta-spots-status-row">
+            <span class="status" id="spotsStatus" aria-live="polite" aria-atomic="true"></span>
           </div>
 
-          <div class="kpis">
-            <div class="kpi">
-              <div class="kpi__num" id="kpiSpots">—</div>
-              <div class="kpi__label">spots visibles</div>
-            </div>
-            <div class="kpi">
-              <div class="kpi__num" id="kpiFavs">—</div>
-              <div class="kpi__label">favoritos</div>
-            </div>
-            <div class="kpi">
-              <div class="kpi__num" id="kpiVerified">—</div>
-              <div class="kpi__label">verificados</div>
-            </div>
+          <div class="cards flashable" id="spotsList" aria-label="Listado de spots"></div>
+
+          <div class="empty" id="spotsEmpty" hidden>
+            <div class="empty__icon">🛹</div>
+
+            <h3>
+              No encontramos spots con ese filtro
+            </h3>
+
+            <p class="muted">
+              Probá otro filtro o agregá un nuevo spot.
+            </p>
           </div>
 
           <div class="cards flashable" id="spotsList" aria-label="Listado de spots"></div>
@@ -136,53 +142,84 @@
             </div>
           </div>
 
-          <div class="toolbar">
-            <div class="search">
-              <label class="sr-only" for="qEvents">Buscar eventos</label>
-              <input id="qEvents" type="search" placeholder="Buscar: evento, ciudad, organizer…" autocomplete="off" />
+          <div class="toolbar toolbar--events beta-events-toolbar">
+            <div class="search beta-events-search">
+              <label class="sr-only" for="qEvents">
+                Buscar eventos
+              </label>
+
+              <input id="qEvents" type="search" placeholder="Buscar: evento, lugar, formato..." autocomplete="off"
+                spellcheck="false" />
             </div>
 
-            <div class="mobile-filters">
-              <select id="eventsFilterMobile" class="filter-select">
-                <option value="all">Todos</option>
-                <option value="upcoming">Upcoming</option>
-                <option value="contest">Contest</option>
-                <option value="jam">Jam</option>
-                <option value="free">Free</option>
-              </select>
+            <div class="beta-events-control-row">
+              <div class="mobile-filters beta-events-filter">
+                <label class="sr-only" for="eventsFilterMobile">
+                  Filtrar eventos
+                </label>
+
+                <select id="eventsFilterMobile" class="filter-select" aria-label="Filtrar eventos">
+                  <option value="all">Todos</option>
+                  <option value="upcoming">Próximos</option>
+                  <option value="contest">Contest</option>
+                  <option value="jam">Jam</option>
+                  <option value="free">Gratis</option>
+                </select>
+              </div>
+
+              <div class="beta-events-mini-kpis" aria-label="Resumen rápido de eventos">
+                <article class="beta-events-mini-kpi">
+                  <strong id="kpiEvents">0</strong>
+
+                  <span>
+                    <b aria-hidden="true">🏁</b>
+                    eventos
+                  </span>
+                </article>
+
+                <article class="beta-events-mini-kpi">
+                  <strong id="kpiUpcoming">0</strong>
+
+                  <span>
+                    <b aria-hidden="true">＋</b>
+                    próximos
+                  </span>
+                </article>
+              </div>
             </div>
 
-            <div class="chips" aria-label="Filtros de eventos">
-              <button class="chip chip-btn is-active" type="button" data-eventfilter="all">All</button>
-              <button class="chip chip-btn" type="button" data-eventfilter="upcoming">Upcoming</button>
-              <button class="chip chip-btn" type="button" data-eventfilter="contest">Contest</button>
-              <button class="chip chip-btn" type="button" data-eventfilter="jam">Jam</button>
-              <button class="chip chip-btn" type="button" data-eventfilter="free">Free</button>
+            <div class="chips beta-events-chips" aria-label="Filtros rápidos de eventos">
+              <button class="chip chip-btn is-active" type="button" data-eventfilter="all">
+                Todos
+              </button>
+
+              <button class="chip chip-btn" type="button" data-eventfilter="upcoming">
+                Próximos
+              </button>
+
+              <button class="chip chip-btn" type="button" data-eventfilter="contest">
+                Contest
+              </button>
+
+              <button class="chip chip-btn" type="button" data-eventfilter="jam">
+                Jam
+              </button>
+
+              <button class="chip chip-btn" type="button" data-eventfilter="free">
+                Gratis
+              </button>
             </div>
           </div>
 
-          <div class="kpis">
-            <div class="kpi">
-              <div class="kpi__num" id="kpiEvents">—</div>
-              <div class="kpi__label">eventos visibles</div>
-            </div>
-            <div class="kpi">
-              <div class="kpi__num" id="kpiUpcoming">—</div>
-              <div class="kpi__label">próximos</div>
-            </div>
-            <div class="kpi">
-              <div class="kpi__num" id="kpiRegistrations">—</div>
-              <div class="kpi__label">inscritos</div>
-            </div>
-          </div>
+          <div class="status-row beta-events-status-row">
+            <span class="status" id="eventsStatus" aria-live="polite" aria-atomic="true"></span>
+            <div class="cards flashable" id="eventsList" aria-label="Listado de eventos"></div>
 
-          <div class="cards flashable" id="eventsList" aria-label="Listado de eventos"></div>
-
-          <div class="empty" id="eventsEmpty" hidden>
-            <div class="empty__icon">🏁</div>
-            <h3>No hay eventos disponibles</h3>
-            <p class="muted">Pronto aparecerán sesiones, competencias y jams.</p>
-          </div>
+            <div class="empty" id="eventsEmpty" hidden>
+              <div class="empty__icon">🏁</div>
+              <h3>No hay eventos disponibles</h3>
+              <p class="muted">Pronto aparecerán sesiones, competencias y jams.</p>
+            </div>
 
         </section>
 
@@ -190,69 +227,79 @@
           <div class="view__head">
             <div>
               <h1 class="h1">Skateshops</h1>
-              <p class="sub">Tiendas locales, marcas, promos y puntos clave de la escena.</p>
+              <p class="sub">
+                Tiendas locales, marcas, promos.
+              </p>
             </div>
           </div>
 
-          <div class="toolbar">
-            <div class="search">
-              <label class="sr-only" for="qShops">Buscar shops</label>
-              <input id="qShops" type="search" placeholder="Buscar: shop, ciudad, marca…" autocomplete="off" />
+          <div class="toolbar toolbar--shops beta-shops-toolbar">
+            <div class="search beta-shops-search">
+              <label class="sr-only" for="qShops">
+                Buscar shops
+              </label>
+
+              <input id="qShops" type="search" placeholder="Buscar: shop, ciudad, marca..." autocomplete="off"
+                spellcheck="false" />
             </div>
 
-            <div class="mobile-filters">
-              <select id="shopsFilterMobile" class="filter-select">
-                <option value="all">Todas</option>
-                <option value="verified">Verified</option>
-                <option value="promo">Promo</option>
-                <option value="parts">Parts</option>
-                <option value="boards">Boards</option>
-              </select>
-            </div>
+            <div class="beta-shops-control-row">
+              <div class="mobile-filters beta-shops-filter">
+                <label class="sr-only" for="shopsFilterMobile">
+                  Filtrar shops
+                </label>
 
-            <div class="chips" aria-label="Filtros de shops">
-              <button class="chip chip-btn is-active" type="button" data-shopfilter="all">All</button>
-              <button class="chip chip-btn" type="button" data-shopfilter="verified">Verified</button>
-              <button class="chip chip-btn" type="button" data-shopfilter="promo">Promo</button>
-              <button class="chip chip-btn" type="button" data-shopfilter="parts">Parts</button>
-              <button class="chip chip-btn" type="button" data-shopfilter="boards">Boards</button>
+                <select id="shopsFilterMobile" class="filter-select" aria-label="Filtrar shops">
+                  <option value="all">Todas</option>
+                  <option value="promo">Promos</option>
+                </select>
+              </div>
+
+              <article class="beta-shops-mini-kpi">
+                <strong id="kpiShops">0</strong>
+
+                <span>
+                  <b aria-hidden="true">👁</b>
+                  shops
+                </span>
+              </article>
+
+              <article class="beta-shops-mini-kpi">
+                <strong id="kpiPromos">0</strong>
+
+                <span>
+                  <b aria-hidden="true">⚡</b>
+                  promos
+                </span>
+              </article>
             </div>
           </div>
 
-          <div class="kpis">
-            <div class="kpi">
-              <div class="kpi__num" id="kpiShops">—</div>
-              <div class="kpi__label">shops visibles</div>
-            </div>
-            <div class="kpi">
-              <div class="kpi__num" id="kpiVerifiedShops">—</div>
-              <div class="kpi__label">verificadas</div>
-            </div>
-            <div class="kpi">
-              <div class="kpi__num" id="kpiPromos">—</div>
-              <div class="kpi__label">promos activas</div>
-            </div>
+          <div class="status-row beta-shops-status-row">
+            <span class="status" id="shopsStatus" aria-live="polite" aria-atomic="true"></span>
           </div>
+
+          <h2 class="beta-shops-section-title">
+            Shops
+          </h2>
 
           <div class="cards flashable" id="shopsList" aria-label="Listado de shops"></div>
 
           <div class="empty" id="shopsEmpty" hidden>
             <div class="empty__icon">🛹</div>
-            <h3>No hay shops disponibles</h3>
-            <p class="muted">Pronto verás tiendas locales, promos y aliados de la escena.</p>
-          </div>
 
+            <h3>No hay shops disponibles</h3>
+
+            <p class="muted">
+              Pronto verás tiendas locales, promos y aliados de la escena.
+            </p>
+          </div>
         </section>
 
         <section class="view" data-view="profile" id="profileView">
           <div class="profile-shell">
             <div class="profile-card" id="profileGuestCard">
-              <div class="profile-avatar">CJ</div>
-
               <h2>Tu perfil Callejeandola</h2>
-              <p class="muted">
-                Creá tu cuenta skater o iniciá sesión para guardar tu perfil, spots y eventos.
-              </p>
 
               <div class="auth-switch">
                 <button class="auth-switch__btn is-active" type="button" id="btnShowLogin">
@@ -267,22 +314,19 @@
               <form id="profileLoginForm" action="javascript:void(0);" onsubmit="return false;" novalidate>
                 <div class="form-field">
                   <label for="profileLoginEmail">Email</label>
+
                   <input id="profileLoginEmail" type="email" placeholder="skater@callejeandola.com"
-                    autocomplete="email">
+                    autocomplete="email" />
                 </div>
 
                 <div class="form-field">
                   <label for="profileLoginPassword">Password</label>
 
-                  <div class="password-field">
-                    <input id="profileLoginPassword" type="password" placeholder="••••••••"
-                      autocomplete="current-password">
+                  <div class="password-field"><input id="profileLoginPassword" type="password" placeholder="••••••••"
+                      autocomplete="current-password" />
 
                     <button class="password-toggle" type="button" id="btnToggleProfilePassword"
-                      aria-label="Mostrar contraseña">
-                      👁
-                    </button>
-
+                      aria-label="Mostrar contraseña">👁</button>
                   </div>
                 </div>
 
@@ -293,29 +337,43 @@
 
               <form id="profileRegisterForm" action="javascript:void(0);" onsubmit="return false;" novalidate hidden>
                 <div class="form-field">
-                  <label for="profileRegisterName">Nombre</label>
-                  <input id="profileRegisterName" type="text" placeholder="Ej: Andres Hidalgo" autocomplete="name">
+                  <label for="profileRegisterName">Nombre Completo:</label>
+                  <input id="profileRegisterName" type="text" placeholder="Nombre del skater" autocomplete="name" />
+                </div>
+
+                <div class="form-field">
+                  <label for="profileRegisterCountry">País:</label>
+                  <input id="profileRegisterCountry" type="text" value="Costa Rica" readonly aria-readonly="true"
+                    autocomplete="country-name" />
+                </div>
+
+                <div class="form-field">
+                  <label for="profileRegisterPhone">Celular</label>
+
+                  <input id="profileRegisterPhone" type="tel" placeholder="+(506)" autocomplete="tel" />
+                </div>
+
+                <div class="form-field">
+                  <label for="profileRegisterStance">Stance</label>
+
+                  <select id="profileRegisterStance">
+                    <option value="">Seleccionar</option>
+                    <option value="Regular">Regular</option>
+                    <option value="Goofy">Goofy</option>
+                  </select>
                 </div>
 
                 <div class="form-field">
                   <label for="profileRegisterEmail">Email</label>
                   <input id="profileRegisterEmail" type="email" placeholder="skater@callejeandola.com"
-                    autocomplete="email">
-                </div>
-
-                <div class="form-field">
-                  <label for="profileRegisterCountry">País</label>
-                  <input id="profileRegisterCountry" type="text" value="Costa Rica" placeholder="Costa Rica"
-                    autocomplete="country-name">
+                    autocomplete="email" />
                 </div>
 
                 <div class="form-field">
                   <label for="profileRegisterPassword">Password</label>
-
                   <div class="password-field">
                     <input id="profileRegisterPassword" type="password" placeholder="Mínimo 6 caracteres"
-                      autocomplete="new-password">
-
+                      autocomplete="new-password" />
                     <button class="password-toggle" type="button" id="btnToggleProfileRegisterPassword"
                       aria-label="Mostrar contraseña">
                       👁
@@ -323,24 +381,33 @@
                   </div>
                 </div>
 
+                <p class="terms-inline">
+                  Al crear cuenta aceptás los
+                  <a href="#terms" data-legal-page="terms">Términos y Condiciones</a>
+                  y la
+                  <a href="#privacy" data-legal-page="privacy">Política de Privacidad</a>.
+                </p>
+
                 <button class="btn btn-primary" type="button" id="btnProfileRegister">
                   Crear cuenta skater
                 </button>
               </form>
             </div>
+
             <div class="profile-card" id="profileUserCard" hidden>
               <div class="profile-head">
-                <div class="profile-avatar" id="profileAvatar">CJ</div>
+                <!-- <div class="profile-avatar" id="profileAvatar">CJ</div> -->
 
                 <div>
                   <h2 id="profileUserName">Perfil</h2>
-                  <p class="muted" id="profileUserMeta">Sin datos</p>
+                  <p class="muted" id="profileUserMeta">SKATER · Costa Rica · Email pendiente</p>
                 </div>
               </div>
 
               <div class="email-verify-box" id="emailVerifyBox" hidden>
                 <div>
                   <strong>Email pendiente de verificación</strong>
+
                   <p class="muted micro">
                     Ingresá el código de 6 dígitos generado para tu correo.
                   </p>
@@ -360,38 +427,53 @@
                 </div>
               </div>
 
-              <div class="profile-grid">
-                <div class="form-field">
-                  <label for="profileDisplayName">Nombre público</label>
-                  <input id="profileDisplayName" type="text" placeholder="Ej: Andres Hidalgo">
+              <section class="profile-competition-panel">
+                <div class="profile-section-head">
+                  <div>
+                    <h3>Ficha skater</h3>
+                    <p class="muted">
+                      Datos base para tu cuenta y futuras inscripciones.
+                    </p>
+                  </div>
                 </div>
 
-                <div class="form-field">
-                  <label for="profileCity">Ciudad</label>
-                  <input id="profileCity" type="text" placeholder="Ej: San José">
-                </div>
+                <div class="profile-grid">
+                  <div class="form-field profile-grid-full">
+                    <label for="profileFullName">Nombre completo</label>
 
-                <div class="form-field">
-                  <label for="profileStance">Stance</label>
-                  <input id="profileStance" type="text" placeholder="Regular / Goofy">
-                </div>
+                    <input id="profileFullName" type="text" placeholder="Tu Nombre" autocomplete="name" />
+                  </div>
 
-                <div class="form-field">
-                  <label for="profileLevel">Nivel</label>
-                  <input id="profileLevel" type="text" placeholder="Beginner / Intermediate / Advanced">
-                </div>
+                  <div class="form-field">
+                    <label for="profileCountry">País</label>
 
-                <div class="form-field profile-grid-full">
-                  <label for="profileInstagram">Instagram</label>
-                  <input id="profileInstagram" type="url" placeholder="https://instagram.com/...">
-                </div>
+                    <input id="profileCountry" type="text" value="Costa Rica" readonly aria-readonly="true" />
+                  </div>
 
-                <div class="form-field profile-grid-full">
-                  <label for="profileBio">Bio</label>
-                  <textarea id="profileBio" rows="4"
-                    placeholder="Contá algo sobre tu estilo, spots favoritos o crew."></textarea>
+                  <div class="form-field">
+                    <label for="profilePhone">Celular</label>
+
+                    <input id="profilePhone" type="tel" placeholder="+(506)" autocomplete="tel" />
+                  </div>
+
+                  <div class="form-field profile-grid-full">
+                    <label for="profileEmailReadonly">Correo electrónico</label>
+
+                    <input id="profileEmailReadonly" type="email" readonly aria-readonly="true"
+                      placeholder="correo@ejemplo.com" />
+                  </div>
+
+                  <div class="form-field profile-grid-full">
+                    <label for="profileStance">Stance</label>
+
+                    <select id="profileStance">
+                      <option value="">Seleccionar</option>
+                      <option value="Regular">Regular</option>
+                      <option value="Goofy">Goofy</option>
+                    </select>
+                  </div>
                 </div>
-              </div>
+              </section>
 
               <div class="profile-actions">
                 <button class="btn btn-primary" type="button" id="btnProfileSave">
@@ -407,7 +489,9 @@
                 <div class="profile-activity__head">
                   <div>
                     <h3>Tu actividad</h3>
-                    <p class="muted">Spots favoritos y eventos guardados.</p>
+                    <p class="muted">
+                      Spots favoritos y eventos guardados.
+                    </p>
                   </div>
                 </div>
 
@@ -420,7 +504,7 @@
 
                     <div class="mini-list" id="favoritesList">
                       <div class="mini-item">
-                        <span class="muted">Aún no tenés favoritos.</span>
+                        <span class="muted">Aún no tenés spots favoritos.</span>
                         <span>♡</span>
                       </div>
                     </div>
@@ -441,8 +525,8 @@
                   </section>
                 </div>
               </div>
-
             </div>
+
           </div>
         </section>
 
@@ -546,20 +630,21 @@
     <span id="toastMsg">Listo</span>
   </div>
 
-  <!-- Mobile entry flow -->
   <div class="desktop-qr-gate" id="desktopQrGate" hidden>
     <div class="desktop-qr-gate__card">
       <img class="desktop-qr-gate__logo" src="./assets/icons/logo.png" alt="Callejeandola" />
 
       <h1>Abrí Callejeandola desde tu teléfono</h1>
-      <p>Esta demo está diseñada mobile-first. Escaneá el QR para entrar desde el celular.</p>
+      <p>Escaneá el QR para entrar desde el celular.</p>
 
       <div class="desktop-qr-gate__qr">
         <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=https%3A%2F%2Fcallejeandola.com"
           alt="QR Callejeandola" />
       </div>
 
-      <strong>callejeandola.com</strong>
+      <strong><a href="https://www.callejeandola.com/">callejeandola.app</a></strong>
+
+
     </div>
   </div>
 

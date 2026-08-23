@@ -52,7 +52,6 @@ let state = {
         shops: [],
         sponsors: [],
     },
-
 };
 
 let realMap = null;
@@ -61,6 +60,16 @@ let userLocation = null;
 let userMarker = null;
 let activeRouteLine = null;
 let activeRouteSpot = null;
+
+let cjRouteSteps = [];
+let cjRouteActiveStepIndex = 0;
+
+let cjRouteMode = "idle"; // idle | preview | live
+let cjRouteIsLive = false;
+let cjRouteIsStarting = false;
+let cjRouteFollowUser = true;
+
+let cjRouteHasInitialLiveFocus = false;
 
 /* =========================================
    INIT
@@ -203,17 +212,62 @@ function normalizeSpots(spots) {
     }));
 }
 
+// function normalizeEvents(events) {
+//     return events.map((e) => {
+//         const date = e.date ? new Date(e.date) : null;
+//         const isValidDate = date && !isNaN(date);
+
+//         return {
+//             id: String(e.id),
+//             title: e.title || "Evento",
+//             description: e.description || "",
+//             location: e.location || "—",
+//             place: e.location || "—",
+//             country: e.country || "Costa Rica",
+//             date: isValidDate ? date : null,
+//             month: isValidDate ? date.toLocaleString("en-US", { month: "short" }).toUpperCase() : "—",
+//             day: isValidDate ? String(date.getDate()).padStart(2, "0") : "—",
+//             time: isValidDate
+//                 ? date.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })
+//                 : "—",
+//             format: e.description || "Sin descripción",
+//             category: e.category || "event",
+//             price: Number(e.price || 0),
+//             lat: Number(e.lat || 0),
+//             lng: Number(e.lng || 0),
+//             image: e.image || "",
+//             images: Array.isArray(e.images) ? e.images : e.image ? [e.image] : [],
+//         };
+//     });
+// }
+
 function normalizeEvents(events) {
     return events.map((e) => {
         const date = e.date ? new Date(e.date) : null;
         const isValidDate = date && !isNaN(date);
+
+        const linkedSpot = e.spot
+            ? {
+                id: String(e.spot.id),
+                name: e.spot.name || "Spot",
+                zone: e.spot.zone || e.spot.city || "—",
+                city: e.spot.city || "—",
+                type: e.spot.type || "spot",
+                description: e.spot.description || "",
+                lat: Number(e.spot.lat || 0),
+                lng: Number(e.spot.lng || 0),
+                image: e.spot.image || "",
+                imageUrl: e.spot.image || "",
+                images: e.spot.image ? [e.spot.image] : [],
+            }
+            : null;
 
         return {
             id: String(e.id),
             title: e.title || "Evento",
             description: e.description || "",
             location: e.location || "—",
-            place: e.location || "—",
+            place: linkedSpot?.name || e.location || "—",
             country: e.country || "Costa Rica",
             date: isValidDate ? date : null,
             month: isValidDate ? date.toLocaleString("en-US", { month: "short" }).toUpperCase() : "—",
@@ -224,10 +278,21 @@ function normalizeEvents(events) {
             format: e.description || "Sin descripción",
             category: e.category || "event",
             price: Number(e.price || 0),
-            lat: Number(e.lat || 0),
-            lng: Number(e.lng || 0),
-            image: e.image || "",
-            images: Array.isArray(e.images) ? e.images : e.image ? [e.image] : [],
+
+            spotId: e.spotId ? String(e.spotId) : null,
+            spot: linkedSpot,
+            linkedSpot,
+
+            lat: linkedSpot ? Number(linkedSpot.lat) : Number(e.lat || 0),
+            lng: linkedSpot ? Number(linkedSpot.lng) : Number(e.lng || 0),
+
+            image: e.image || linkedSpot?.image || "",
+            imageUrl: e.image || linkedSpot?.image || "",
+            images: e.image
+                ? [e.image]
+                : linkedSpot?.image
+                    ? [linkedSpot.image]
+                    : [],
         };
     });
 }
@@ -510,6 +575,12 @@ function renderRealMapMarkers() {
 function activateRouteFromMap(item) {
     if (!item) return;
 
+    if (item?.spot || item?.spotId || item?.mapType === "event") {
+        item = cjNormalizeLinkedEvent(item);
+        item.mapType = "spot";
+    }
+
+
     if (typeof activateRouteTarget === "function") {
         activateRouteTarget(item, item.mapType || "spot");
     } else {
@@ -525,8 +596,8 @@ function activateRouteFromMap(item) {
                 lat,
                 lng,
                 hasCoords: hasValidCoords(item),
-                wazeUrl: `https://waze.com/ul?ll=${lat},${lng}&navigate=yes`,
-                googleMapsUrl: `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`,
+                wazeUrl: "",
+                googleMapsUrl: "",
             },
         };
 
@@ -620,10 +691,26 @@ function bindFilters() {
 function bindMobileFilters() {
     $("#spotsFilterMobile")?.addEventListener("change", (e) => {
         state.spotsFilter = e.target.value;
-        syncChipState("[data-filter]", state.spotsFilter, "filter");
+
+        syncChipState(
+            "[data-filter]",
+            state.spotsFilter,
+            "filter"
+        );
+
         renderSpots();
         flash("#spotsList");
+
+        /*
+         * Chrome mantiene el foco en el select después
+         * de cerrar el dropdown. Esto hace que la flecha
+         * vuelva a su estado normal.
+         */
+        window.requestAnimationFrame(() => {
+            e.target.blur();
+        });
     });
+
 
     $("#eventsFilterMobile")?.addEventListener("change", (e) => {
         state.eventsFilter = e.target.value;
@@ -708,25 +795,6 @@ function bindActions() {
 
     $$(".js-open-map").forEach((btn) => {
         btn.addEventListener("click", openMapView);
-    });
-
-    //Código para bloquear si no se ha iniciado sesión.
-    $("#btnLoginMock")?.addEventListener("click", () => {
-        state.session.isLoggedIn = true;
-        state.session.user = { id: 1, name: "Andres" };
-        toast("Sesión iniciada (demo)");
-        renderProfile();
-        renderFavorites();
-        updateProfileCounts();
-    });
-
-    $("#btnLogoutMock")?.addEventListener("click", () => {
-        state.session.isLoggedIn = false;
-        state.session.user = null;
-        toast("Sesión cerrada");
-        renderProfile();
-        renderFavorites();
-        updateProfileCounts();
     });
 
     document.getElementById("btnMapLocateMe")?.addEventListener("click", locateMe);
@@ -848,10 +916,81 @@ function cjEnsureViewToggle(scope, list, label, renderFn) {
     cjApplyViewMode(list, scope);
 }
 
+const SPOTS_PAGE_SIZE = 6;
+
+function getSpotsPage() {
+    return Number(state.spotsPage || 1);
+}
+
+function setSpotsPage(page) {
+    state.spotsPage = Math.max(1, Number(page || 1));
+}
+
+function renderSpotsPager(totalItems, currentPage, totalPages) {
+    const list = $("#spotsList");
+
+    if (!list) return;
+
+    let pager = $("#spotsPager");
+
+    if (!pager) {
+        pager = document.createElement("div");
+        pager.id = "spotsPager";
+        pager.className = "spots-pager";
+        list.insertAdjacentElement("afterend", pager);
+    }
+
+    if (totalItems <= SPOTS_PAGE_SIZE) {
+        pager.innerHTML = "";
+        pager.hidden = true;
+        return;
+    }
+
+    pager.hidden = false;
+
+    pager.innerHTML = `
+        <button
+            class="spots-pager__btn"
+            type="button"
+            data-spots-page-prev
+            ${currentPage <= 1 ? "disabled" : ""}
+        >
+            Anterior
+        </button>
+
+        <span class="spots-pager__status">
+            ${currentPage} / ${totalPages}
+        </span>
+
+        <button
+            class="spots-pager__btn"
+            type="button"
+            data-spots-page-next
+            ${currentPage >= totalPages ? "disabled" : ""}
+        >
+            Siguiente
+        </button>
+    `;
+
+    pager
+        .querySelector("[data-spots-page-prev]")
+        ?.addEventListener("click", () => {
+            setSpotsPage(currentPage - 1);
+            renderSpots();
+        });
+
+    pager
+        .querySelector("[data-spots-page-next]")
+        ?.addEventListener("click", () => {
+            setSpotsPage(currentPage + 1);
+            renderSpots();
+        });
+}
 
 function renderSpots() {
     const list = $("#spotsList");
     const empty = $("#spotsEmpty");
+
     if (!list) return;
 
     cjEnsureViewToggle("spots", list, "Spots", renderSpots);
@@ -860,33 +999,72 @@ function renderSpots() {
     const filtered = (state.data.spots || [])
         .filter((s) => {
             const f = state.spotsFilter;
+
             if (f === "all") return true;
-            if (["street", "park", "bowl"].includes(f)) return String(s.type).toLowerCase() === f;
+            if (["street", "park", "bowl"].includes(f)) {
+                return String(s.type || "").toLowerCase() === f;
+            }
             if (f === "verified") return !!s.verified;
-            if (f === "safe") return String(s.safety || "").toLowerCase() === "safe";
+            if (f === "safe") {
+                return String(s.safety || "").toLowerCase() === "safe";
+            }
+
             return false;
         })
         .filter((s) => {
             if (!state.spotsQuery) return true;
+
             const hay = `${s.name} ${s.zone || ""} ${s.type}`.toLowerCase();
+
             return hay.includes(state.spotsQuery);
         });
 
     const isEmpty = filtered.length === 0;
-    if (empty) empty.hidden = !isEmpty;
-    list.style.display = isEmpty ? "none" : "grid";
-    list.innerHTML = filtered.map(spotCard).join("");
 
-    filtered.forEach((s) => {
+    if (empty) {
+        empty.hidden = !isEmpty;
+    }
+
+    list.style.display = isEmpty ? "none" : "grid";
+
+    const totalPages = Math.max(
+        1,
+        Math.ceil(filtered.length / SPOTS_PAGE_SIZE)
+    );
+
+    if (getSpotsPage() > totalPages) {
+        setSpotsPage(totalPages);
+    }
+
+    const currentPage = getSpotsPage();
+    const startIndex = (currentPage - 1) * SPOTS_PAGE_SIZE;
+    const endIndex = startIndex + SPOTS_PAGE_SIZE;
+    const visibleSpots = filtered.slice(startIndex, endIndex);
+
+    list.innerHTML = visibleSpots.map(spotCard).join("");
+
+    visibleSpots.forEach((s) => {
         $(`#open_${s.id}`)?.addEventListener("click", () => openSpot(s));
-        $(`#fav_${s.id}`)?.addEventListener("click", () => toggleFav(String(s.id)));
+        $(`#fav_${s.id}`)?.addEventListener("click", () =>
+            toggleFav(String(s.id))
+        );
     });
 
-    $("#kpiSpots") && ($("#kpiSpots").textContent = String(filtered.length));
-    $("#kpiVerified") && ($("#kpiVerified").textContent = String(filtered.filter((s) => s.verified).length));
+    $("#kpiSpots") &&
+        ($("#kpiSpots").textContent = String(filtered.length));
+
+    $("#kpiVerified") &&
+        ($("#kpiVerified").textContent = String(
+            filtered.filter((s) => s.verified).length
+        ));
 
     const st = $("#spotsStatus");
-    if (st) st.textContent = `Mostrando ${filtered.length} spot(s) · Favoritos: ${state.favorites.size}`;
+
+    if (st) {
+        st.textContent = `Mostrando ${filtered.length} spot(s) · Favoritos: ${state.favorites.size}`;
+    }
+
+    renderSpotsPager(filtered.length, currentPage, totalPages);
 }
 
 function renderEvents() {
@@ -933,6 +1111,13 @@ function renderEvents() {
 
     list.innerHTML = filtered.map(eventCard).join("");
 
+    // const renderableEvents = filtered.map(cjBuildEventTarget);
+    // list.innerHTML = renderableEvents.map(eventCard).join("");
+    // renderableEvents.forEach((event) => {
+    //     $(`#openEvent_${event.id}`)?.addEventListener("click", () => openEvent(event));
+    //     $(`#saveEvent_${event.id}`)?.addEventListener("click", () => toggleSavedEvent(String(event.id)));
+    // });
+
     $$("[data-event]").forEach((b) => {
         b.addEventListener("click", () => {
             const ev = filtered.find((x) => String(x.id) === String(b.dataset.event));
@@ -957,6 +1142,13 @@ function renderEvents() {
     $("#kpiEvents") && ($("#kpiEvents").textContent = String(filtered.length));
     $("#kpiUpcoming") && ($("#kpiUpcoming").textContent = String(filtered.length));
     $("#kpiRegistrations") && ($("#kpiRegistrations").textContent = "—");
+
+    const eventsStatus = $("#eventsStatus");
+
+    if (eventsStatus) {
+        eventsStatus.textContent =
+            `Mostrando ${filtered.length} evento(s)`;
+    }
 }
 
 function renderShops() {
@@ -1014,6 +1206,13 @@ function renderShops() {
     $("#kpiShops") && ($("#kpiShops").textContent = String(filtered.length));
     $("#kpiVerifiedShops") && ($("#kpiVerifiedShops").textContent = String(filtered.filter((s) => s.verified).length));
     $("#kpiPromos") && ($("#kpiPromos").textContent = String(filtered.filter((s) => s.promo).length));
+
+    const shopsStatus = $("#shopsStatus");
+
+    if (shopsStatus) {
+        shopsStatus.textContent =
+            `Mostrando ${filtered.length} shop(s)`;
+    }
 }
 
 function renderSponsors() {
@@ -1041,19 +1240,88 @@ function renderSponsors() {
 }
 
 function renderProfile() {
-    const locked = $("#profileLocked");
-    const privateBox = $("#profilePrivate");
+    /*
+     * Compatible con el Profile nuevo y con el viejo.
+     * Nuevo:
+     * - profileGuestCard
+     * - profileUserCard
+     *
+     * Viejo:
+     * - profileLocked
+     * - profilePrivate
+     */
+    const locked =
+        $("#profileGuestCard") ||
+        $("#profileLocked");
+
+    const privateBox =
+        $("#profileUserCard") ||
+        $("#profilePrivate");
 
     if (!locked || !privateBox) return;
 
-    if (state.session.isLoggedIn) {
-        locked.hidden = true;
-        privateBox.hidden = false;
-    } else {
-        locked.hidden = false;
-        privateBox.hidden = true;
+    const isLoggedIn =
+        Boolean(state?.session?.isLoggedIn);
+
+    locked.hidden = isLoggedIn;
+    privateBox.hidden = !isLoggedIn;
+
+    if (isLoggedIn) {
+        const user =
+            state?.session?.user ||
+            state?.user ||
+            {};
+
+        const email =
+            user.email ||
+            state?.session?.email ||
+            $("#profileLoginEmail")?.value ||
+            $("#profileRegisterEmail")?.value ||
+            "";
+
+        const fullName =
+            user.name ||
+            user.fullName ||
+            $("#profileRegisterName")?.value ||
+            "";
+
+        const phone =
+            user.phone ||
+            $("#profileRegisterPhone")?.value ||
+            "";
+
+        const profileEmailReadonly =
+            $("#profileEmailReadonly");
+
+        const profileFullName =
+            $("#profileFullName");
+
+        const profilePhone =
+            $("#profilePhone");
+
+        const profileCountry =
+            $("#profileCountry");
+
+        if (profileEmailReadonly) {
+            profileEmailReadonly.value = email;
+        }
+
+        if (profileFullName && !profileFullName.value) {
+            profileFullName.value = fullName;
+        }
+
+        if (profilePhone && !profilePhone.value) {
+            profilePhone.value = phone;
+        }
+
+        if (profileCountry) {
+            profileCountry.value = "Costa Rica";
+        }
     }
-    applyViewMode();
+
+    if (typeof applyViewMode === "function") {
+        applyViewMode();
+    }
 }
 
 function renderFavorites() {
@@ -1065,53 +1333,66 @@ function renderFavorites() {
     );
 
     const favs = token ? state.favoriteSpots : localFavoriteSpots;
+    const visibleFavs = favs.slice(0, 3);
+    const remainingFavs = Math.max(0, favs.length - visibleFavs.length);
 
-    $("#kpiFavs") && ($("#kpiFavs").textContent = String(state.favorites.size));
-    $("#pFavs") && ($("#pFavs").textContent = String(state.favorites.size));
+    $("#kpiFavs") && ($("#kpiFavs").textContent = String(favs.length));
+    $("#pFavs") && ($("#pFavs").textContent = String(favs.length));
 
     if (!box) return;
 
     if (!token) {
         box.innerHTML = `
-      <div class="mini-item">
-        <span class="muted">Iniciá sesión para guardar favoritos en tu perfil.</span>
-        <span>♡</span>
-      </div>
-    `;
+            <div class="mini-item">
+                <span class="muted">Iniciá sesión para guardar favoritos en tu perfil.</span>
+                <span>♡</span>
+            </div>
+        `;
         return;
     }
 
     if (!favs.length) {
         box.innerHTML = `
-      <div class="mini-item">
-        <span class="muted">Aún no tenés spots favoritos.</span>
-        <span>♡</span>
-      </div>
-    `;
+            <div class="mini-item">
+                <span class="muted">Aún no tenés spots favoritos.</span>
+                <span>♡</span>
+            </div>
+        `;
         return;
     }
 
-    box.innerHTML = favs
-        .map((spot) => {
-            return `
-        <div class="mini-item">
-          <span>
-            <strong>${escapeHtml(spot.name || "Spot")}</strong>
-            <span class="muted"> · ${escapeHtml(spot.zone || spot.city || "—")}</span>
-          </span>
+    box.innerHTML =
+        visibleFavs
+            .map((spot) => {
+                return `
+                    <div class="mini-item">
+                        <span>
+                            <strong>${escapeHtml(spot.name || "Spot")}</strong>
+                            <span class="muted"> · ${escapeHtml(spot.zone || spot.city || "—")}</span>
+                        </span>
 
-          <button
-            class="icon-btn is-active"
-            type="button"
-            data-unfav="${spot.id}"
-            aria-label="Quitar favorito"
-          >
-            ♥
-          </button>
-        </div>
-      `;
-        })
-        .join("");
+                        <button
+                            class="icon-btn is-active"
+                            type="button"
+                            data-unfav="${spot.id}"
+                            aria-label="Quitar favorito"
+                        >
+                            ♥
+                        </button>
+                    </div>
+                `;
+            })
+            .join("") +
+        (
+            remainingFavs > 0
+                ? `
+                    <div class="mini-item mini-item--more">
+                        <span class="muted">+${remainingFavs} spot(s) más</span>
+                        <span>…</span>
+                    </div>
+                `
+                : ""
+        );
 
     $$("[data-unfav]").forEach((button) => {
         button.addEventListener("click", () => toggleFav(button.dataset.unfav));
@@ -1122,6 +1403,11 @@ function renderSavedEvents() {
     const box = $("#savedEventsList");
     const token = getAuthToken();
     const savedEvents = state.savedEventsList || [];
+    const visibleSavedEvents = savedEvents.slice(0, 3);
+    const remainingSavedEvents = Math.max(
+        0,
+        savedEvents.length - visibleSavedEvents.length
+    );
 
     $("#pSavedEvents") &&
         ($("#pSavedEvents").textContent = String(savedEvents.length));
@@ -1130,45 +1416,56 @@ function renderSavedEvents() {
 
     if (!token) {
         box.innerHTML = `
-      <div class="mini-item mini-item--empty">
-        <span class="muted">Iniciá sesión para guardar eventos.</span>
-        <span>＋</span>
-      </div>
-    `;
+            <div class="mini-item mini-item--empty">
+                <span class="muted">Iniciá sesión para guardar eventos.</span>
+                <span>＋</span>
+            </div>
+        `;
         return;
     }
 
     if (!savedEvents.length) {
         box.innerHTML = `
-      <div class="mini-item mini-item--empty">
-        <span class="muted">Aún no tenés eventos guardados.</span>
-        <span>＋</span>
-      </div>
-    `;
+            <div class="mini-item mini-item--empty">
+                <span class="muted">Aún no tenés eventos guardados.</span>
+                <span>＋</span>
+            </div>
+        `;
         return;
     }
 
-    box.innerHTML = savedEvents
-        .map((event) => {
-            return `
-        <div class="mini-item">
-          <span>
-            <strong>${escapeHtml(event.title || event.name || "Evento")}</strong>
-            <span class="muted"> · ${escapeHtml(event.place || event.city || "—")}</span>
-          </span>
+    box.innerHTML =
+        visibleSavedEvents
+            .map((event) => {
+                return `
+                    <div class="mini-item">
+                        <span>
+                            <strong>${escapeHtml(event.title || event.name || "Evento")}</strong>
+                            <span class="muted"> · ${escapeHtml(event.place || event.city || "—")}</span>
+                        </span>
 
-          <button
-            class="icon-btn is-active"
-            type="button"
-            data-remove-saved-event="${event.id}"
-            aria-label="Quitar evento guardado"
-          >
-            ✓
-          </button>
-        </div>
-      `;
-        })
-        .join("");
+                        <button
+                            class="icon-btn is-active"
+                            type="button"
+                            data-remove-saved-event="${event.id}"
+                            aria-label="Quitar evento guardado"
+                        >
+                            ✓
+                        </button>
+                    </div>
+                `;
+            })
+            .join("") +
+        (
+            remainingSavedEvents > 0
+                ? `
+                    <div class="mini-item mini-item--more">
+                        <span class="muted">+${remainingSavedEvents} evento(s) más</span>
+                        <span>…</span>
+                    </div>
+                `
+                : ""
+        );
 
     $$("[data-remove-saved-event]").forEach((button) => {
         button.addEventListener("click", async (event) => {
@@ -1382,6 +1679,7 @@ function spotCard(s) {
 }
 
 function eventCard(e) {
+    e = cjNormalizeLinkedEvent(e);
     const token = getAuthToken();
     const saved = state.savedEvents.has(String(e.id));
 
@@ -1664,17 +1962,10 @@ function cjEnsureRouteOverlay() {
 
           <div class="cj-route-map-host" id="cjRouteMapHost"></div>
 
+       
           <div class="cj-route-sheet" id="cjRouteSheet">
             <div class="cj-route-sheet__handle"></div>
-            <div class="cj-route-live-brand" id="cjRouteLiveBrand" hidden>
-                <span class="cj-route-live-brand__logo">
-                    <img src="../assets/icons/route-hub.ico" alt="Callejeandola" onerror="this.remove();" />
-                </span>
-            <div>
-                <strong>Callejeandola Nav</strong>
-                <small>Modo navegación activo</small>
-            </div>
-                </div>
+
             <div class="cj-route-sheet__main">
               <div>
                 <strong id="cjRouteEta">Calculando…</strong>
@@ -1696,6 +1987,36 @@ function cjEnsureRouteOverlay() {
               </button>
             </div>
           </div>
+
+        <div class="cj-route-live-hud" id="cjRouteLiveHud" hidden>
+          <div class="cj-route-live-hud__summary">
+            <span class="cj-route-live-hud__logo">
+              <img
+                src="./assets/icons/route-hub.ico"
+                alt="Callejeandola"
+                onerror="this.hidden=true; this.nextElementSibling.hidden=false;"
+              />
+              <b hidden>CJ</b>
+            </span>
+            
+            <span class="cj-route-live-hud__text">
+              <strong id="cjLiveEta">Ruta activa</strong>
+              <small id="cjLiveDistance">Calculando distancia</small>
+            </span>
+          </div>
+            
+          <button
+            class="cj-route-recenter"
+            type="button"
+            id="btnCjRouteRecenter"
+            aria-label="Centrar mi ubicación"
+            title="Re-center"
+            hidden
+          >
+            ◎
+            <span>Re-center</span>
+          </button>
+        </div>
         `;
 
         document.body.appendChild(overlay);
@@ -1714,7 +2035,11 @@ function cjEnsureRouteOverlay() {
             }
 
             if (event.target.closest("#btnCjRouteStart")) {
-                cjStartLiveRoute();
+                cjHandleStartRoute();
+            }
+
+            if (event.target.closest("#btnCjRouteRecenter")) {
+                cjRecenterLiveRoute();
             }
         });
     }
@@ -1744,10 +2069,19 @@ function cjMountMapIntoRouteOverlay() {
             attributionControl: true,
         }).setView([9.935, -84.09], 10);
 
-        cjRouteMapTiles = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-            maxZoom: 19,
-            attribution: "&copy; OpenStreetMap",
-        }).addTo(cjRouteMap);
+        cjRouteMapTiles = L.tileLayer(
+            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            {
+                maxZoom: 19,
+                attribution: "&copy; OpenStreetMap",
+            }
+        ).addTo(cjRouteMap);
+
+        cjRouteMap.on("dragstart", () => {
+            if (!cjRouteIsLive) return;
+
+            cjRouteFollowUser = false;
+        });
     }
 
     setTimeout(() => cjRouteMap.invalidateSize(), 80);
@@ -1755,68 +2089,170 @@ function cjMountMapIntoRouteOverlay() {
     setTimeout(() => cjRouteMap.invalidateSize(), 700);
 }
 
-function cjCloseRouteOverlay() {
-    const overlay = document.getElementById("cjRouteOverlay");
-
-    if (cjRouteWatchId) {
+function cjResetRouteSession({
+    closeOverlay = false,
+    clearDestination = false,
+} = {}) {
+    if (cjRouteWatchId !== null) {
         navigator.geolocation.clearWatch(cjRouteWatchId);
         cjRouteWatchId = null;
     }
 
-    cjSetRouteLiveUi?.(false);
+    cjRouteMode = "idle";
+    cjRouteIsLive = false;
+    cjRouteIsStarting = false;
+    cjRouteFollowUser = true;
+    cjRouteHasInitialLiveFocus = false;
+    cjRouteSteps = [];
+    cjRouteActiveStepIndex = 0;
+
+    document.body.classList.remove("is-cj-live-navigation");
+
     cjClearRouteLayers?.();
 
-    if (overlay) {
-        overlay.hidden = true;
+    const startButton = document.getElementById("btnCjRouteStart");
+
+    if (startButton) {
+        startButton.disabled = false;
+        startButton.classList.remove("is-loading");
+        startButton.classList.remove("is-live");
+        startButton.textContent = "Ir ahora";
     }
 
-    document.body.classList.remove("is-cj-route-overlay-open");
-    document.body.classList.remove("is-map-open");
-    document.body.classList.remove("is-route-core");
-    document.body.classList.remove("is-route-experience");
+    const recenterButton = document.getElementById(
+        "btnCjRouteRecenter"
+    );
+
+    if (recenterButton) {
+        recenterButton.hidden = true;
+    }
+
+    const previewSheet = document.getElementById("cjRouteSheet");
+
+    if (previewSheet) {
+        previewSheet.hidden = false;
+        previewSheet.classList.remove("is-live");
+    }
+
+    const liveHud = document.getElementById("cjRouteLiveHud");
+
+    if (liveHud) {
+        liveHud.hidden = true;
+    }
+
+    if (clearDestination) {
+        state.routeTarget = null;
+    }
+
+    if (closeOverlay) {
+        const overlay = document.getElementById("cjRouteOverlay");
+
+        if (overlay) {
+            overlay.hidden = true;
+        }
+
+        document.body.classList.remove(
+            "is-cj-route-overlay-open"
+        );
+    }
+}
+
+function cjCloseRouteOverlay() {
+    cjResetRouteSession({
+        closeOverlay: true,
+        clearDestination: false,
+    });
 
     state.isMapOpen = false;
 
-    const mapView = document.getElementById("mapView");
-    if (mapView) {
-        mapView.hidden = true;
-        mapView.classList.remove("is-open");
-        mapView.style.display = "none";
+    document.body.classList.remove(
+        "is-map-open",
+        "is-route-core",
+        "is-route-experience"
+    );
+
+    const legacyMapView =
+        document.getElementById("mapView");
+
+    if (legacyMapView) {
+        legacyMapView.hidden = true;
+        legacyMapView.classList.remove(
+            "is-open"
+        );
+        legacyMapView.style.display = "none";
     }
 
-    const routePanel = document.getElementById("mapRoutePanel");
-    if (routePanel) {
-        routePanel.hidden = true;
+    const legacyRoutePanel =
+        document.getElementById(
+            "mapRoutePanel"
+        );
+
+    if (legacyRoutePanel) {
+        legacyRoutePanel.hidden = true;
     }
 
     setTab?.("spots");
     renderSpots?.();
     renderRouteHud?.();
 
-    setTimeout(() => {
-        const mapViewAfter = document.getElementById("mapView");
-        if (mapViewAfter) {
-            mapViewAfter.hidden = true;
-            mapViewAfter.classList.remove("is-open");
-            mapViewAfter.style.display = "none";
-        }
-
-        document.body.classList.remove("is-map-open");
-    }, 80);
+    window.scrollTo({
+        top: 0,
+        behavior: "instant",
+    });
 }
 
-function cjUpdateRouteSheet({ title, distance, duration, instruction, mode = "Preview" }) {
+function cjUpdateRouteSheet({
+    title,
+    distance,
+    duration,
+    instruction,
+    mode = "Preview",
+}) {
     const titleEl = document.getElementById("cjRouteOverlayTitle");
     const etaEl = document.getElementById("cjRouteEta");
     const distanceEl = document.getElementById("cjRouteDistance");
     const instructionEl = document.getElementById("cjRouteInstruction");
     const badgeEl = document.getElementById("cjRouteBadge");
 
-    if (titleEl && title) titleEl.textContent = title;
-    if (etaEl) etaEl.textContent = duration ? cjFormatRouteDuration(duration) : "Ruta activa";
-    if (distanceEl) distanceEl.textContent = distance ? cjFormatRouteDistance(distance) : "Distancia calculada";
-    if (instructionEl) instructionEl.textContent = instruction || "Seguí la ruta marcada en el mapa.";
-    if (badgeEl) badgeEl.textContent = mode;
+    const liveEtaEl = document.getElementById("cjLiveEta");
+    const liveDistanceEl = document.getElementById("cjLiveDistance");
+
+    const durationLabel = duration
+        ? cjFormatRouteDuration(duration)
+        : "Ruta activa";
+
+    const distanceLabel = distance
+        ? cjFormatRouteDistance(distance)
+        : "Distancia calculada";
+
+    if (titleEl && title) {
+        titleEl.textContent = title;
+    }
+
+    if (etaEl) {
+        etaEl.textContent = durationLabel;
+    }
+
+    if (distanceEl) {
+        distanceEl.textContent = distanceLabel;
+    }
+
+    if (instructionEl) {
+        instructionEl.textContent =
+            instruction || "Seguí la ruta marcada en el mapa.";
+    }
+
+    if (badgeEl) {
+        badgeEl.textContent = mode;
+    }
+
+    if (liveEtaEl) {
+        liveEtaEl.textContent = durationLabel;
+    }
+
+    if (liveDistanceEl) {
+        liveDistanceEl.textContent = distanceLabel;
+    }
 }
 
 function cjClearRouteLayers() {
@@ -1840,36 +2276,88 @@ function cjClearRouteLayers() {
 }
 
 function cjSetRouteLiveUi(isLive = false) {
-    const sheet = document.getElementById("cjRouteSheet");
-    const brand = document.getElementById("cjRouteLiveBrand");
-    const startBtn = document.getElementById("btnCjRouteStart");
-    const laterBtn = document.getElementById("btnCjRouteLater");
+    const previewSheet = document.getElementById("cjRouteSheet");
+    const liveHud = document.getElementById("cjRouteLiveHud");
 
-    if (sheet) {
-        sheet.classList.toggle("is-live", isLive);
+    const eta = document.getElementById("cjRouteEta");
+    const distance = document.getElementById("cjRouteDistance");
+
+    const liveEta = document.getElementById("cjLiveEta");
+    const liveDistance = document.getElementById("cjLiveDistance");
+
+    cjRouteIsLive = isLive;
+
+    document.body.classList.toggle("is-cj-live-navigation", isLive);
+
+    if (previewSheet) {
+        previewSheet.hidden = isLive;
+        previewSheet.classList.toggle("is-live", isLive);
     }
 
-    if (brand) {
-        brand.hidden = !isLive;
+    if (liveHud) {
+        liveHud.hidden = !isLive;
     }
 
-    if (startBtn) {
-        startBtn.classList.toggle("is-live", isLive);
-        startBtn.disabled = isLive;
+    if (isLive) {
+        if (liveEta) {
+            liveEta.textContent = eta?.textContent || "Ruta activa";
+        }
 
-        startBtn.innerHTML = isLive
-            ? `
-              <span class="cj-route-btn-logo">
-                <img src="../assets/icons/route-hub.ico" alt="" onerror="this.remove();" />
-              </span>
-              En ruta
-            `
-            : "Ir ahora";
+        if (liveDistance) {
+            liveDistance.textContent =
+                distance?.textContent || "Distancia calculada";
+        }
     }
+}
 
-    if (laterBtn) {
-        laterBtn.textContent = isLive ? "Finalizar" : "Salir más tarde";
-    }
+function cjCreateLiveUserIcon() {
+    return L.divIcon({
+        className: "cj-live-user-marker-wrap",
+        html: `
+          <div class="cj-live-user-marker">
+            <span class="cj-live-user-marker__pulse"></span>
+
+            <img
+              class="cj-live-user-marker__image"
+              src="./assets/icons/route-hub.ico"
+              alt=""
+              onerror="
+                this.hidden=true;
+                this.nextElementSibling.hidden=false;
+              "
+            />
+
+            <span
+              class="cj-live-user-marker__fallback"
+              hidden
+            >
+              CJ
+            </span>
+
+            <span class="cj-live-user-marker__arrow">▲</span>
+          </div>
+        `,
+        iconSize: [72, 72],
+        iconAnchor: [36, 58],
+    });
+}
+
+function cjCreateDestinationIcon() {
+    return L.divIcon({
+        className: "cj-route-destination-marker-wrap",
+        html: `
+          <div
+            class="cj-route-destination-marker"
+            aria-label="Destino"
+            title="Destino"
+          >
+            🏁
+          </div>
+        `,
+        iconSize: [46, 46],
+        iconAnchor: [23, 42],
+        popupAnchor: [0, -40],
+    });
 }
 
 function cjDrawRoutePreview(userLocation, destination, route = null) {
@@ -1888,6 +2376,8 @@ function cjDrawRoutePreview(userLocation, destination, route = null) {
 
     cjRouteDestinationMarker = L.marker(destLatLng, {
         title: destination.title,
+        icon: cjCreateDestinationIcon(),
+        zIndexOffset: 900,
     }).addTo(map);
 
     if (route?.geometry?.coordinates?.length) {
@@ -1937,6 +2427,11 @@ async function cjBuildRoutePreview() {
         }
     }
 
+    cjRouteMode = "preview";
+    cjRouteIsLive = false;
+    cjRouteIsStarting = false;
+    cjRouteFollowUser = true;
+
     cjMountMapIntoRouteOverlay();
     cjSetRouteLiveUi(false);
 
@@ -1948,7 +2443,14 @@ async function cjBuildRoutePreview() {
 
     try {
         const route = await cjFetchOsrmRoute(userLocation, destination);
-        const firstStep = route?.legs?.[0]?.steps?.[0];
+
+        cjRouteSteps = Array.isArray(route?.legs?.[0]?.steps)
+            ? route.legs[0].steps
+            : [];
+
+        cjRouteActiveStepIndex = 0;
+
+        const firstStep = cjRouteSteps[0] || null;
 
         cjDrawRoutePreview(userLocation, destination, route);
 
@@ -1960,9 +2462,13 @@ async function cjBuildRoutePreview() {
             mode: "Ruta",
         });
 
-        toast?.("Ruta calculada.");
+        // toast?.("Ruta calculada.");
+
     } catch (error) {
         console.error("CJ ROUTE PREVIEW ERROR:", error);
+
+        cjRouteSteps = [];
+        cjRouteActiveStepIndex = 0;
 
         cjDrawRoutePreview(userLocation, destination, null);
 
@@ -2023,6 +2529,15 @@ function cjOpenRouteCore(entity, type = "spot") {
         return;
     }
 
+    /*
+     * Mata cualquier ruta anterior antes de
+     * cargar el nuevo spot/event/shop.
+     */
+    cjResetRouteSession({
+        closeOverlay: false,
+        clearDestination: false,
+    });
+
     closeModal?.();
 
     state.routeTarget = {
@@ -2032,191 +2547,981 @@ function cjOpenRouteCore(entity, type = "spot") {
     };
 
     state.isMapOpen = false;
+
     document.body.classList.remove("is-map-open");
 
-    const mapView = document.getElementById("mapView");
-    if (mapView) {
-        mapView.hidden = true;
-        mapView.classList.remove("is-open");
+    const legacyMapView =
+        document.getElementById("mapView");
+
+    if (legacyMapView) {
+        legacyMapView.hidden = true;
+        legacyMapView.classList.remove("is-open");
+        legacyMapView.style.display = "none";
     }
 
-    setTimeout(cjBuildRoutePreview, 120);
+    cjRouteMode = "preview";
+
+    window.setTimeout(() => {
+        cjBuildRoutePreview();
+    }, 120);
+}
+
+function cjWait(milliseconds) {
+    return new Promise((resolve) => {
+        window.setTimeout(resolve, milliseconds);
+    });
+}
+
+async function cjHandleStartRoute() {
+    const button = document.getElementById("btnCjRouteStart");
+
+    if (!button) return;
+
+    if (cjRouteMode !== "preview") { return; }
+
+    if (cjRouteIsStarting || cjRouteIsLive) { return; }
+
+    cjRouteIsStarting = true;
+
+    button.disabled = true;
+    button.classList.add("is-loading");
+    button.textContent = "Iniciando…";
+
+    try {
+        await cjWait(900);
+
+        const started = cjStartLiveRoute();
+
+        if (!started) {
+            throw new Error(
+                "No se pudo iniciar navegación"
+            );
+        }
+    } catch (error) {
+        console.error(
+            "CJ START ROUTE ERROR:",
+            error
+        );
+
+        cjRouteMode = "preview";
+        cjRouteIsLive = false;
+
+        button.disabled = false;
+        button.classList.remove("is-loading");
+        button.textContent = "Ir ahora";
+
+        toast?.("No se pudo iniciar la ruta.");
+    } finally {
+        cjRouteIsStarting = false;
+    }
+}
+
+function cjFocusLiveRoute(location, {
+    animate = true,
+} = {}) {
+    const map = cjGetMapInstance();
+
+    if (!location || !map) return false;
+
+    const lat = Number(location.lat);
+    const lng = Number(location.lng);
+
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+        return false;
+    }
+
+    window.requestAnimationFrame(() => {
+        map.invalidateSize();
+
+        window.setTimeout(() => {
+            map.flyTo(
+                [lat, lng],
+                17,
+                {
+                    animate,
+                    duration: animate ? 0.8 : 0,
+                }
+            );
+
+            cjRouteHasInitialLiveFocus = true;
+        }, 140);
+    });
+
+    return true;
+}
+
+function cjRecenterLiveRoute() {
+    const location = cjGetSavedUserLocation();
+
+    if (!location) {
+        toast?.("Ubicación no disponible.");
+        return;
+    }
+
+    cjRouteFollowUser = true;
+
+    cjFocusLiveRoute(location, {
+        animate: true,
+    });
 }
 
 function cjStartLiveRoute() {
-    const destination = cjGetRouteDestination();
+    const destination =
+        cjGetRouteDestination();
 
     if (!destination) {
         toast?.("No hay destino activo.");
-        return;
+        return false;
     }
 
     if (!navigator.geolocation) {
-        toast?.("Geolocalización no soportada.");
-        return;
+        toast?.(
+            "Geolocalización no soportada."
+        );
+
+        return false;
     }
 
-    if (cjRouteWatchId) {
-        navigator.geolocation.clearWatch(cjRouteWatchId);
+    if (cjRouteWatchId !== null) {
+        navigator.geolocation.clearWatch(
+            cjRouteWatchId
+        );
+
         cjRouteWatchId = null;
     }
 
+    cjRouteMode = "live";
+    cjRouteIsLive = true;
+    cjRouteIsStarting = false;
+    cjRouteFollowUser = true;
+    cjRouteHasInitialLiveFocus = false;
+    document.body.classList.add(
+        "is-cj-live-navigation"
+    );
+
     cjUpdateRouteSheet({
         title: destination.title,
-        instruction: "Navegación activa. Seguí la ruta marcada.",
+        instruction:
+            cjRouteInstructionFromStep(
+                cjRouteSteps[
+                cjRouteActiveStepIndex
+                ]
+            ),
         mode: "En vivo",
     });
 
     cjSetRouteLiveUi(true);
 
-    cjRouteWatchId = navigator.geolocation.watchPosition(
-        (position) => {
-            const userLocation = cjSaveUserLocation(position);
-            const map = cjGetMapInstance();
+    const recenterButton =
+        document.getElementById(
+            "btnCjRouteRecenter"
+        );
 
-            if (!map || !window.L) return;
+    if (recenterButton) {
+        recenterButton.hidden = false;
+    }
 
-            const userLatLng = [userLocation.lat, userLocation.lng];
+    const savedLocation = cjGetSavedUserLocation();
 
-            if (cjRouteUserMarker) {
-                cjRouteUserMarker.setLatLng(userLatLng);
-            } else {
-                cjRouteUserMarker = L.marker(userLatLng, {
-                    title: "Tu ubicación",
-                }).addTo(map);
+    if (savedLocation) {
+        cjFocusLiveRoute(savedLocation, {
+            animate: true,
+        });
+    }
+
+    cjRouteWatchId =
+        navigator.geolocation.watchPosition(
+            (position) => {
+                const currentLocation =
+                    cjSaveUserLocation(position);
+
+                const liveMap =
+                    cjGetMapInstance();
+
+                if (!liveMap || !window.L) {
+                    return;
+                }
+
+                const userLatLng = [
+                    currentLocation.lat,
+                    currentLocation.lng,
+                ];
+
+                if (cjRouteUserMarker) {
+                    cjRouteUserMarker.setLatLng(
+                        userLatLng
+                    );
+
+                    cjRouteUserMarker.setIcon(
+                        cjCreateLiveUserIcon()
+                    );
+                } else {
+                    cjRouteUserMarker = L.marker(
+                        userLatLng,
+                        {
+                            title:
+                                "Tu ubicación",
+                            icon:
+                                cjCreateLiveUserIcon(),
+                            zIndexOffset: 1000,
+                        }
+                    ).addTo(liveMap);
+                }
+
+                if (!cjRouteHasInitialLiveFocus) {
+                    liveMap.invalidateSize();
+
+                    liveMap.setView(
+                        userLatLng,
+                        17,
+                        {
+                            animate: false,
+                        }
+                    );
+
+                    cjRouteHasInitialLiveFocus = true;
+                } else if (cjRouteFollowUser) {
+                    liveMap.panTo(
+                        userLatLng,
+                        {
+                            animate: true,
+                            duration: 0.6,
+                        }
+                    );
+                }
+            },
+            (error) => {
+                console.error(
+                    "CJ LIVE LOCATION ERROR:",
+                    error
+                );
+
+                toast?.(
+                    "No se pudo seguir tu ubicación en vivo."
+                );
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 3000,
             }
-        },
-        () => {
-            toast?.("No se pudo seguir tu ubicación en vivo.");
-        },
-        {
-            enableHighAccuracy: true,
-            timeout: 10000,
-            maximumAge: 3000,
-        }
-    );
+        );
 
     toast?.("Navegación iniciada.");
+
+    return true;
+}
+
+/* =========================================
+   BETA DETAIL — SHARED HELPERS + CAROUSEL
+========================================= */
+
+function betaDetailAttr(value) {
+    return String(value ?? "").replace(/[&<>"']/g, (m) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;",
+    }[m]));
+}
+
+function betaDetailTitle(entity, fallback = "Detalle") {
+    return (
+        entity?.name ||
+        entity?.title ||
+        entity?.shopName ||
+        entity?.eventName ||
+        fallback
+    );
+}
+
+function betaDetailDescription(entity, fallback) {
+    return (
+        entity?.description ||
+        entity?.summary ||
+        entity?.desc ||
+        fallback ||
+        "Sin descripción disponible."
+    );
+}
+
+// function betaDetailImages(entity) {
+//     const fromArray = Array.isArray(entity?.images)
+//         ? entity.images
+//         : [];
+
+//     const rawImages = [
+//         ...fromArray,
+//         entity?.image,
+//         entity?.imageUrl,
+//         entity?.photo,
+//         entity?.photoUrl,
+//         entity?.cover,
+//         entity?.coverImage,
+//         entity?.thumbnail,
+//     ];
+
+//     return [
+//         ...new Set(
+//             rawImages
+//                 .map((img) => {
+//                     if (!img) return "";
+//                     if (typeof img === "string") return img;
+//                     return img.url || img.secure_url || img.src || "";
+//                 })
+//                 .filter(Boolean)
+//         ),
+//     ];
+// }
+
+function betaDetailImages(entity) {
+    const images = [];
+
+    if (Array.isArray(entity?.images)) {
+        images.push(...entity.images);
+    }
+
+    [
+        entity?.image,
+        entity?.imageUrl,
+        entity?.photo,
+        entity?.photoUrl,
+        entity?.cover,
+        entity?.coverImage,
+        entity?.thumbnail,
+        entity?.logo,
+    ].forEach((image) => {
+        if (image) {
+            images.push(image);
+        }
+    });
+
+    return [
+        ...new Set(
+            images
+                .map((image) => {
+                    if (!image) return "";
+
+                    if (typeof image === "string") {
+                        return image;
+                    }
+
+                    return (
+                        image.url ||
+                        image.secure_url ||
+                        image.src ||
+                        ""
+                    );
+                })
+                .filter(Boolean)
+        ),
+    ];
+}
+
+
+function betaDetailCoords(entity) {
+    let coords = null;
+
+    if (typeof getEntityCoords === "function") {
+        coords = getEntityCoords(entity);
+    }
+
+    if (Array.isArray(coords)) {
+        return {
+            lat: Number(coords[0]),
+            lng: Number(coords[1]),
+        };
+    }
+
+    return {
+        lat: Number(
+            coords?.lat ??
+            coords?.latitude ??
+            entity?.lat ??
+            entity?.latitude ??
+            entity?.coordinates?.lat
+        ),
+        lng: Number(
+            coords?.lng ??
+            coords?.lon ??
+            coords?.longitude ??
+            entity?.lng ??
+            entity?.longitude ??
+            entity?.coordinates?.lng
+        ),
+    };
+}
+
+function betaDetailCanRoute(entity) {
+    const coords = betaDetailCoords(entity);
+
+    return (
+        Number.isFinite(coords.lat) &&
+        Number.isFinite(coords.lng) &&
+        !(coords.lat === 0 && coords.lng === 0)
+    );
+}
+
+function betaDetailBadge(entity, type) {
+    if (type === "spot") {
+        return entity?.type || entity?.category || "Spot";
+    }
+
+    if (type === "event") {
+        return entity?.format || entity?.category || "Evento";
+    }
+
+    return entity?.category || "Skateshop";
+}
+
+function betaDetailMetaRows(entity, type) {
+    if (type === "spot") {
+        return [
+            {
+                label: "Zona",
+                value: entity?.zone || entity?.city || "—",
+            },
+            {
+                label: "Tipo",
+                value: entity?.type || entity?.category || "Spot",
+            },
+        ];
+    }
+
+    if (type === "event") {
+        const linkedLabel = entity?.linkedSpot
+            ? "Spot vinculado"
+            : entity?.linkedShop
+                ? "Shop vinculado"
+                : "Lugar";
+
+        const linkedValue =
+            entity?.linkedSpot?.name ||
+            entity?.linkedShop?.name ||
+            entity?.place ||
+            entity?.location ||
+            entity?.venue ||
+            "—";
+
+        return [
+            {
+                label: linkedLabel,
+                value: linkedValue,
+            },
+            {
+                label: "Hora",
+                value:
+                    entity?.time ||
+                    entity?.hour ||
+                    entity?.startTime ||
+                    "Por confirmar",
+            },
+        ];
+    }
+
+}
+
+function betaRenderDetailHero(entity) {
+    const title = betaDetailAttr(betaDetailTitle(entity, "Detalle"));
+    const images = betaDetailImages(entity);
+
+    if (!images.length) {
+        return `
+            <div class="entity-detail-carousel entity-detail-carousel--fallback">
+                <span>${title}</span>
+            </div>
+        `;
+    }
+
+    const slides = images
+        .map((src, index) => `
+            <figure
+                class="entity-detail-slide ${index === 0 ? "is-active" : ""}"
+                data-detail-slide="${index}"
+            >
+                <img
+                    src="${betaDetailAttr(src)}"
+                    alt="${title}"
+                    loading="lazy"
+                />
+            </figure>
+        `)
+        .join("");
+
+    const dots = images
+        .map((_, index) => `
+            <button
+                class="entity-detail-dot ${index === 0 ? "is-active" : ""}"
+                type="button"
+                data-detail-dot="${index}"
+                aria-label="Ver imagen ${index + 1}"
+            ></button>
+        `)
+        .join("");
+
+    const controls = images.length > 1
+        ? `
+            <button
+                class="entity-detail-carousel-btn entity-detail-carousel-btn--prev"
+                type="button"
+                data-detail-prev="true"
+                aria-label="Imagen anterior"
+            >
+                ‹
+            </button>
+
+            <button
+                class="entity-detail-carousel-btn entity-detail-carousel-btn--next"
+                type="button"
+                data-detail-next="true"
+                aria-label="Imagen siguiente"
+            >
+                ›
+            </button>
+
+            <div class="entity-detail-dots">
+                ${dots}
+            </div>
+        `
+        : "";
+
+    return `
+        <div class="entity-detail-carousel" data-detail-carousel="true">
+            ${slides}
+            ${controls}
+        </div>
+    `;
+}
+
+function betaBindDetailCarousel() {
+    const carousel = document.querySelector("[data-detail-carousel='true']");
+    if (!carousel) return;
+
+    const slides = Array.from(
+        carousel.querySelectorAll("[data-detail-slide]")
+    );
+
+    const dots = Array.from(
+        carousel.querySelectorAll("[data-detail-dot]")
+    );
+
+    if (slides.length <= 1) return;
+
+    let activeIndex = 0;
+
+    const setActive = (nextIndex) => {
+        activeIndex =
+            (nextIndex + slides.length) % slides.length;
+
+        slides.forEach((slide, index) => {
+            slide.classList.toggle(
+                "is-active",
+                index === activeIndex
+            );
+        });
+
+        dots.forEach((dot, index) => {
+            dot.classList.toggle(
+                "is-active",
+                index === activeIndex
+            );
+        });
+    };
+
+    carousel
+        .querySelector("[data-detail-prev='true']")
+        ?.addEventListener("click", () => {
+            setActive(activeIndex - 1);
+        });
+
+    carousel
+        .querySelector("[data-detail-next='true']")
+        ?.addEventListener("click", () => {
+            setActive(activeIndex + 1);
+        });
+
+    dots.forEach((dot) => {
+        dot.addEventListener("click", () => {
+            setActive(Number(dot.dataset.detailDot || 0));
+        });
+    });
+}
+
+function betaBuildDetailHtml(entity, type) {
+    if (type === "event") {
+        const linkedSpot =
+            entity?.linkedSpot ||
+            entity?.spot ||
+            (state?.data?.spots || []).find(
+                (spot) => String(spot.id) === String(entity?.spotId)
+            ) ||
+            null;
+
+        if (linkedSpot) {
+            const linkedImage =
+                linkedSpot.image ||
+                linkedSpot.imageUrl ||
+                linkedSpot.cover ||
+                "";
+
+            entity = {
+                ...entity,
+
+                linkedSpot,
+
+                place: linkedSpot.name,
+                location: linkedSpot.name,
+
+                city: linkedSpot.city || entity.city,
+                zone: linkedSpot.zone || entity.zone,
+
+                lat: Number(linkedSpot.lat),
+                lng: Number(linkedSpot.lng),
+
+                image:
+                    entity.image ||
+                    entity.imageUrl ||
+                    linkedImage,
+
+                imageUrl:
+                    entity.imageUrl ||
+                    entity.image ||
+                    linkedImage,
+            };
+        }
+    }
+
+    const title = betaDetailAttr(
+        betaDetailTitle(
+            entity,
+            type === "event"
+                ? "Evento"
+                : type === "shop"
+                    ? "Shop"
+                    : "Spot"
+        )
+    );
+
+    const badge = betaDetailAttr(
+        betaDetailBadge(entity, type)
+    );
+
+    const description = betaDetailAttr(
+        betaDetailDescription(
+            entity,
+            type === "event"
+                ? "Evento disponible dentro de Callejeandola."
+                : type === "shop"
+                    ? "Shop disponible dentro de Callejeandola."
+                    : "Spot disponible dentro de Callejeandola."
+        )
+    );
+
+    function betaDetailMetaRows(entity, type) {
+        if (type === "spot") {
+            return [
+                {
+                    label: "Zona",
+                    value: entity?.zone || entity?.city || "—",
+                },
+                {
+                    label: "Tipo",
+                    value: entity?.type || entity?.category || "Spot",
+                },
+            ];
+        }
+
+        if (type === "event") {
+            const linkedSpot =
+                entity?.linkedSpot ||
+                entity?.spot ||
+                null;
+
+            return [
+                {
+                    label: entity?.linkedSpot || entity?.spot ? "Spot vinculado" : "Lugar",
+                    value:
+                        entity?.linkedSpot?.name ||
+                        entity?.spot?.name ||
+                        entity?.place ||
+                        entity?.location ||
+                        entity?.venue ||
+                        "—",
+                },
+                {
+                    label: "Hora",
+                    value:
+                        entity?.time ||
+                        entity?.hour ||
+                        entity?.startTime ||
+                        "Por confirmar",
+                },
+            ];
+        }
+
+        if (type === "shop") {
+            return [
+                {
+                    label: "Ciudad",
+                    value:
+                        entity?.city ||
+                        entity?.location ||
+                        entity?.province ||
+                        "—",
+                },
+                {
+                    label: "Dirección",
+                    value:
+                        entity?.address ||
+                        entity?.direction ||
+                        entity?.website ||
+                        "—",
+                },
+            ];
+        }
+
+        return [
+            {
+                label: "Información",
+                value: "—",
+            },
+        ];
+    }
+
+    const metaRows = betaDetailMetaRows(entity, type)
+        .map((row) => `
+            <div class="entity-detail-row">
+                <span class="entity-detail-label">
+                    ${betaDetailAttr(row.label)}
+                </span>
+
+                <strong class="entity-detail-value">
+                    ${betaDetailAttr(row.value)}
+                </strong>
+            </div>
+        `)
+        .join("");
+
+    const routeButton = betaDetailCanRoute(entity)
+        ? `
+            <button
+                class="btn btn-primary entity-detail-route"
+                type="button"
+                id="btnRouteFromModal"
+            >
+                Ruta
+            </button>
+        `
+        : "";
+
+    return `
+        <div class="entity-detail-view entity-detail-view--${type}">
+            <div class="entity-detail-hero">
+                ${betaRenderDetailHero(entity)}
+            </div>
+
+            <div class="entity-detail-main">
+                <div class="entity-detail-grid">
+                    ${metaRows}
+                </div>
+
+                <p class="entity-detail-description">
+                    ${description}
+                </p>
+
+                ${routeButton ? `
+                    <div class="entity-detail-actions">
+                        ${routeButton}
+                    </div>
+                ` : ""}
+            </div>
+        </div>
+    `;
+}
+
+function betaBindDetailActions(entity, type) {
+    setTimeout(() => {
+        betaBindDetailCarousel();
+
+        const routeButton = $("#btnRouteFromModal");
+
+        if (routeButton) {
+            routeButton.addEventListener("click", () => {
+                if (!betaDetailCanRoute(entity)) return;
+
+                const modal = $("#modal");
+
+                if (modal?.open) {
+                    modal.close();
+                }
+
+                if (typeof cjOpenRouteCore === "function") {
+                    cjOpenRouteCore(entity, type);
+                }
+            });
+        }
+    }, 0);
 }
 
 function openSpot(s) {
     modalInfo(
-        s.name,
-        `
-      <div class="detail-modal">
-        <div class="detail-hero">
-          ${renderMediaBlock(s, "spot")}
-        </div>
-
-        <div class="detail-grid">
-          <div><strong>Zona:</strong> ${escapeHtml(s.zone || s.city || "—")}</div>
-          <div><strong>Descripción:</strong> ${escapeHtml(s.description || "Sin descripción")}</div>
-        </div>
-
-        <div class="detail-actions">
-          <button class="btn btn-primary" type="button" id="btnRouteFromModal">
-            Ruta
-          </button>
-        </div>
-      </div>
-    `
+        s.name || "Spot",
+        betaBuildDetailHtml(s, "spot")
     );
 
-    setTimeout(() => {
-        $("#btnRouteFromModal")?.addEventListener("click", () => {
-            cjOpenRouteCore(s, "spot");
-        });
-
-        $$(".detail-thumb").forEach((btn) => {
-            btn.addEventListener("click", () => {
-                const img = btn.dataset.img;
-                const hero = document.querySelector(".detail-hero img");
-                if (hero && img) hero.src = img;
-            });
-        });
-    }, 0);
+    betaBindDetailActions(s, "spot");
 }
 
-function openEvent(e) {
+function cjNormalizeText(value) {
+    return String(value || "")
+        .trim()
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
+}
+
+function cjBuildEventTarget(event) {
+    const linkedSpot =
+        event?.spot ||
+        (state?.data?.spots || []).find(
+            (spot) => String(spot.id) === String(event?.spotId)
+        ) ||
+        null;
+
+    if (!linkedSpot) {
+        return {
+            ...event,
+            linkedSpot: null,
+        };
+    }
+
+    const linkedImage =
+        linkedSpot.image ||
+        linkedSpot.imageUrl ||
+        linkedSpot.cover ||
+        "";
+
+    return {
+        ...event,
+
+        linkedSpot,
+
+        place: linkedSpot.name,
+        location: linkedSpot.name,
+
+        city: linkedSpot.city || event.city,
+        zone: linkedSpot.zone || event.zone,
+
+        lat: Number(linkedSpot.lat),
+        lng: Number(linkedSpot.lng),
+
+        image: event.image || linkedImage,
+        imageUrl: event.imageUrl || event.image || linkedImage,
+
+        description:
+            event.description ||
+            `Evento vinculado a ${linkedSpot.name}.`,
+    };
+}
+
+function bindEventRouteButton(eventTarget) {
+    const routeButton = document.getElementById("btnEventRouteFromModal");
+
+    if (!routeButton) return;
+
+    routeButton.onclick = function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const linkedSpot =
+            eventTarget?.linkedSpot ||
+            eventTarget?.spot ||
+            null;
+
+        const target = linkedSpot || eventTarget;
+
+        const lat = Number(target?.lat);
+        const lng = Number(target?.lng);
+
+        if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+            toast("Este evento no tiene un spot con coordenadas.");
+            return;
+        }
+
+        activateRouteTarget(
+            {
+                ...target,
+                lat,
+                lng,
+                name:
+                    target?.name ||
+                    eventTarget?.title ||
+                    "Destino",
+            },
+            "spot"
+        );
+
+        openMapView();
+    };
+}
+
+function openEvent(event) {
+    const eventTarget = cjNormalizeLinkedEvent(event);
+
     modalInfo(
-        e.title,
-        `
-      <div class="detail-modal">
-        <div class="detail-hero event-detail-hero">          
-            ${renderMediaBlock(e, "event")}
-        </div>
-
-        <div class="detail-grid">
-          <div><strong>Lugar:</strong> ${escapeHtml(e.place || "—")}</div>
-          <div><strong>Hora:</strong> ${escapeHtml(e.time || "—")}</div>
-          <div><strong>Descripción:</strong> ${escapeHtml(e.description || e.format || "Sin descripción")}</div>
-        </div>
-
-        <div class="detail-actions">
-          <button class="btn btn-secondary" type="button" id="btnRouteEventFromModal">
-            Ruta
-          </button>
-        </div>
-        </div>
-      </div>
-    `
+        eventTarget.title || eventTarget.name || "Evento",
+        cjBuildLinkedEventDetailHtml(eventTarget)
     );
-
-    setTimeout(() => {
-        $("#btnRouteEventFromModal")?.addEventListener("click", () => {
-            cjOpenRouteCore(e, "event");
-        });
-
-        $$(".detail-thumb").forEach((btn) => {
-            btn.addEventListener("click", () => {
-                const img = btn.dataset.img;
-                const hero = document.querySelector(".detail-hero img");
-                if (hero && img) hero.src = img;
-            });
-        });
-    }, 0);
+    bindEventRouteButton(eventTarget);
 }
+
+// function bindEventRouteButton(eventTarget) {
+//     const routeButton = document.getElementById("btnRouteFromModal");
+
+//     if (!routeButton) return;
+
+//     routeButton.onclick = function () {
+//         const linkedSpot =
+//             eventTarget?.linkedSpot ||
+//             eventTarget?.spot ||
+//             null;
+
+//         const target = linkedSpot || eventTarget;
+
+//         const lat = Number(target?.lat);
+//         const lng = Number(target?.lng);
+
+//         if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+//             toast("Este evento no tiene coordenadas vinculadas.");
+//             return;
+//         }
+
+//         activateRouteTarget(
+//             {
+//                 ...target,
+//                 lat,
+//                 lng,
+//                 name:
+//                     target?.name ||
+//                     eventTarget?.title ||
+//                     eventTarget?.location ||
+//                     "Destino",
+//             },
+//             "spot"
+//         );
+
+//         openMapView();
+//     };
+// }
 
 function openShop(shop) {
-
     modalInfo(
-        shop.name,
-        `
-      <div class="detail-modal">
-        <div class="detail-hero shop-detail-hero">
-          ${renderMediaBlock(shop, "shop")}
-        </div>
-
-        <div class="detail-grid">
-          <div><strong>Ciudad:</strong> ${escapeHtml(shop.city || "—")}</div>
-          <div><strong>Descripción:</strong> ${escapeHtml(shop.description || "Sin descripción")}</div>
-          <div><strong>Dirección:</strong> ${escapeHtml(shop.address || "—")}</div>
-        </div>
-
-        <div class="detail-actions detail-actions--icons">
-          ${shop.website
-            ? `<a class="icon-btn" href="${shop.website}" target="_blank" rel="noopener" title="Website">🌐</a>`
-            : ""
-        }
-
-          ${shop.instagram
-            ? `<a class="icon-btn" href="${shop.instagram}" target="_blank" rel="noopener" title="Instagram">📷</a>`
-            : ""
-        }
-
-        <button class="btn btn-secondary" type="button" id="btnRouteShopFromModal">
-            Ruta
-        </button>
-        </div>
-      </div>
-    `
+        shop.name || "Shop",
+        betaBuildDetailHtml(shop, "shop")
     );
 
-    setTimeout(() => {
-        $("#btnRouteShopFromModal")?.addEventListener("click", () => {
-            activateRouteTarget(shop, "shop");
-        });
-    }, 0);
+    betaBindDetailActions(shop, "shop");
 }
 
 function openAddSpot() {
@@ -2306,18 +3611,44 @@ async function shareProfile() {
 ========================================= */
 let toastTimer = null;
 
-function toast(msg) {
-    const t = $("#toast");
-    if (!t) return;
+function toast(message, type = "info") {
+    let toastElement = document.getElementById("toast");
 
-    $("#toastMsg").textContent = msg;
-    t.hidden = false;
+    if (!toastElement) {
+        toastElement = document.createElement("div");
+        toastElement.id = "toast";
+        toastElement.className = "toast";
+        toastElement.setAttribute("role", "status");
+        toastElement.setAttribute("aria-live", "polite");
+        toastElement.hidden = true;
+        document.body.appendChild(toastElement);
+    }
+
+    const toastMessage =
+        document.getElementById("toastMsg") ||
+        toastElement.querySelector("[data-toast-message]");
+
+    if (toastMessage) {
+        toastMessage.textContent = message;
+    } else {
+        toastElement.textContent = message;
+    }
+
+    toastElement.dataset.type = type;
+    toastElement.hidden = false;
+    toastElement.classList.add("is-visible");
 
     clearTimeout(toastTimer);
+
     toastTimer = setTimeout(() => {
-        t.hidden = true;
-    }, 1600);
+        toastElement.classList.remove("is-visible");
+        toastElement.hidden = true;
+    }, 1500);
 }
+
+globalThis.toast = toast;
+globalThis.showAppMessage = toast;
+
 
 function pulseBusy(title, sub) {
     const b = $("#busy");
@@ -2409,7 +3740,6 @@ function renderMediaBlock(entity, type = "spot") {
     if (!image) {
         return `
       <div class="entity-media entity-media--${type} is-fallback">
-        <div class="entity-media__mark">CJ</div>
         <span>${escapeHtml(title)}</span>
       </div>
     `;
@@ -2423,7 +3753,6 @@ function renderMediaBlock(entity, type = "spot") {
         loading="lazy"
         onerror="this.remove(); this.parentElement.classList.add('is-fallback');"
       >
-      <div class="entity-media__mark">CJ</div>
       <span>${escapeHtml(title)}</span>
     </div>
   `;
@@ -2488,8 +3817,8 @@ function buildRouteUrls(entity) {
         title,
         lat: coords.lat,
         lng: coords.lng,
-        googleMapsUrl: `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}`,
-        wazeUrl: `https://www.waze.com/ul?ll=${encodeURIComponent(destination)}&navigate=yes`,
+        googleMapsUrl: "",
+        wazeUrl: "",
     };
 }
 
@@ -2763,22 +4092,297 @@ function updateRouteCoords(spot) {
     if (coordsBox) coordsBox.hidden = false;
 }
 
+
 function buildWazeUrl(spot) {
-    const lat = Number(spot?.lat);
-    const lng = Number(spot?.lng);
-
-    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
-
-    return `https://waze.com/ul?ll=${lat},${lng}&navigate=yes`;
+    return "";
 }
 
 function buildGoogleMapsUrl(spot) {
-    const lat = Number(spot?.lat);
-    const lng = Number(spot?.lng);
+    return "";
+}
 
-    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+/* =========================================================
+   UNIFIED DETAIL MODAL (SPOTS / EVENTS / SHOPS)
+   ========================================================= */
 
-    return `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+function cjEsc(value) {
+    return String(value ?? "").replace(/[&<>"']/g, (m) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;",
+    }[m]));
+}
+
+function cjGetEntityTitle(entity, type) {
+    return (
+        entity?.title ||
+        entity?.name ||
+        entity?.shopName ||
+        entity?.eventName ||
+        (type === "spots" ? "Spot sin nombre" :
+            type === "events" ? "Evento sin nombre" :
+                "Shop sin nombre")
+    );
+}
+
+function cjGetEntityImage(entity) {
+    return (
+        entity?.image ||
+        entity?.imageUrl ||
+        entity?.cover ||
+        entity?.coverImage ||
+        entity?.thumbnail ||
+        entity?.photo ||
+        entity?.banner ||
+        (Array.isArray(entity?.images) && entity.images[0]) ||
+        ""
+    );
+}
+
+function cjGetEntityBadge(type, entity) {
+    if (type === "spots") {
+        return entity?.type || entity?.category || "Spot";
+    }
+
+    if (type === "events") {
+        return entity?.format || entity?.category || "Evento";
+    }
+
+    return entity?.category || "Skateshop";
+}
+
+function cjGetEntitySubtitle(type) {
+    if (type === "spots") {
+        return "Spot, ubicación y acceso rápido a la ruta.";
+    }
+
+    if (type === "events") {
+        return "Info clara del evento y acceso directo a la ruta.";
+    }
+
+    return "Detalle del shop, ubicación y acceso rápido a la ruta.";
+}
+
+function cjGetEntityMetaRows(entity, type) {
+    if (type === "spots") {
+        return [
+            {
+                label: "Zona",
+                value:
+                    entity?.zone ||
+                    entity?.city ||
+                    entity?.location ||
+                    entity?.province ||
+                    "Sin zona",
+            },
+            {
+                label: "Obstáculo",
+                value:
+                    entity?.obstacle ||
+                    entity?.obstacles ||
+                    entity?.type ||
+                    entity?.category ||
+                    "Street / Park",
+            },
+        ];
+    }
+
+    if (type === "events") {
+        return [
+            {
+                label: "Lugar",
+                value:
+                    entity?.location ||
+                    entity?.place ||
+                    entity?.spot ||
+                    entity?.venue ||
+                    "Sin ubicación",
+            },
+            {
+                label: "Hora",
+                value:
+                    entity?.time ||
+                    entity?.startTime ||
+                    entity?.hour ||
+                    entity?.schedule ||
+                    "Por confirmar",
+            },
+        ];
+    }
+
+    return [
+        {
+            label: "Ciudad",
+            value:
+                entity?.city ||
+                entity?.location ||
+                entity?.province ||
+                "Sin ciudad",
+        },
+        {
+            label: "Dirección",
+            value:
+                entity?.address ||
+                entity?.direction ||
+                entity?.location ||
+                "Sin dirección registrada",
+        },
+    ];
+}
+
+function cjGetEntityDescription(entity, type) {
+    return (
+        entity?.description ||
+        entity?.desc ||
+        entity?.summary ||
+        (type === "spots"
+            ? "Spot disponible dentro de Callejeandola. Revisá el detalle y usá la ruta interna para llegar."
+            : type === "events"
+                ? "Evento activo dentro de Callejeandola. Revisá la info principal y abrí la ruta para llegar."
+                : "Shop disponible dentro de Callejeandola. Revisá la ubicación y abrí la ruta interna.")
+    );
+}
+
+function cjBuildEntityDetailHtml(entity, type) {
+    const title = cjEsc(cjGetEntityTitle(entity, type));
+    const badge = cjEsc(cjGetEntityBadge(type, entity));
+    const subtitle = cjEsc(cjGetEntitySubtitle(type));
+    const image = cjGetEntityImage(entity);
+    const description = cjEsc(cjGetEntityDescription(entity, type));
+    const metaRows = cjGetEntityMetaRows(entity, type);
+
+    const heroHtml = image
+        ? `<img src="${cjEsc(image)}" alt="${title}" />`
+        : `
+      <div class="entity-detail-hero entity-detail-hero--fallback">
+        <span>${title}</span>
+      </div>
+    `;
+
+    const rowsHtml = metaRows
+        .map(
+            (row) => `
+        <div class="entity-detail-row">
+          <div class="entity-detail-label">${cjEsc(row.label)}</div>
+          <div class="entity-detail-value">${cjEsc(row.value)}</div>
+        </div>
+      `
+        )
+        .join("");
+
+    return `
+    <div class="entity-detail-shell">
+      <article class="entity-detail-card">
+        <div class="entity-detail-head">
+          <div class="entity-detail-head__copy">
+            <p class="entity-detail-sub">${subtitle}</p>
+          </div>
+
+          <button
+            type="button"
+            class="entity-detail-close"
+            data-detail-close="true"
+            aria-label="Cerrar detalle"
+          >
+            ×
+          </button>
+        </div>
+
+        <div class="entity-detail-hero">
+          ${image ? heroHtml : `<div class="entity-detail-hero--fallback"><span>${title}</span></div>`}
+        </div>
+
+        <div class="entity-detail-grid">
+          ${rowsHtml}
+        </div>
+
+        <p class="entity-detail-description">${description}</p>
+
+        <div class="entity-detail-actions">
+          <button
+            type="button"
+            class="entity-detail-route"
+            data-detail-route="true"
+          >
+            Ruta
+          </button>
+
+          <button
+            type="button"
+            class="entity-detail-secondary"
+            data-detail-close="true"
+          >
+            Cerrar
+          </button>
+        </div>
+      </article>
+    </div>
+  `;
+}
+
+function cjCloseEntityDetail() {
+    const modal = document.getElementById("modal");
+    if (!modal) return;
+
+    if (modal.tagName === "DIALOG") {
+        if (modal.open) modal.close();
+    } else {
+        modal.hidden = true;
+        modal.classList.remove("is-open");
+    }
+
+    modal.innerHTML = "";
+}
+
+function cjOpenEntityDetail(entity, type) {
+    const modal = document.getElementById("modal");
+    if (!modal) return;
+
+    modal.classList.add("entity-detail-modal");
+    modal.innerHTML = cjBuildEntityDetailHtml(entity, type);
+
+    const closeButtons = modal.querySelectorAll("[data-detail-close='true']");
+    closeButtons.forEach((btn) => {
+        btn.addEventListener("click", cjCloseEntityDetail);
+    });
+
+    const routeButton = modal.querySelector("[data-detail-route='true']");
+    if (routeButton) {
+        routeButton.addEventListener("click", () => {
+            cjCloseEntityDetail();
+
+            if (typeof activateRouteTarget === "function") {
+                activateRouteTarget(entity, type);
+            }
+
+            if (typeof openMapView === "function") {
+                openMapView();
+            }
+        });
+    }
+
+    if (modal.tagName === "DIALOG") {
+        if (!modal.open) {
+            modal.showModal();
+        }
+    } else {
+        modal.hidden = false;
+        modal.classList.add("is-open");
+    }
+}
+
+function openSpotDetail(spot) {
+    cjOpenEntityDetail(spot, "spots");
+}
+
+function openEventDetail(eventItem) {
+    openEvent(eventItem);
+}
+
+function openShopDetail(shop) {
+    cjOpenEntityDetail(shop, "shops");
 }
 
 /* =========================================
@@ -3141,4 +4745,403 @@ if (document.readyState === "loading") {
 } else {
     initMobileEntryFlow();
 }
+
+/* =========================================
+   CJ PROFILE — SKATER CORE DATA
+========================================= */
+
+const CJ_PROFILE_SKATER_KEY =
+    "cj_profile_skater_core_v1";
+
+function cjProfileField(id) {
+    return document.getElementById(id);
+}
+
+function cjProfileValue(id) {
+    return String(cjProfileField(id)?.value || "").trim();
+}
+
+function cjProfileChecked(id) {
+    return Boolean(cjProfileField(id)?.checked);
+}
+
+function cjProfileSetValue(id, value) {
+    const field = cjProfileField(id);
+
+    if (field) {
+        field.value = value ?? "";
+    }
+}
+
+function cjProfileSetChecked(id, value) {
+    const field = cjProfileField(id);
+
+    if (field) {
+        field.checked = Boolean(value);
+    }
+}
+
+function cjProfileIsInsideCostaRica(lat, lng) {
+    return (
+        lat >= 8.0 &&
+        lat <= 11.3 &&
+        lng >= -86.2 &&
+        lng <= -82.5
+    );
+}
+
+function cjProfileSetCountryStatus(message, ok = true) {
+    const status = cjProfileField("profileCountryStatus");
+
+    if (!status) return;
+
+    status.textContent = message;
+    status.dataset.valid = ok ? "true" : "false";
+}
+
+function cjProfileDetectCountry() {
+    if (!navigator.geolocation) {
+        cjProfileSetCountryStatus(
+            "Tu navegador no soporta geolocalización.",
+            false
+        );
+
+        toast?.("Geolocalización no soportada.");
+        return;
+    }
+
+    cjProfileSetCountryStatus("Validando ubicación...");
+
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+            const lat = Number(position.coords.latitude);
+            const lng = Number(position.coords.longitude);
+
+            if (cjProfileIsInsideCostaRica(lat, lng)) {
+                cjProfileSetValue("profileCountry", "Costa Rica");
+
+                cjProfileSetCountryStatus(
+                    "Ubicación compatible con Costa Rica."
+                );
+
+                toast?.("Ubicación validada para Costa Rica.");
+                return;
+            }
+
+            cjProfileSetCountryStatus(
+                "Ubicación fuera de Costa Rica. Requiere aprobación admin.",
+                false
+            );
+
+            toast?.("Fuera de zona inicial. Requiere aprobación admin.");
+        },
+        () => {
+            cjProfileSetCountryStatus(
+                "No se pudo validar ubicación. Se mantiene Costa Rica por ahora.",
+                false
+            );
+
+            toast?.("No se pudo validar ubicación.");
+        },
+        {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 30000,
+        }
+    );
+}
+
+function cjProfileCollectSkaterData() {
+    return {
+        fullName: cjProfileValue("profileFullName"),
+        country: "Costa Rica",
+        phone: cjProfileValue("profilePhone"),
+        email: cjProfileValue("profileEmailReadonly"),
+        stance: cjProfileValue("profileStance"),
+        termsAccepted: cjProfileChecked("profileTermsAccepted"),
+        updatedAt: new Date().toISOString(),
+    };
+}
+
+function cjProfileSaveSkaterData() {
+    const data = cjProfileCollectSkaterData();
+
+    localStorage.setItem(
+        CJ_PROFILE_SKATER_KEY,
+        JSON.stringify(data)
+    );
+
+    return data;
+}
+
+function cjProfileLoadSkaterData() {
+    try {
+        const raw = localStorage.getItem(CJ_PROFILE_SKATER_KEY);
+
+        if (!raw) return;
+
+        const data = JSON.parse(raw);
+
+        cjProfileSetValue("profileFullName", data.fullName);
+        cjProfileSetValue("profileCountry", "Costa Rica");
+        cjProfileSetValue("profilePhone", data.phone);
+        cjProfileSetValue("profileEmailReadonly", data.email);
+        cjProfileSetValue("profileStance", data.stance);
+        cjProfileSetChecked("profileTermsAccepted", data.termsAccepted);
+    } catch (error) {
+        console.warn("Error de carga de datos del patinador del perfil Callejeandola:", error);
+    }
+}
+
+function cjProfileOpenLegalPage(type) {
+    if (typeof modalInfo !== "function") {
+        return;
+    }
+
+    if (type === "privacy") {
+        modalInfo(
+            "Política de Privacidad",
+            `
+            <div class="legal-modal-content">
+              <p>
+                Callejeandola usa datos básicos de perfil para permitir
+                registro, favoritos, eventos guardados y futuras inscripciones.
+              </p>
+
+              <p>
+                La ubicación se usa para validar disponibilidad regional.
+                La versión inicial está enfocada en Costa Rica.
+              </p>
+            </div>
+            `
+        );
+
+        return;
+    }
+
+    modalInfo(
+        "Términos y Condiciones",
+        `
+        <div class="legal-modal-content">
+          <p>
+            Al usar Callejeandola aceptás que la información de spots,
+            eventos, shops y rutas puede cambiar.
+          </p>
+
+          <p>
+            Los datos de perfil pueden usarse para prellenar futuras
+            inscripciones a eventos. Los datos sensibles de competencia
+            se solicitarán únicamente al inscribirse a un evento.
+          </p>
+
+          <p>
+            La versión inicial está limitada a Costa Rica. Usuarios fuera
+            del país pueden requerir aprobación administrativa.
+          </p>
+        </div>
+        `
+    );
+}
+
+function cjProfileBindSkaterFields() {
+    if (document.body.dataset.cjProfileSkaterBound === "true") {
+        return;
+    }
+
+    document.body.dataset.cjProfileSkaterBound = "true";
+
+    cjProfileSetValue("profileRegisterCountry", "Costa Rica");
+    cjProfileSetValue("profileCountry", "Costa Rica");
+
+    cjProfileLoadSkaterData();
+
+    cjProfileField("btnDetectProfileCountry")
+        ?.addEventListener("click", cjProfileDetectCountry);
+
+    /*
+      PRELAUNCH:
+      El guardado real del profile lo maneja js/views/profile.view.js.
+      No validar términos aquí porque esa validación pertenece al registro
+      o a inscripción de eventos, no a "Guardar perfil".
+    */
+}
+
+if (document.readyState === "loading") {
+    document.addEventListener(
+        "DOMContentLoaded",
+        cjProfileBindSkaterFields
+    );
+} else {
+    cjProfileBindSkaterFields();
+}
+
+/* =========================================
+   CJ PROFILE — REGISTER FLOW HELPERS
+========================================= */
+
+function showLoginFormAfterRegister(email = "") {
+    const loginForm = document.getElementById("profileLoginForm");
+    const registerForm = document.getElementById("profileRegisterForm");
+    const loginEmail = document.getElementById("profileLoginEmail");
+    const btnShowLogin = document.getElementById("btnShowLogin");
+    const btnShowRegister = document.getElementById("btnShowRegister");
+
+    if (registerForm) {
+        registerForm.hidden = true;
+    }
+
+    if (loginForm) {
+        loginForm.hidden = false;
+    }
+
+    if (loginEmail) {
+        loginEmail.value = email;
+    }
+
+    btnShowLogin?.classList.add("is-active");
+    btnShowRegister?.classList.remove("is-active");
+}
+
+
+/* =========================================================
+   PRELAUNCH FIX: Events vinculados a Spots
+   Regla:
+   - Event usa event.spot / event.spotId
+   - Imagen hereda del Spot si Event.image está vacío
+   - Ruta usa lat/lng del Spot
+   - Modal muestra "Spot vinculado"
+========================================================= */
+
+
+function cjGetEventLinkedSpot(event) {
+    return (
+        event?.linkedSpot ||
+        event?.spot ||
+        (state?.data?.spots || []).find(
+            (spot) => String(spot.id) === String(event?.spotId)
+        ) ||
+        null
+    );
+}
+
+function cjNormalizeLinkedEvent(event) {
+    const linkedSpot = cjGetEventLinkedSpot(event);
+
+    if (!linkedSpot) {
+        return {
+            ...event,
+            linkedSpot: null,
+        };
+    }
+
+    const spotImage =
+        linkedSpot.image ||
+        linkedSpot.imageUrl ||
+        linkedSpot.cover ||
+        "";
+
+    return {
+        ...event,
+
+        linkedSpot,
+        spot: linkedSpot,
+
+        place: linkedSpot.name,
+        location: linkedSpot.name,
+
+        city: linkedSpot.city || event.city,
+        zone: linkedSpot.zone || event.zone,
+
+        lat: Number(linkedSpot.lat),
+        lng: Number(linkedSpot.lng),
+
+        image:
+            event.image ||
+            event.imageUrl ||
+            spotImage,
+
+        imageUrl:
+            event.imageUrl ||
+            event.image ||
+            spotImage,
+    };
+}
+
+function cjBuildLinkedEventDetailHtml(event) {
+    const linkedSpot = event.linkedSpot || event.spot || null;
+
+    const placeLabel = linkedSpot
+        ? "Spot vinculado"
+        : "Lugar";
+
+    const placeValue =
+        linkedSpot?.name ||
+        event.place ||
+        event.location ||
+        event.venue ||
+        "—";
+
+    const timeValue =
+        event.time ||
+        event.hour ||
+        event.startTime ||
+        "Por confirmar";
+
+    const description =
+        event.description ||
+        "Evento disponible dentro de Callejeandola.";
+
+    const canRoute =
+        Number.isFinite(Number(event.lat)) &&
+        Number.isFinite(Number(event.lng));
+
+    return `
+        <div class="entity-detail-view entity-detail-view--event">
+            <div class="entity-detail-hero">
+                ${betaRenderDetailHero(event)}
+            </div>
+
+            <div class="entity-detail-main">
+                <div class="entity-detail-grid">
+                    <div class="entity-detail-row">
+                        <span class="entity-detail-label">
+                            ${betaDetailAttr(placeLabel)}
+                        </span>
+
+                        <strong class="entity-detail-value">
+                            ${betaDetailAttr(placeValue)}
+                        </strong>
+                    </div>
+
+                    <div class="entity-detail-row">
+                        <span class="entity-detail-label">
+                            Hora
+                        </span>
+
+                        <strong class="entity-detail-value">
+                            ${betaDetailAttr(timeValue)}
+                        </strong>
+                    </div>
+                </div>
+
+                <p class="entity-detail-description">
+                    ${betaDetailAttr(description)}
+                </p>
+
+                ${canRoute ? `
+                    <div class="entity-detail-actions">
+                        <button
+                            class="btn btn-primary entity-detail-route"
+                            type="button"
+                            id="btnEventRouteFromModal"
+                            >
+                            Ruta
+                        </button>
+                    </div>
+                ` : ""}
+            </div>
+        </div>
+    `;
+}
+
 

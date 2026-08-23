@@ -106,6 +106,10 @@ async function getSavedEvents(userId) {
     if (!eventIds.length) return [];
 
     const events = await prisma.event.findMany({
+        include: {
+            spot: true,
+            shop: true,
+        },
         where: {
             id: {
                 in: eventIds,

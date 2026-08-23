@@ -1,7 +1,7 @@
 export const API_BASE =
     window.__API__ ||
     localStorage.getItem("CJ_API_BASE") ||
-    "http://localhost:4000/api";
+    "https://callejeandola-api.onrender.com/api";
 
 async function safeFetch(path, { method = "GET", body, headers } = {}) {
     try {

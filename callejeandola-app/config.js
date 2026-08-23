@@ -3,7 +3,7 @@ const isLocal =
     window.location.hostname === "127.0.0.1";
 
 window.__API__ = isLocal
-    ? "http://localhost:4000/api"
+    ? "https://callejeandola-api.onrender.com/api"
     : "https://api.callejeandola.com/api";
 
 window.CALLEJEANDOLA_CONFIG = {
