@@ -1,4 +1,10 @@
-const API_URL = process.env.API_URL || "http://localhost:4000/api";
+const API_URL = process.env.API_URL || "https://callejeandola-api.onrender.com/api";
+
+const seedPassword = process.env.SEED_USER_PASSWORD;
+
+if (!seedPassword) {
+    throw new Error("SEED_USER_PASSWORD is required");
+}
 
 const totalUsers = Number(process.argv[2] || 50);
 const concurrency = Number(process.argv[3] || 10);
@@ -19,7 +25,7 @@ async function registerUser(index) {
     const payload = {
         name: `Load Test Skater ${runId}-${index}`,
         email: `loadtest_${runId}_${index}@callejeandola.test`,
-        password: "123456",
+        password: seedPassword,
         country: "Costa Rica",
     };
 
