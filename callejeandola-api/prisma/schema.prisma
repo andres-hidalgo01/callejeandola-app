@@ -79,7 +79,7 @@ model Event {
   description String?
   date        DateTime
   location    String
-  country     Stringcl
+  country     String
   image       String?
 
   spotId Int?
