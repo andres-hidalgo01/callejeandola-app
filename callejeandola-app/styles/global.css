@@ -2662,14 +2662,6 @@ img {
     linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(2, 6, 23, 0.98));
 }
 
-.entity-media img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
 .entity-media__mark {
   width: 42px;
   height: 42px;
@@ -8696,7 +8688,7 @@ body.is-cj-live-navigation .cj-route-sheet {
       rgba(7, 15, 28, 0.96));
 }
 
-.view[data-view="shops"] #shopsList .shop-card>.entity-media {
+/* .view[data-view="shops"] #shopsList .shop-card>.entity-media {
   width: 100%;
   height: 100%;
   min-height: 134px;
@@ -8704,7 +8696,90 @@ body.is-cj-live-navigation .cj-route-sheet {
   border: 0;
   border-radius: 0;
   aspect-ratio: auto;
+} */
+
+/* .view[data-view="shops"] #shopsList .shop-card > .entity-media {
+  width: 132px;
+  min-width: 132px;
+  height: 132px;
+  min-height: 132px;
+  margin: 12px 0 12px 12px;
+  border-radius: 0;
+  overflow: hidden;
+  background: #ffffff;
 }
+
+.view[data-view="shops"] #shopsList .shop-card > .entity-media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  padding: 0;
+  background: #ffffff;
+} */
+
+/* PRELAUNCH FINAL: shops same layout as spots/events */
+.view[data-view="shops"] #shopsList .shop-card {
+  display: grid !important;
+  grid-template-columns: 112px minmax(0, 1fr) !important;
+  gap: 16px !important;
+  align-items: stretch !important;
+
+  padding: 16px !important;
+  min-height: 164px !important;
+  overflow: hidden !important;
+}
+
+.view[data-view="shops"] #shopsList .shop-card > .entity-media {
+  width: 112px !important;
+  min-width: 112px !important;
+  height: 132px !important;
+  min-height: 132px !important;
+
+  margin: 0 !important;
+  border-radius: 20px !important;
+  overflow: hidden !important;
+
+  background:
+    radial-gradient(circle at 20% 20%, rgba(34, 211, 238, 0.16), transparent 42%),
+    radial-gradient(circle at 80% 80%, rgba(124, 58, 237, 0.18), transparent 42%),
+    rgba(8, 18, 35, 0.94) !important;
+}
+
+.view[data-view="shops"] #shopsList .shop-card > .entity-media img {
+  position: absolute !important;
+  inset: 0 !important;
+
+  width: 100% !important;
+  height: 100% !important;
+
+  object-fit: contain !important;
+  object-position: center !important;
+
+  padding: 8px !important;
+  background: transparent !important;
+}
+
+.view[data-view="shops"] #shopsList .shop-card .card__body {
+  min-width: 0 !important;
+  padding: 0 !important;
+  justify-content: center !important;
+}
+
+.view[data-view="shops"] #shopsList .shop-card .card__meta {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+}
+
+.view[data-view="shops"] #shopsList .shop-card .h3 {
+  max-width: 170px !important;
+  font-size: 1rem !important;
+  line-height: 1.08 !important;
+}
+
 
 .view[data-view="shops"] #shopsList .shop-card .card__body {
   min-width: 0;
@@ -10171,7 +10246,7 @@ body.is-cj-live-navigation .cj-route-sheet {
   align-items: center;
   gap: 10px;
 
-  margin: 14px 0 86px;
+  margin: 16px 16px 16px;
   padding: 10px;
 
   border: 1px solid rgba(34, 211, 238, 0.16);

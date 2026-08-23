@@ -212,17 +212,62 @@ function normalizeSpots(spots) {
     }));
 }
 
+// function normalizeEvents(events) {
+//     return events.map((e) => {
+//         const date = e.date ? new Date(e.date) : null;
+//         const isValidDate = date && !isNaN(date);
+
+//         return {
+//             id: String(e.id),
+//             title: e.title || "Evento",
+//             description: e.description || "",
+//             location: e.location || "—",
+//             place: e.location || "—",
+//             country: e.country || "Costa Rica",
+//             date: isValidDate ? date : null,
+//             month: isValidDate ? date.toLocaleString("en-US", { month: "short" }).toUpperCase() : "—",
+//             day: isValidDate ? String(date.getDate()).padStart(2, "0") : "—",
+//             time: isValidDate
+//                 ? date.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })
+//                 : "—",
+//             format: e.description || "Sin descripción",
+//             category: e.category || "event",
+//             price: Number(e.price || 0),
+//             lat: Number(e.lat || 0),
+//             lng: Number(e.lng || 0),
+//             image: e.image || "",
+//             images: Array.isArray(e.images) ? e.images : e.image ? [e.image] : [],
+//         };
+//     });
+// }
+
 function normalizeEvents(events) {
     return events.map((e) => {
         const date = e.date ? new Date(e.date) : null;
         const isValidDate = date && !isNaN(date);
+
+        const linkedSpot = e.spot
+            ? {
+                id: String(e.spot.id),
+                name: e.spot.name || "Spot",
+                zone: e.spot.zone || e.spot.city || "—",
+                city: e.spot.city || "—",
+                type: e.spot.type || "spot",
+                description: e.spot.description || "",
+                lat: Number(e.spot.lat || 0),
+                lng: Number(e.spot.lng || 0),
+                image: e.spot.image || "",
+                imageUrl: e.spot.image || "",
+                images: e.spot.image ? [e.spot.image] : [],
+            }
+            : null;
 
         return {
             id: String(e.id),
             title: e.title || "Evento",
             description: e.description || "",
             location: e.location || "—",
-            place: e.location || "—",
+            place: linkedSpot?.name || e.location || "—",
             country: e.country || "Costa Rica",
             date: isValidDate ? date : null,
             month: isValidDate ? date.toLocaleString("en-US", { month: "short" }).toUpperCase() : "—",
@@ -233,10 +278,21 @@ function normalizeEvents(events) {
             format: e.description || "Sin descripción",
             category: e.category || "event",
             price: Number(e.price || 0),
-            lat: Number(e.lat || 0),
-            lng: Number(e.lng || 0),
-            image: e.image || "",
-            images: Array.isArray(e.images) ? e.images : e.image ? [e.image] : [],
+
+            spotId: e.spotId ? String(e.spotId) : null,
+            spot: linkedSpot,
+            linkedSpot,
+
+            lat: linkedSpot ? Number(linkedSpot.lat) : Number(e.lat || 0),
+            lng: linkedSpot ? Number(linkedSpot.lng) : Number(e.lng || 0),
+
+            image: e.image || linkedSpot?.image || "",
+            imageUrl: e.image || linkedSpot?.image || "",
+            images: e.image
+                ? [e.image]
+                : linkedSpot?.image
+                    ? [linkedSpot.image]
+                    : [],
         };
     });
 }
@@ -519,6 +575,12 @@ function renderRealMapMarkers() {
 function activateRouteFromMap(item) {
     if (!item) return;
 
+    if (item?.spot || item?.spotId || item?.mapType === "event") {
+        item = cjNormalizeLinkedEvent(item);
+        item.mapType = "spot";
+    }
+
+
     if (typeof activateRouteTarget === "function") {
         activateRouteTarget(item, item.mapType || "spot");
     } else {
@@ -534,8 +596,8 @@ function activateRouteFromMap(item) {
                 lat,
                 lng,
                 hasCoords: hasValidCoords(item),
-                wazeUrl: `https://waze.com/ul?ll=${lat},${lng}&navigate=yes`,
-                googleMapsUrl: `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`,
+                wazeUrl: "",
+                googleMapsUrl: "",
             },
         };
 
@@ -1048,6 +1110,13 @@ function renderEvents() {
     list.style.display = isEmpty ? "none" : "grid";
 
     list.innerHTML = filtered.map(eventCard).join("");
+
+    // const renderableEvents = filtered.map(cjBuildEventTarget);
+    // list.innerHTML = renderableEvents.map(eventCard).join("");
+    // renderableEvents.forEach((event) => {
+    //     $(`#openEvent_${event.id}`)?.addEventListener("click", () => openEvent(event));
+    //     $(`#saveEvent_${event.id}`)?.addEventListener("click", () => toggleSavedEvent(String(event.id)));
+    // });
 
     $$("[data-event]").forEach((b) => {
         b.addEventListener("click", () => {
@@ -1610,6 +1679,7 @@ function spotCard(s) {
 }
 
 function eventCard(e) {
+    e = cjNormalizeLinkedEvent(e);
     const token = getAuthToken();
     const saved = state.savedEvents.has(String(e.id));
 
@@ -2776,13 +2846,43 @@ function betaDetailDescription(entity, fallback) {
     );
 }
 
-function betaDetailImages(entity) {
-    const fromArray = Array.isArray(entity?.images)
-        ? entity.images
-        : [];
+// function betaDetailImages(entity) {
+//     const fromArray = Array.isArray(entity?.images)
+//         ? entity.images
+//         : [];
 
-    const rawImages = [
-        ...fromArray,
+//     const rawImages = [
+//         ...fromArray,
+//         entity?.image,
+//         entity?.imageUrl,
+//         entity?.photo,
+//         entity?.photoUrl,
+//         entity?.cover,
+//         entity?.coverImage,
+//         entity?.thumbnail,
+//     ];
+
+//     return [
+//         ...new Set(
+//             rawImages
+//                 .map((img) => {
+//                     if (!img) return "";
+//                     if (typeof img === "string") return img;
+//                     return img.url || img.secure_url || img.src || "";
+//                 })
+//                 .filter(Boolean)
+//         ),
+//     ];
+// }
+
+function betaDetailImages(entity) {
+    const images = [];
+
+    if (Array.isArray(entity?.images)) {
+        images.push(...entity.images);
+    }
+
+    [
         entity?.image,
         entity?.imageUrl,
         entity?.photo,
@@ -2790,20 +2890,35 @@ function betaDetailImages(entity) {
         entity?.cover,
         entity?.coverImage,
         entity?.thumbnail,
-    ];
+        entity?.logo,
+    ].forEach((image) => {
+        if (image) {
+            images.push(image);
+        }
+    });
 
     return [
         ...new Set(
-            rawImages
-                .map((img) => {
-                    if (!img) return "";
-                    if (typeof img === "string") return img;
-                    return img.url || img.secure_url || img.src || "";
+            images
+                .map((image) => {
+                    if (!image) return "";
+
+                    if (typeof image === "string") {
+                        return image;
+                    }
+
+                    return (
+                        image.url ||
+                        image.secure_url ||
+                        image.src ||
+                        ""
+                    );
                 })
                 .filter(Boolean)
         ),
     ];
 }
+
 
 function betaDetailCoords(entity) {
     let coords = null;
@@ -2875,14 +2990,24 @@ function betaDetailMetaRows(entity, type) {
     }
 
     if (type === "event") {
+        const linkedLabel = entity?.linkedSpot
+            ? "Spot vinculado"
+            : entity?.linkedShop
+                ? "Shop vinculado"
+                : "Lugar";
+
+        const linkedValue =
+            entity?.linkedSpot?.name ||
+            entity?.linkedShop?.name ||
+            entity?.place ||
+            entity?.location ||
+            entity?.venue ||
+            "—";
+
         return [
             {
-                label: "Lugar",
-                value:
-                    entity?.place ||
-                    entity?.location ||
-                    entity?.venue ||
-                    "—",
+                label: linkedLabel,
+                value: linkedValue,
             },
             {
                 label: "Hora",
@@ -2895,23 +3020,6 @@ function betaDetailMetaRows(entity, type) {
         ];
     }
 
-    return [
-        {
-            label: "Ciudad",
-            value:
-                entity?.city ||
-                entity?.location ||
-                entity?.province ||
-                "—",
-        },
-        {
-            label: "Dirección",
-            value:
-                entity?.address ||
-                entity?.direction ||
-                "—",
-        },
-    ];
 }
 
 function betaRenderDetailHero(entity) {
@@ -3041,6 +3149,49 @@ function betaBindDetailCarousel() {
 }
 
 function betaBuildDetailHtml(entity, type) {
+    if (type === "event") {
+        const linkedSpot =
+            entity?.linkedSpot ||
+            entity?.spot ||
+            (state?.data?.spots || []).find(
+                (spot) => String(spot.id) === String(entity?.spotId)
+            ) ||
+            null;
+
+        if (linkedSpot) {
+            const linkedImage =
+                linkedSpot.image ||
+                linkedSpot.imageUrl ||
+                linkedSpot.cover ||
+                "";
+
+            entity = {
+                ...entity,
+
+                linkedSpot,
+
+                place: linkedSpot.name,
+                location: linkedSpot.name,
+
+                city: linkedSpot.city || entity.city,
+                zone: linkedSpot.zone || entity.zone,
+
+                lat: Number(linkedSpot.lat),
+                lng: Number(linkedSpot.lng),
+
+                image:
+                    entity.image ||
+                    entity.imageUrl ||
+                    linkedImage,
+
+                imageUrl:
+                    entity.imageUrl ||
+                    entity.image ||
+                    linkedImage,
+            };
+        }
+    }
+
     const title = betaDetailAttr(
         betaDetailTitle(
             entity,
@@ -3066,6 +3217,77 @@ function betaBuildDetailHtml(entity, type) {
                     : "Spot disponible dentro de Callejeandola."
         )
     );
+
+    function betaDetailMetaRows(entity, type) {
+        if (type === "spot") {
+            return [
+                {
+                    label: "Zona",
+                    value: entity?.zone || entity?.city || "—",
+                },
+                {
+                    label: "Tipo",
+                    value: entity?.type || entity?.category || "Spot",
+                },
+            ];
+        }
+
+        if (type === "event") {
+            const linkedSpot =
+                entity?.linkedSpot ||
+                entity?.spot ||
+                null;
+
+            return [
+                {
+                    label: entity?.linkedSpot || entity?.spot ? "Spot vinculado" : "Lugar",
+                    value:
+                        entity?.linkedSpot?.name ||
+                        entity?.spot?.name ||
+                        entity?.place ||
+                        entity?.location ||
+                        entity?.venue ||
+                        "—",
+                },
+                {
+                    label: "Hora",
+                    value:
+                        entity?.time ||
+                        entity?.hour ||
+                        entity?.startTime ||
+                        "Por confirmar",
+                },
+            ];
+        }
+
+        if (type === "shop") {
+            return [
+                {
+                    label: "Ciudad",
+                    value:
+                        entity?.city ||
+                        entity?.location ||
+                        entity?.province ||
+                        "—",
+                },
+                {
+                    label: "Dirección",
+                    value:
+                        entity?.address ||
+                        entity?.direction ||
+                        entity?.website ||
+                        "—",
+                },
+            ];
+        }
+
+        return [
+            {
+                label: "Información",
+                value: "—",
+            },
+        ];
+    }
 
     const metaRows = betaDetailMetaRows(entity, type)
         .map((row) => `
@@ -3100,7 +3322,6 @@ function betaBuildDetailHtml(entity, type) {
             </div>
 
             <div class="entity-detail-main">
-
                 <div class="entity-detail-grid">
                     ${metaRows}
                 </div>
@@ -3152,14 +3373,147 @@ function openSpot(s) {
     betaBindDetailActions(s, "spot");
 }
 
-function openEvent(e) {
-    modalInfo(
-        e.title || "Evento",
-        betaBuildDetailHtml(e, "event")
-    );
-
-    betaBindDetailActions(e, "event");
+function cjNormalizeText(value) {
+    return String(value || "")
+        .trim()
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
 }
+
+function cjBuildEventTarget(event) {
+    const linkedSpot =
+        event?.spot ||
+        (state?.data?.spots || []).find(
+            (spot) => String(spot.id) === String(event?.spotId)
+        ) ||
+        null;
+
+    if (!linkedSpot) {
+        return {
+            ...event,
+            linkedSpot: null,
+        };
+    }
+
+    const linkedImage =
+        linkedSpot.image ||
+        linkedSpot.imageUrl ||
+        linkedSpot.cover ||
+        "";
+
+    return {
+        ...event,
+
+        linkedSpot,
+
+        place: linkedSpot.name,
+        location: linkedSpot.name,
+
+        city: linkedSpot.city || event.city,
+        zone: linkedSpot.zone || event.zone,
+
+        lat: Number(linkedSpot.lat),
+        lng: Number(linkedSpot.lng),
+
+        image: event.image || linkedImage,
+        imageUrl: event.imageUrl || event.image || linkedImage,
+
+        description:
+            event.description ||
+            `Evento vinculado a ${linkedSpot.name}.`,
+    };
+}
+
+function bindEventRouteButton(eventTarget) {
+    const routeButton = document.getElementById("btnEventRouteFromModal");
+
+    if (!routeButton) return;
+
+    routeButton.onclick = function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const linkedSpot =
+            eventTarget?.linkedSpot ||
+            eventTarget?.spot ||
+            null;
+
+        const target = linkedSpot || eventTarget;
+
+        const lat = Number(target?.lat);
+        const lng = Number(target?.lng);
+
+        if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+            toast("Este evento no tiene un spot con coordenadas.");
+            return;
+        }
+
+        activateRouteTarget(
+            {
+                ...target,
+                lat,
+                lng,
+                name:
+                    target?.name ||
+                    eventTarget?.title ||
+                    "Destino",
+            },
+            "spot"
+        );
+
+        openMapView();
+    };
+}
+
+function openEvent(event) {
+    const eventTarget = cjNormalizeLinkedEvent(event);
+
+    modalInfo(
+        eventTarget.title || eventTarget.name || "Evento",
+        cjBuildLinkedEventDetailHtml(eventTarget)
+    );
+    bindEventRouteButton(eventTarget);
+}
+
+// function bindEventRouteButton(eventTarget) {
+//     const routeButton = document.getElementById("btnRouteFromModal");
+
+//     if (!routeButton) return;
+
+//     routeButton.onclick = function () {
+//         const linkedSpot =
+//             eventTarget?.linkedSpot ||
+//             eventTarget?.spot ||
+//             null;
+
+//         const target = linkedSpot || eventTarget;
+
+//         const lat = Number(target?.lat);
+//         const lng = Number(target?.lng);
+
+//         if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+//             toast("Este evento no tiene coordenadas vinculadas.");
+//             return;
+//         }
+
+//         activateRouteTarget(
+//             {
+//                 ...target,
+//                 lat,
+//                 lng,
+//                 name:
+//                     target?.name ||
+//                     eventTarget?.title ||
+//                     eventTarget?.location ||
+//                     "Destino",
+//             },
+//             "spot"
+//         );
+
+//         openMapView();
+//     };
+// }
 
 function openShop(shop) {
     modalInfo(
@@ -3169,7 +3523,6 @@ function openShop(shop) {
 
     betaBindDetailActions(shop, "shop");
 }
-
 
 function openAddSpot() {
     modalInfo("Add spot", "Conecta aquí un formulario real para crear spots.");
@@ -3464,8 +3817,8 @@ function buildRouteUrls(entity) {
         title,
         lat: coords.lat,
         lng: coords.lng,
-        googleMapsUrl: `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}`,
-        wazeUrl: `https://www.waze.com/ul?ll=${encodeURIComponent(destination)}&navigate=yes`,
+        googleMapsUrl: "",
+        wazeUrl: "",
     };
 }
 
@@ -3739,22 +4092,13 @@ function updateRouteCoords(spot) {
     if (coordsBox) coordsBox.hidden = false;
 }
 
+
 function buildWazeUrl(spot) {
-    const lat = Number(spot?.lat);
-    const lng = Number(spot?.lng);
-
-    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
-
-    return `https://waze.com/ul?ll=${lat},${lng}&navigate=yes`;
+    return "";
 }
 
 function buildGoogleMapsUrl(spot) {
-    const lat = Number(spot?.lat);
-    const lng = Number(spot?.lng);
-
-    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
-
-    return `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+    return "";
 }
 
 /* =========================================================
@@ -4034,7 +4378,7 @@ function openSpotDetail(spot) {
 }
 
 function openEventDetail(eventItem) {
-    cjOpenEntityDetail(eventItem, "events");
+    openEvent(eventItem);
 }
 
 function openShopDetail(shop) {
@@ -4657,3 +5001,147 @@ function showLoginFormAfterRegister(email = "") {
     btnShowLogin?.classList.add("is-active");
     btnShowRegister?.classList.remove("is-active");
 }
+
+
+/* =========================================================
+   PRELAUNCH FIX: Events vinculados a Spots
+   Regla:
+   - Event usa event.spot / event.spotId
+   - Imagen hereda del Spot si Event.image está vacío
+   - Ruta usa lat/lng del Spot
+   - Modal muestra "Spot vinculado"
+========================================================= */
+
+
+function cjGetEventLinkedSpot(event) {
+    return (
+        event?.linkedSpot ||
+        event?.spot ||
+        (state?.data?.spots || []).find(
+            (spot) => String(spot.id) === String(event?.spotId)
+        ) ||
+        null
+    );
+}
+
+function cjNormalizeLinkedEvent(event) {
+    const linkedSpot = cjGetEventLinkedSpot(event);
+
+    if (!linkedSpot) {
+        return {
+            ...event,
+            linkedSpot: null,
+        };
+    }
+
+    const spotImage =
+        linkedSpot.image ||
+        linkedSpot.imageUrl ||
+        linkedSpot.cover ||
+        "";
+
+    return {
+        ...event,
+
+        linkedSpot,
+        spot: linkedSpot,
+
+        place: linkedSpot.name,
+        location: linkedSpot.name,
+
+        city: linkedSpot.city || event.city,
+        zone: linkedSpot.zone || event.zone,
+
+        lat: Number(linkedSpot.lat),
+        lng: Number(linkedSpot.lng),
+
+        image:
+            event.image ||
+            event.imageUrl ||
+            spotImage,
+
+        imageUrl:
+            event.imageUrl ||
+            event.image ||
+            spotImage,
+    };
+}
+
+function cjBuildLinkedEventDetailHtml(event) {
+    const linkedSpot = event.linkedSpot || event.spot || null;
+
+    const placeLabel = linkedSpot
+        ? "Spot vinculado"
+        : "Lugar";
+
+    const placeValue =
+        linkedSpot?.name ||
+        event.place ||
+        event.location ||
+        event.venue ||
+        "—";
+
+    const timeValue =
+        event.time ||
+        event.hour ||
+        event.startTime ||
+        "Por confirmar";
+
+    const description =
+        event.description ||
+        "Evento disponible dentro de Callejeandola.";
+
+    const canRoute =
+        Number.isFinite(Number(event.lat)) &&
+        Number.isFinite(Number(event.lng));
+
+    return `
+        <div class="entity-detail-view entity-detail-view--event">
+            <div class="entity-detail-hero">
+                ${betaRenderDetailHero(event)}
+            </div>
+
+            <div class="entity-detail-main">
+                <div class="entity-detail-grid">
+                    <div class="entity-detail-row">
+                        <span class="entity-detail-label">
+                            ${betaDetailAttr(placeLabel)}
+                        </span>
+
+                        <strong class="entity-detail-value">
+                            ${betaDetailAttr(placeValue)}
+                        </strong>
+                    </div>
+
+                    <div class="entity-detail-row">
+                        <span class="entity-detail-label">
+                            Hora
+                        </span>
+
+                        <strong class="entity-detail-value">
+                            ${betaDetailAttr(timeValue)}
+                        </strong>
+                    </div>
+                </div>
+
+                <p class="entity-detail-description">
+                    ${betaDetailAttr(description)}
+                </p>
+
+                ${canRoute ? `
+                    <div class="entity-detail-actions">
+                        <button
+                            class="btn btn-primary entity-detail-route"
+                            type="button"
+                            id="btnEventRouteFromModal"
+                            >
+                            Ruta
+                        </button>
+                    </div>
+                ` : ""}
+            </div>
+        </div>
+    `;
+}
+
+

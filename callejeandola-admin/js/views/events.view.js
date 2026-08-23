@@ -31,57 +31,6 @@ import { renderDashboard } from "./dashboard.view.js";
 
 import { canManageEntity } from "../services/permissions.service.js";
 
-// export function renderEventsTable() {
-//   const table = document.getElementById("eventsTable");
-
-//   if (!table) return;
-
-//   if (!state.events.length) {
-//     table.innerHTML = `
-//       <tr>
-//         <td colspan="5">No hay eventos registrados.</td>
-//       </tr>
-//     `;
-//     return;
-//   }
-
-//   table.innerHTML = state.events
-//     .map((eventItem) => {
-//       return `
-//         <tr>
-//           <td>
-//             <strong>${escapeHtml(eventItem.title || "—")}</strong>
-//           </td>
-
-//           <td>${escapeHtml(eventItem.location || "—")}</td>
-
-//           <td>${formatDate(eventItem.date)}</td>
-
-//           <td>${renderImage(eventItem.image, eventItem.title)}</td>
-
-//           <td>
-//             <div class="table-actions">
-//               <button
-//                 class="btn btn-secondary"
-//                 type="button"
-//                 data-edit-event="${eventItem.id}">
-//                 Editar
-//               </button>
-
-//               <button
-//                 class="btn btn-danger"
-//                 type="button"
-//                 data-delete-event="${eventItem.id}">
-//                 Eliminar
-//               </button>
-//             </div>
-//           </td>
-//         </tr>
-//       `;
-//     })
-//     .join("");
-// }
-
 export function renderEventsTable() {
   const table = document.getElementById("eventsTable");
 
@@ -102,6 +51,16 @@ export function renderEventsTable() {
 
   table.innerHTML = state.events
     .map((eventItem) => {
+      const displayLocation =
+        eventItem.spot?.name ||
+        eventItem.location ||
+        "—";
+
+      const displayImage =
+        eventItem.image ||
+        eventItem.spot?.image ||
+        "";
+
       const actionsHtml = hasActions
         ? `
           <div class="table-actions">
@@ -138,11 +97,11 @@ export function renderEventsTable() {
             <strong>${escapeHtml(eventItem.title || "—")}</strong>
           </td>
 
-          <td>${escapeHtml(eventItem.location || "—")}</td>
+          <td>${escapeHtml(displayLocation)}</td>
 
           <td>${formatDate(eventItem.date)}</td>
 
-          <td>${renderImage(eventItem.image, eventItem.title)}</td>
+          <td>${renderImage(displayImage, eventItem.title)}</td>
 
           <td>${actionsHtml}</td>
         </tr>
@@ -193,24 +152,6 @@ export function bindEventTableActions() {
   });
 }
 
-// export function bindEventCreateButton() {
-//   const btnCreateEvent = document.querySelector('[data-open-form="event"]');
-
-//   if (!btnCreateEvent) {
-//     console.warn("Botón Crear Evento no encontrado");
-//     return;
-//   }
-
-//   btnCreateEvent.onclick = (event) => {
-//     event.preventDefault();
-//     event.stopPropagation();
-
-//     localStorage.setItem("cj_admin_active_view", "events");
-
-//     openEventFormModal("create");
-//   };
-// }
-
 export function bindEventCreateButton() {
   const btnCreateEvent = document.querySelector('[data-open-form="event"]');
 
@@ -236,8 +177,110 @@ export function bindEventCreateButton() {
   };
 }
 
+// function openEventFormModal(mode, eventItem = {}) {
+//   const isEdit = mode === "edit";
+
+//   openEntityModal({
+//     title: isEdit ? "Editar Evento" : "Crear Evento",
+//     submitText: isEdit ? "Actualizar" : "Guardar",
+//     mode,
+//     entity: "event",
+//     itemId: eventItem.id || null,
+//     html: `
+//       <div class="form-field">
+//         <label for="eventTitle">Título *</label>
+//         <input
+//           id="eventTitle"
+//           name="title"
+//           type="text"
+//           required
+//           value="${escapeAttr(eventItem.title || "")}"
+//           placeholder="Ej: Best Trick Sabana"
+//         >
+//       </div>
+
+//       <div class="form-field">
+//         <label for="eventDescription">Descripción</label>
+//         <textarea
+//           id="eventDescription"
+//           name="description"
+//           rows="4"
+//           placeholder="Descripción del evento">${escapeHtml(eventItem.description || "")}</textarea>
+//       </div>
+
+//       <div class="form-grid-2">
+//         <div class="form-field">
+//           <label for="eventLocation">Ubicación *</label>
+//           <input
+//             id="eventLocation"
+//             name="location"
+//             type="text"
+//             required
+//             value="${escapeAttr(eventItem.location || "")}"
+//             placeholder="Ej: La Sabana, San José"
+//           >
+//         </div>
+
+//         <div class="form-field">
+//           <label for="eventCountry">País</label>
+//           <input
+//             id="eventCountry"
+//             name="country"
+//             type="text"
+//             value="${escapeAttr(eventItem.country || "Costa Rica")}"
+//           >
+//         </div>
+//       </div>
+
+//       <div class="form-grid-2">
+//         <div class="form-field">
+//           <label for="eventDate">Fecha y hora *</label>
+//           <input
+//             id="eventDate"
+//             name="date"
+//             type="datetime-local"
+//             required
+//             value="${formatDateTimeLocal(eventItem.date)}"
+//           >
+//         </div>
+
+//         <div class="form-field">
+//           <label for="eventImage">Imagen Cloudinary URL</label>
+//           <input
+//             id="eventImage"
+//             name="image"
+//             type="url"
+//             value="${escapeAttr(eventItem.image || "")}"
+//             placeholder="https://res.cloudinary.com/..."
+//           >
+//         </div>
+//       </div>
+//     `,
+//   });
+// }
+
 function openEventFormModal(mode, eventItem = {}) {
   const isEdit = mode === "edit";
+
+  const selectedSpotId =
+    eventItem.spotId ||
+    eventItem.spot?.id ||
+    "";
+
+  const spotOptions = (state.spots || [])
+    .map((spot) => {
+      const selected =
+        String(spot.id) === String(selectedSpotId)
+          ? "selected"
+          : "";
+
+      return `
+        <option value="${escapeAttr(spot.id)}" ${selected}>
+          ${escapeHtml(spot.name || "Skatepark")} · ${escapeHtml(spot.city || spot.zone || "Costa Rica")}
+        </option>
+      `;
+    })
+    .join("");
 
   openEntityModal({
     title: isEdit ? "Editar Evento" : "Crear Evento",
@@ -269,15 +312,11 @@ function openEventFormModal(mode, eventItem = {}) {
 
       <div class="form-grid-2">
         <div class="form-field">
-          <label for="eventLocation">Ubicación *</label>
-          <input
-            id="eventLocation"
-            name="location"
-            type="text"
-            required
-            value="${escapeAttr(eventItem.location || "")}"
-            placeholder="Ej: La Sabana, San José"
-          >
+          <label for="eventSpotId">Skatepark vinculado *</label>
+          <select id="eventSpotId" name="spotId" required>
+            <option value="">Seleccionar skatepark</option>
+            ${spotOptions}
+          </select>
         </div>
 
         <div class="form-field">
@@ -289,6 +328,18 @@ function openEventFormModal(mode, eventItem = {}) {
             value="${escapeAttr(eventItem.country || "Costa Rica")}"
           >
         </div>
+      </div>
+
+      <div class="form-field">
+        <label for="eventLocation">Ubicación visible *</label>
+        <input
+          id="eventLocation"
+          name="location"
+          type="text"
+          required
+          value="${escapeAttr(eventItem.location || eventItem.spot?.name || "")}"
+          placeholder="Se llena con el skatepark seleccionado"
+        >
       </div>
 
       <div class="form-grid-2">
@@ -316,7 +367,22 @@ function openEventFormModal(mode, eventItem = {}) {
       </div>
     `,
   });
+
+  document.getElementById("eventSpotId")?.addEventListener("change", (event) => {
+    const selectedSpot = (state.spots || []).find((spot) => {
+      return String(spot.id) === String(event.target.value);
+    });
+
+    if (!selectedSpot) return;
+
+    const locationInput = document.getElementById("eventLocation");
+
+    if (locationInput) {
+      locationInput.value = selectedSpot.name || "";
+    }
+  });
 }
+
 
 function openDeleteEventModal(eventItem) {
   openEntityModal({
@@ -346,20 +412,37 @@ function renderEventsOnly() {
 
 function getEventPayloadFromForm() {
   const rawDate = getValue("eventDate");
+  const selectedSpotId = getValue("eventSpotId");
+
+  const selectedSpot = (state.spots || []).find((spot) => {
+    return String(spot.id) === String(selectedSpotId);
+  });
+
+  if (!selectedSpot) {
+    return {
+      error: "Seleccioná un skatepark vinculado.",
+    };
+  }
 
   return {
     title: getValue("eventTitle"),
     description: getValue("eventDescription"),
     date: rawDate ? new Date(rawDate).toISOString() : "",
-    location: getValue("eventLocation"),
+    location: getValue("eventLocation") || selectedSpot.name,
     country: getValue("eventCountry") || "Costa Rica",
     image: getValue("eventImage"),
+    spotId: Number(selectedSpot.id),
   };
 }
 
 async function handleCreateEvent() {
   try {
     const payload = getEventPayloadFromForm();
+
+    if (payload.error) {
+      showToast(payload.error);
+      return;
+    }
 
     if (!payload.title || !payload.location || !payload.date) {
       showToast("Título, ubicación y fecha son obligatorios");
@@ -387,6 +470,12 @@ async function handleUpdateEvent() {
   try {
     const id = Number(state.modalItemId);
     const payload = getEventPayloadFromForm();
+
+    if (payload.error) {
+      showToast(payload.error);
+      return;
+    }
+
 
     if (!id) {
       showToast("ID inválido");
