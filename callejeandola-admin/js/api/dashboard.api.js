@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:4000/api";
+const API_URL = "https://callejeandola-api.onrender.com/api";
 
 export async function getDashboardData() {
     const [spots, events, shops, sponsors] = await Promise.all([
