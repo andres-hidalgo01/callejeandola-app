@@ -1,9 +1,107 @@
+require("dotenv").config();
+
 const { PrismaClient } = require("@prisma/client");
 const bcrypt = require("bcryptjs");
 
 const prisma = new PrismaClient();
 
-const DEV_PASSWORD = "123456";
+/* =========================================================
+   SAFETY GUARDS
+   ---------------------------------------------------------
+   Este seed es SOLO para desarrollo/local.
+
+   Bloquea:
+   - NODE_ENV=production
+   - DATABASE_URL que no apunte a localhost / 127.0.0.1
+
+   Esto evita ejecutar accidentalmente datos demo
+   contra PostgreSQL de producción.
+========================================================= */
+
+const NODE_ENV = String(process.env.NODE_ENV || "")
+    .trim()
+    .toLowerCase();
+
+const DATABASE_URL = String(process.env.DATABASE_URL || "").trim();
+
+if (NODE_ENV === "production") {
+    console.error("");
+    console.error("====================================================");
+    console.error("SEED BLOCKED");
+    console.error("prisma/seed.js is DEVELOPMENT-ONLY.");
+    console.error("NODE_ENV=production detected.");
+    console.error("====================================================");
+    console.error("");
+
+    process.exit(1);
+}
+
+if (!DATABASE_URL) {
+    console.error("");
+    console.error("====================================================");
+    console.error("SEED BLOCKED");
+    console.error("DATABASE_URL is missing.");
+    console.error("====================================================");
+    console.error("");
+
+    process.exit(1);
+}
+
+let databaseHostname = "";
+
+try {
+    const parsedDatabaseUrl = new URL(DATABASE_URL);
+    databaseHostname = parsedDatabaseUrl.hostname;
+} catch (error) {
+    console.error("");
+    console.error("====================================================");
+    console.error("SEED BLOCKED");
+    console.error("DATABASE_URL is invalid.");
+    console.error(error.message);
+    console.error("====================================================");
+    console.error("");
+
+    process.exit(1);
+}
+
+const LOCAL_DATABASE_HOSTS = new Set([
+    "localhost",
+    "127.0.0.1",
+    "::1",
+]);
+
+if (!LOCAL_DATABASE_HOSTS.has(databaseHostname)) {
+    console.error("");
+    console.error("====================================================");
+    console.error("SEED BLOCKED");
+    console.error("Database is NOT local.");
+    console.error(`Detected host: ${databaseHostname}`);
+    console.error("");
+    console.error(
+        "This seed can only run against localhost / 127.0.0.1."
+    );
+    console.error("====================================================");
+    console.error("");
+
+    process.exit(1);
+}
+
+/* =========================================================
+   DEVELOPMENT PASSWORD
+   ---------------------------------------------------------
+   Puedes sobreescribirlo desde .env usando:
+
+   SEED_DEV_PASSWORD=123456
+
+   Si no existe, usa 123456.
+========================================================= */
+
+const DEV_PASSWORD =
+    process.env.SEED_DEV_PASSWORD || "123456";
+
+/* =========================================================
+   USERS
+========================================================= */
 
 const users = [
     {
@@ -39,6 +137,10 @@ const users = [
         active: true,
     },
 ];
+
+/* =========================================================
+   SPOTS
+========================================================= */
 
 const spots = [
     {
@@ -199,10 +301,15 @@ const spots = [
     },
 ];
 
+/* =========================================================
+   EVENTS
+========================================================= */
+
 const events = [
     {
         title: "Best Trick Los Lagos",
-        description: "Evento demo en Los Lagos para probar saved events y route hub.",
+        description:
+            "Evento demo en Los Lagos para probar saved events y route hub.",
         country: "Costa Rica",
         city: "Heredia",
         place: "Parque de Patinaje Los Lagos",
@@ -217,7 +324,8 @@ const events = [
     },
     {
         title: "Open Jam San José",
-        description: "Jam local para skaters de todos los niveles.",
+        description:
+            "Jam local para skaters de todos los niveles.",
         country: "Costa Rica",
         city: "San José",
         place: "Parque de la Paz",
@@ -232,7 +340,8 @@ const events = [
     },
     {
         title: "Street Session Escalante",
-        description: "Sesión urbana para contenido y comunidad.",
+        description:
+            "Sesión urbana para contenido y comunidad.",
         country: "Costa Rica",
         city: "San José",
         place: "Barrio Escalante",
@@ -247,7 +356,8 @@ const events = [
     },
     {
         title: "Nosara Jungle Skate Session",
-        description: "Evento demo de playa/skate para validar expansión fuera del GAM.",
+        description:
+            "Evento demo de playa/skate para validar expansión fuera del GAM.",
         country: "Costa Rica",
         city: "Guanacaste",
         place: "Nosara Skatepark",
@@ -262,10 +372,15 @@ const events = [
     },
 ];
 
+/* =========================================================
+   SHOPS
+========================================================= */
+
 const shops = [
     {
         name: "CJ Test Shop",
-        description: "Skateshop demo para pruebas de visibilidad.",
+        description:
+            "Skateshop demo para pruebas de visibilidad.",
         country: "Costa Rica",
         city: "San José",
         category: "Skateshop",
@@ -275,7 +390,8 @@ const shops = [
     },
     {
         name: "Heredia Skate Supply",
-        description: "Shop local demo para Heredia.",
+        description:
+            "Shop local demo para Heredia.",
         country: "Costa Rica",
         city: "Heredia",
         category: "Skateshop",
@@ -285,7 +401,8 @@ const shops = [
     },
     {
         name: "Jacó Board Shop",
-        description: "Shop demo de playa para futuras rutas de skate tourism.",
+        description:
+            "Shop demo de playa para futuras rutas de skate tourism.",
         country: "Costa Rica",
         city: "Puntarenas",
         category: "Skateshop",
@@ -295,7 +412,8 @@ const shops = [
     },
     {
         name: "Nosara Skate Supply",
-        description: "Shop demo para zona de Nosara.",
+        description:
+            "Shop demo para zona de Nosara.",
         country: "Costa Rica",
         city: "Guanacaste",
         category: "Skateshop",
@@ -305,10 +423,15 @@ const shops = [
     },
 ];
 
+/* =========================================================
+   SPONSORS
+========================================================= */
+
 const sponsors = [
     {
         name: "CJ Test Sponsor",
-        description: "Sponsor demo para barra superior.",
+        description:
+            "Sponsor demo para barra superior.",
         tier: "FREE",
         url: "",
         logo: "",
@@ -316,7 +439,8 @@ const sponsors = [
     },
     {
         name: "Maxxx Energy",
-        description: "Sponsor demo con presencia en la app.",
+        description:
+            "Sponsor demo con presencia en la app.",
         tier: "PREMIUM",
         url: "",
         logo: "",
@@ -324,7 +448,8 @@ const sponsors = [
     },
     {
         name: "Board House CR",
-        description: "Sponsor demo tipo shop/marca local.",
+        description:
+            "Sponsor demo tipo shop/marca local.",
         tier: "GOLD",
         url: "",
         logo: "",
@@ -332,7 +457,8 @@ const sponsors = [
     },
     {
         name: "Skateparks CR",
-        description: "Referencia demo para comunidad y contenido de skateparks.",
+        description:
+            "Referencia demo para comunidad y contenido de skateparks.",
         tier: "COMMUNITY",
         url: "https://www.facebook.com/p/Skateparks-de-Costa-Rica-100083330891483/",
         logo: "",
@@ -340,18 +466,36 @@ const sponsors = [
     },
 ];
 
+/* =========================================================
+   USERS UPSERT
+========================================================= */
+
 async function upsertUsers() {
     for (const user of users) {
-        const hashedPassword = await bcrypt.hash(user.password, 10);
+        const hashedPassword = await bcrypt.hash(
+            user.password,
+            10
+        );
 
         await prisma.user.upsert({
-            where: { email: user.email },
+            where: {
+                email: user.email,
+            },
+
             update: {
                 name: user.name,
+
+                // IMPORTANTE:
+                // También actualizamos password.
+                // Así npm run seed resetea correctamente
+                // los usuarios DEV.
+                password: hashedPassword,
+
                 role: user.role,
                 country: user.country,
                 active: user.active,
             },
+
             create: {
                 name: user.name,
                 email: user.email,
@@ -364,17 +508,25 @@ async function upsertUsers() {
     }
 }
 
+/* =========================================================
+   GENERIC UPSERT BY NAME
+========================================================= */
+
 async function upsertByName(model, items) {
     for (const item of items) {
         const { id, ...data } = item;
 
         const existing = await model.findFirst({
-            where: { name: data.name },
+            where: {
+                name: data.name,
+            },
         });
 
         if (existing) {
             await model.update({
-                where: { id: existing.id },
+                where: {
+                    id: existing.id,
+                },
                 data,
             });
         } else {
@@ -385,17 +537,25 @@ async function upsertByName(model, items) {
     }
 }
 
+/* =========================================================
+   EVENTS UPSERT
+========================================================= */
+
 async function upsertEvents(items = events) {
     for (const item of items) {
         const { id, ...data } = item;
 
         const existing = await prisma.event.findFirst({
-            where: { title: data.title },
+            where: {
+                title: data.title,
+            },
         });
 
         if (existing) {
             await prisma.event.update({
-                where: { id: existing.id },
+                where: {
+                    id: existing.id,
+                },
                 data,
             });
         } else {
@@ -406,19 +566,63 @@ async function upsertEvents(items = events) {
     }
 }
 
+/* =========================================================
+   MAIN
+========================================================= */
+
 async function main() {
-    console.log("Starting Callejeandola seed...");
+    console.log("");
+    console.log("==============================================");
+    console.log("CALLEJEANDOLA DEVELOPMENT SEED");
+    console.log("==============================================");
+    console.log(`Environment : ${NODE_ENV || "development"}`);
+    console.log(`DB Host     : ${databaseHostname}`);
+    console.log("Mode        : LOCAL DEVELOPMENT ONLY");
+    console.log("==============================================");
+    console.log("");
+
+    /* -----------------------------------------------------
+       USERS
+    ----------------------------------------------------- */
 
     await upsertUsers();
+
     console.log("Users seeded");
 
-    const normalizedSpots = spots.map(({ verified, ...spot }) => spot);
-    await upsertByName(prisma.spot, normalizedSpots);
+    /* -----------------------------------------------------
+       SPOTS
+
+       Tu esquema actual no utiliza verified en el create,
+       por eso se elimina antes del upsert.
+    ----------------------------------------------------- */
+
+    const normalizedSpots = spots.map(
+        ({ verified, ...spot }) => spot
+    );
+
+    await upsertByName(
+        prisma.spot,
+        normalizedSpots
+    );
+
     console.log("Spots seeded");
 
+    /* -----------------------------------------------------
+       EVENTS
+
+       Normalizamos el formato demo anterior hacia
+       los campos actuales de Prisma:
+       title / description / country / image /
+       location / date.
+    ----------------------------------------------------- */
+
     const normalizedEvents = events.map((event) => {
-        const safeMonth = event.month || "JUN";
-        const safeDay = String(event.day || "20").padStart(2, "0");
+        const safeMonth =
+            event.month || "JUN";
+
+        const safeDay = String(
+            event.day || "20"
+        ).padStart(2, "0");
 
         const monthMap = {
             JAN: "01",
@@ -437,48 +641,124 @@ async function main() {
             DIC: "12",
         };
 
-        const monthNumber = monthMap[safeMonth.toUpperCase()] || "06";
+        const monthNumber =
+            monthMap[safeMonth.toUpperCase()] ||
+            "06";
 
         return {
             title: event.title,
-            description: event.description || "",
-            country: event.country || "Costa Rica",
-            image: event.image || "",
+
+            description:
+                event.description || "",
+
+            country:
+                event.country || "Costa Rica",
+
+            image:
+                event.image || "",
+
             location:
                 event.location ||
                 event.place ||
                 event.city ||
                 "Costa Rica",
+
             date:
                 event.date ||
-                new Date(`2026-${monthNumber}-${safeDay}T14:00:00-06:00`),
+                new Date(
+                    `2026-${monthNumber}-${safeDay}T14:00:00-06:00`
+                ),
         };
     });
 
-    await upsertEvents(normalizedEvents);
+    await upsertEvents(
+        normalizedEvents
+    );
+
     console.log("Events seeded");
 
-    await upsertByName(prisma.shop, shops);
+    /* -----------------------------------------------------
+       SHOPS
+    ----------------------------------------------------- */
+
+    await upsertByName(
+        prisma.shop,
+        shops
+    );
+
     console.log("Shops seeded");
 
-    const normalizedSponsors = sponsors.map((sponsor) => ({
-        name: sponsor.name,
-        logo: sponsor.logo || "",
-        website: sponsor.website || sponsor.url || "",
-        active: sponsor.active ?? true,
-    }));
+    /* -----------------------------------------------------
+       SPONSORS
 
-    await upsertByName(prisma.sponsor, normalizedSponsors);
+       Normalizamos url -> website porque tu modelo
+       actual usa website.
+    ----------------------------------------------------- */
+
+    const normalizedSponsors =
+        sponsors.map((sponsor) => ({
+            name: sponsor.name,
+
+            logo:
+                sponsor.logo || "",
+
+            website:
+                sponsor.website ||
+                sponsor.url ||
+                "",
+
+            active:
+                sponsor.active ?? true,
+        }));
+
+    await upsertByName(
+        prisma.sponsor,
+        normalizedSponsors
+    );
+
     console.log("Sponsors seeded");
 
-    console.log("Seed completed");
+    console.log("");
+    console.log("==============================================");
+    console.log("Seed completed successfully");
+    console.log("==============================================");
+    console.log("");
+    console.log("DEV USERS");
+    console.log("----------------------------------------------");
+    console.log(
+        "GLOBAL_ADMIN : admin@callejeandola.com"
+    );
+    console.log(
+        "LOCAL_ADMIN  : localadmin@callejeandola.com"
+    );
+    console.log(
+        "JUDGE        : judge@callejeandola.com"
+    );
+    console.log(
+        "SKATER       : skater@callejeandola.com"
+    );
+    console.log("");
+    console.log(
+        `DEV PASSWORD : ${DEV_PASSWORD}`
+    );
+    console.log("==============================================");
+    console.log("");
 }
 
+/* =========================================================
+   EXECUTION
+========================================================= */
 
 main()
     .catch((error) => {
-        console.error("Seed failed:", error);
-        process.exit(1);
+        console.error("");
+        console.error("==============================================");
+        console.error("Seed failed");
+        console.error("==============================================");
+        console.error(error);
+        console.error("");
+
+        process.exitCode = 1;
     })
     .finally(async () => {
         await prisma.$disconnect();

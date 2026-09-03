@@ -74,7 +74,7 @@ async function registerUser({ name, email, password, role, country }) {
     sendVerificationCodeSafe(user, emailVerificationCode).catch((error) => {
         console.error("Async email verification send error:", error.message);
     });
-    
+
     const safeUser = sanitizeUser(user);
 
     const token = generateToken({
@@ -171,8 +171,6 @@ function logVerificationCode(user, code) {
 }
 
 async function sendVerificationCodeSafe(user, code) {
-    logVerificationCode(user, code);
-
     try {
         await sendVerificationEmail({
             to: user.email,
